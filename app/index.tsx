@@ -1,13 +1,35 @@
 import { View, Text, TextInput, Pressable, Dimensions, ImageBackground } from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
 import { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import * as SQLite from 'expo-sqlite';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 
 export default function HomeScreen() {
+  const { promptAsync, userInfo, request } = useGoogleAuth();
+
   const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleGoogleLogin = async () => {
+    try {
+      await promptAsync();
+    } catch (error) {
+      console.error('Google login error:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (userInfo && db) {
+      const { email, name, picture } = userInfo;
+      // Guardar en SQLite
+      db.runAsync('INSERT OR REPLACE INTO users (email, name, picture) VALUES (?, ?, ?)', [
+        email,
+        name,
+        picture,
+      ]);
+    }
+  }, [userInfo, db]);
 
   useEffect(() => {
     async function setUpDatabase() {
@@ -15,10 +37,16 @@ export default function HomeScreen() {
         console.log('starting database connection ...');
         const database = await SQLite.openDatabaseAsync('descalate.db');
         console.info('connection successfully established');
-
-        await database.execAsync(
-          'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT)'
-        );
+        await database.execAsync(`
+          CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE,
+            password TEXT,
+            name TEXT,
+            picture TEXT,
+            google_id TEXT
+          );  
+        `);
         console.info('table created or verified successfully');
 
         database.getAllAsync('SELECT * FROM users').then((result) => {
@@ -50,7 +78,6 @@ export default function HomeScreen() {
       style={{ flex: 1 }}
       resizeMode="cover"
     >
-      <StatusBar style="dark" />
       <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
         {/* Right Superior Triangle */}
         <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill="white" />
@@ -165,6 +192,23 @@ export default function HomeScreen() {
           >
             Registrarse
           </Text>
+        </Pressable>
+        <Pressable onPress={() => handleRegister(email, password)}>
+          <Text>Registrarse</Text>
+        </Pressable>
+
+        {/* Botón de Google */}
+        <Pressable
+          onPress={handleGoogleLogin}
+          disabled={!request}
+          style={{
+            backgroundColor: '#4285F4',
+            borderRadius: 50,
+            padding: 15,
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: 'white', textAlign: 'center' }}>Continuar con Google</Text>
         </Pressable>
       </View>
     </ImageBackground>
