@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, Dimensions } from 'react-native';
+import { View, Text, TextInput, Pressable, Dimensions, ImageBackground } from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
 import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
@@ -45,8 +45,12 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#faf9f5' }}>
-      <StatusBar style="dark" hidden={false} translucent={true} />
+    <ImageBackground
+      source={require('../assets/images/Descalate.jpeg')}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <StatusBar style="dark" />
       <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
         {/* Right Superior Triangle */}
         <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill="white" />
@@ -163,6 +167,6 @@ export default function HomeScreen() {
           </Text>
         </Pressable>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
