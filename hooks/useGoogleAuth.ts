@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
 import { GOOGLE_CONFIG } from '../constants/google-config';
 
 // Completa el flujo de autenticación del navegador

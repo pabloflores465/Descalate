@@ -3,33 +3,19 @@ import Svg, { Polygon } from 'react-native-svg';
 import { useState, useEffect } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import { AntDesign } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+  const router = useRouter();
+
+  const goHome = () => {
+    router.push('/home');
+  };
+
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
   const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleGoogleLogin = async () => {
-    try {
-      await promptAsync();
-    } catch (error) {
-      console.error('Google login error:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (userInfo && db) {
-      const { email, name, picture } = userInfo;
-      // Guardar en SQLite
-      db.runAsync('INSERT OR REPLACE INTO users (email, name, picture) VALUES (?, ?, ?)', [
-        email,
-        name,
-        picture,
-      ]);
-    }
-  }, [userInfo, db]);
 
   useEffect(() => {
     async function setUpDatabase() {
@@ -61,12 +47,37 @@ export default function HomeScreen() {
     setUpDatabase();
   }, []);
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleGoogleRegister = async () => {
+    try {
+      await promptAsync();
+      goHome();
+    } catch (error) {
+      console.error('Google login error:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (userInfo && db) {
+      const { email, name, picture } = userInfo;
+      // Guardar en SQLite
+      db.runAsync('INSERT OR REPLACE INTO users (email, name, picture) VALUES (?, ?, ?)', [
+        email,
+        name,
+        picture,
+      ]);
+    }
+  }, [userInfo, db]);
+
   const { width, height } = Dimensions.get('screen');
 
   const handleRegister = async (email: string, password: string) => {
     try {
       await db?.runAsync('INSERT INTO users (email, password) VALUES (?, ?)', [email, password]);
       console.log('User registered successfully');
+      goHome();
     } catch (error) {
       console.error('Error registering user:', error);
     }
@@ -99,17 +110,6 @@ export default function HomeScreen() {
           overflow: 'visible',
         }}
       >
-        <Text
-          style={{
-            fontSize: 28,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginBottom: 10,
-            color: '#333',
-          }}
-        >
-          Bienvenido !!!
-        </Text>
         <Text
           style={{
             marginTop: 10,
@@ -178,10 +178,19 @@ export default function HomeScreen() {
             paddingVertical: 16,
             paddingHorizontal: 60,
             marginTop: 20,
-            alignSelf: 'center',
+            marginBottom: 20,
             elevation: 3,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
           })}
         >
+          <AntDesign
+            name="login"
+            size={20}
+            color="white"
+            style={{ marginRight: 10, fontWeight: 'bold' }}
+          />
           <Text
             style={{
               color: 'white',
@@ -193,22 +202,24 @@ export default function HomeScreen() {
             Registrarse
           </Text>
         </Pressable>
-        <Pressable onPress={() => handleRegister(email, password)}>
-          <Text>Registrarse</Text>
-        </Pressable>
 
-        {/* Botón de Google */}
         <Pressable
-          onPress={handleGoogleLogin}
+          onPress={handleGoogleRegister}
           disabled={!request}
           style={{
             backgroundColor: '#4285F4',
             borderRadius: 50,
             padding: 15,
             marginTop: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <Text style={{ color: 'white', textAlign: 'center' }}>Continuar con Google</Text>
+          <AntDesign name="google" size={20} color="white" style={{ marginRight: 10 }} />
+          <Text style={{ color: 'white', textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
+            Continuar con Google
+          </Text>
         </Pressable>
       </View>
     </ImageBackground>

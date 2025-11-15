@@ -9,13 +9,8 @@ export default function RootLayout() {
         animation: 'none',
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{
-          statusBarTranslucent: true,
-          statusBarStyle: 'dark',
-        }}
-      />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="(tabs)" />
     </Stack>
   );
 }
