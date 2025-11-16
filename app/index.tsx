@@ -1,21 +1,31 @@
-import { View, Text, TextInput, Pressable, Dimensions, ImageBackground, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  Dimensions,
+  ImageBackground,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
 import { useState, useEffect } from 'react';
-import { openDatabaseSync } from 'expo-sqlite';
-import { db } from '@/database/db';
+import { db, expoDb } from '@/database/db';
 import { users, registerUserSchema, googleUserSchema } from '@/database/schema';
 import { runMigrations } from '@/database/migrations';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import bcrypt from 'bcryptjs';
+import * as Crypto from 'expo-crypto';
+
+bcrypt.setRandomFallback((len: number) => {
+  const randomBytes = Crypto.getRandomBytes(len);
+  return Array.from(randomBytes);
+});
 
 export default function HomeScreen() {
   const router = useRouter();
-
-  const goHome = () => {
-    router.push('/home');
-  };
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
@@ -23,7 +33,6 @@ export default function HomeScreen() {
     async function setUpDatabase() {
       try {
         console.log('starting database connection ...');
-        const expoDb = openDatabaseSync('descalate.db');
         await runMigrations(expoDb);
         console.info('database ready');
       } catch (error) {
@@ -36,18 +45,24 @@ export default function HomeScreen() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
 
   const handleGoogleRegister = async () => {
     try {
+      setIsGoogleLoading(true);
       await promptAsync();
     } catch (error) {
       console.error('Google login error:', error);
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
   useEffect(() => {
     if (userInfo && db) {
       const saveGoogleUser = async () => {
+        setIsGoogleLoading(true);
         try {
           const validationResult = googleUserSchema.safeParse({
             email: userInfo.email,
@@ -57,7 +72,7 @@ export default function HomeScreen() {
           });
 
           if (!validationResult.success) {
-            console.error('Validation error:', validationResult.error.format());
+            console.error('Validation error:', validationResult.error);
             return;
           }
 
@@ -74,21 +89,30 @@ export default function HomeScreen() {
             });
 
           console.log('Google user saved successfully');
-          goHome();
+          router.push('/home');
         } catch (error) {
           console.error('Error saving Google user:', error);
+        } finally {
+          setIsGoogleLoading(false);
         }
       };
       saveGoogleUser();
     }
-  }, [userInfo]);
+  }, [userInfo, router]);
 
   const { width, height } = Dimensions.get('screen');
 
+  console.log('Render - isLoading:', isLoading, 'isGoogleLoading:', isGoogleLoading);
+
   const handleRegister = async (email: string, password: string) => {
-    const hashPassword = async (password: string): Promise<string> => {
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log('Setting loading to true');
+    setIsLoading(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const hashPassword = (password: string): string => {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(password, salt);
       return hashedPassword;
     };
 
@@ -114,10 +138,11 @@ export default function HomeScreen() {
 
         setErrors(errorMessages);
         Alert.alert('Validation Error', Object.values(errorMessages).join('\n'));
+        setIsLoading(false);
         return;
       }
 
-      const passwordHash = await hashPassword(password);
+      const passwordHash = hashPassword(validationResult.data.password);
       console.info('password hashed successfully');
 
       await db.insert(users).values({
@@ -128,7 +153,7 @@ export default function HomeScreen() {
 
       console.log('User registered successfully');
       Alert.alert('Success', 'Account created successfully');
-      goHome();
+      router.push('/home');
     } catch (error: any) {
       console.error('Error registering user:', error);
 
@@ -137,6 +162,8 @@ export default function HomeScreen() {
       } else {
         Alert.alert('Error', 'Failed to create account');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -238,8 +265,10 @@ export default function HomeScreen() {
 
         <Pressable
           onPress={() => handleRegister(email, password)}
+          disabled={isLoading || isGoogleLoading}
           style={({ pressed }) => ({
-            backgroundColor: pressed ? '#4a7c59' : '#5a8c6a',
+            backgroundColor:
+              isLoading || isGoogleLoading ? '#999' : pressed ? '#4a7c59' : '#5a8c6a',
             borderRadius: 50,
             paddingVertical: 16,
             paddingHorizontal: 60,
@@ -248,14 +277,19 @@ export default function HomeScreen() {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
+            opacity: isLoading || isGoogleLoading ? 0.6 : 1,
           })}
         >
-          <AntDesign
-            name="login"
-            size={20}
-            color="white"
-            style={{ marginRight: 10, fontWeight: 'bold' }}
-          />
+          {isLoading ? (
+            <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+          ) : (
+            <AntDesign
+              name="login"
+              size={20}
+              color="white"
+              style={{ marginRight: 10, fontWeight: 'bold' }}
+            />
+          )}
           <Text
             style={{
               color: 'white',
@@ -264,26 +298,31 @@ export default function HomeScreen() {
               textAlign: 'center',
             }}
           >
-            Registrarse
+            {isLoading ? 'Registrando...' : 'Registrarse'}
           </Text>
         </Pressable>
 
         <Pressable
           onPress={handleGoogleRegister}
-          disabled={!request}
+          disabled={!request || isLoading || isGoogleLoading}
           style={{
-            backgroundColor: '#4285F4',
+            backgroundColor: !request || isLoading || isGoogleLoading ? '#999' : '#4285F4',
             borderRadius: 50,
             padding: 15,
             marginTop: 10,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+            opacity: !request || isLoading || isGoogleLoading ? 0.6 : 1,
           }}
         >
-          <AntDesign name="google" size={20} color="white" style={{ marginRight: 10 }} />
+          {isGoogleLoading ? (
+            <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+          ) : (
+            <AntDesign name="google" size={20} color="white" style={{ marginRight: 10 }} />
+          )}
           <Text style={{ color: 'white', textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
-            Continuar con Google
+            {isGoogleLoading ? 'Cargando...' : 'Continuar con Google'}
           </Text>
         </Pressable>
       </View>
