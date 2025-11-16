@@ -18,6 +18,24 @@ const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 2,
+    up: async (db: SQLite.SQLiteDatabase) => {
+      await db.execAsync(`
+        DROP TABLE IF EXISTS users;
+        CREATE TABLE users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT UNIQUE NOT NULL,
+          password TEXT,
+          name TEXT,
+          picture TEXT,
+          google_id TEXT,
+          created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX idx_users_email ON users(email);
+      `);
+    },
+  },
 ];
 
 async function getCurrentVersion(db: SQLite.SQLiteDatabase): Promise<number> {
