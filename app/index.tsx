@@ -1,10 +1,14 @@
-import { View, Text, TextInput, Pressable, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, TextInput, Pressable, Dimensions, ImageBackground, Alert } from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
 import { useState, useEffect } from 'react';
-import * as SQLite from 'expo-sqlite';
+import { openDatabaseSync } from 'expo-sqlite';
+import { db } from '@/database/db';
+import { users, registerUserSchema, googleUserSchema } from '@/database/schema';
+import { runMigrations } from '@/database/migrations';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import bcrypt from 'bcryptjs';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -15,31 +19,13 @@ export default function HomeScreen() {
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
-  const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
-
   useEffect(() => {
     async function setUpDatabase() {
       try {
         console.log('starting database connection ...');
-        const database = await SQLite.openDatabaseAsync('descalate.db');
-        console.info('connection successfully established');
-        await database.execAsync(`
-          CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE,
-            password TEXT,
-            name TEXT,
-            picture TEXT,
-            google_id TEXT
-          );  
-        `);
-        console.info('table created or verified successfully');
-
-        database.getAllAsync('SELECT * FROM users').then((result) => {
-          console.info(result);
-        });
-
-        setDb(database);
+        const expoDb = openDatabaseSync('descalate.db');
+        await runMigrations(expoDb);
+        console.info('database ready');
       } catch (error) {
         console.error('Error setting up database:', error);
       }
@@ -47,13 +33,13 @@ export default function HomeScreen() {
     setUpDatabase();
   }, []);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleGoogleRegister = async () => {
     try {
       await promptAsync();
-      goHome();
     } catch (error) {
       console.error('Google login error:', error);
     }
@@ -61,25 +47,96 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (userInfo && db) {
-      const { email, name, picture } = userInfo;
-      // Guardar en SQLite
-      db.runAsync('INSERT OR REPLACE INTO users (email, name, picture) VALUES (?, ?, ?)', [
-        email,
-        name,
-        picture,
-      ]);
+      const saveGoogleUser = async () => {
+        try {
+          const validationResult = googleUserSchema.safeParse({
+            email: userInfo.email,
+            name: userInfo.name,
+            picture: userInfo.picture,
+            google_id: userInfo.id,
+          });
+
+          if (!validationResult.success) {
+            console.error('Validation error:', validationResult.error.format());
+            return;
+          }
+
+          await db
+            .insert(users)
+            .values(validationResult.data)
+            .onConflictDoUpdate({
+              target: users.email,
+              set: {
+                name: validationResult.data.name,
+                picture: validationResult.data.picture,
+                google_id: validationResult.data.google_id,
+              },
+            });
+
+          console.log('Google user saved successfully');
+          goHome();
+        } catch (error) {
+          console.error('Error saving Google user:', error);
+        }
+      };
+      saveGoogleUser();
     }
-  }, [userInfo, db]);
+  }, [userInfo]);
 
   const { width, height } = Dimensions.get('screen');
 
   const handleRegister = async (email: string, password: string) => {
+    const hashPassword = async (password: string): Promise<string> => {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      return hashedPassword;
+    };
+
     try {
-      await db?.runAsync('INSERT INTO users (email, password) VALUES (?, ?)', [email, password]);
+      setErrors({});
+
+      const validationResult = registerUserSchema.safeParse({
+        email: email.trim(),
+        password,
+        name: null,
+      });
+
+      if (!validationResult.success) {
+        const fieldErrors = validationResult.error.format();
+        const errorMessages: Record<string, string> = {};
+
+        if (fieldErrors.email?._errors) {
+          errorMessages.email = fieldErrors.email._errors[0];
+        }
+        if (fieldErrors.password?._errors) {
+          errorMessages.password = fieldErrors.password._errors[0];
+        }
+
+        setErrors(errorMessages);
+        Alert.alert('Validation Error', Object.values(errorMessages).join('\n'));
+        return;
+      }
+
+      const passwordHash = await hashPassword(password);
+      console.info('password hashed successfully');
+
+      await db.insert(users).values({
+        email: validationResult.data.email,
+        password: passwordHash,
+        name: validationResult.data.name,
+      });
+
       console.log('User registered successfully');
+      Alert.alert('Success', 'Account created successfully');
       goHome();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering user:', error);
+
+      if (error.message?.includes('UNIQUE constraint failed')) {
+        Alert.alert('Error', 'This email is already registered');
+      } else {
+        Alert.alert('Error', 'Failed to create account');
+      }
     }
   };
 
@@ -105,7 +162,6 @@ export default function HomeScreen() {
           height: 350,
           backgroundColor: 'white',
           padding: 30,
-          elevation: 10,
           justifyContent: 'center',
           overflow: 'visible',
         }}
@@ -135,9 +191,13 @@ export default function HomeScreen() {
             backgroundColor: '#f5f5f5',
             fontSize: 16,
             borderWidth: 1,
-            borderColor: '#e0e0e0',
+            borderColor: errors.email ? 'red' : '#e0e0e0',
           }}
         />
+        {errors.email && (
+          <Text style={{ color: 'red', marginTop: 5, marginHorizontal: 20 }}>{errors.email}</Text>
+        )}
+
         <Text
           style={{
             marginTop: 10,
@@ -159,7 +219,7 @@ export default function HomeScreen() {
           autoComplete="password"
           returnKeyType="done"
           maxLength={50}
-          onSubmitEditing={() => console.log('Login')}
+          onSubmitEditing={() => handleRegister(email, password)}
           style={{
             borderRadius: 9999,
             paddingVertical: 15,
@@ -167,9 +227,15 @@ export default function HomeScreen() {
             backgroundColor: '#f5f5f5',
             fontSize: 16,
             borderWidth: 1,
-            borderColor: '#e0e0e0',
+            borderColor: errors.password ? 'red' : '#e0e0e0',
           }}
         />
+        {errors.password && (
+          <Text style={{ color: 'red', marginTop: 5, marginHorizontal: 20 }}>
+            {errors.password}
+          </Text>
+        )}
+
         <Pressable
           onPress={() => handleRegister(email, password)}
           style={({ pressed }) => ({
@@ -179,7 +245,6 @@ export default function HomeScreen() {
             paddingHorizontal: 60,
             marginTop: 20,
             marginBottom: 20,
-            elevation: 3,
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
