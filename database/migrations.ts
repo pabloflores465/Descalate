@@ -36,6 +36,40 @@ const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 3,
+    up: async (db: SQLite.SQLiteDatabase) => {
+      await db.execAsync(`
+        ALTER TABLE users ADD COLUMN age INTEGER;
+        ALTER TABLE users ADD COLUMN gender TEXT;
+      `);
+    },
+  },
+  {
+    version: 4,
+    up: async (db: SQLite.SQLiteDatabase) => {
+      await db.execAsync(`
+        ALTER TABLE users ADD COLUMN profile_image BLOB;
+      `);
+    },
+  },
+  {
+    version: 5,
+    up: async (db: SQLite.SQLiteDatabase) => {
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS anxiety_logs (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          anxiety_level INTEGER NOT NULL,
+          notes TEXT,
+          created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_anxiety_logs_user_id ON anxiety_logs(user_id);
+        CREATE INDEX IF NOT EXISTS idx_anxiety_logs_created_at ON anxiety_logs(created_at);
+      `);
+    },
+  },
 ];
 
 async function getCurrentVersion(db: SQLite.SQLiteDatabase): Promise<number> {

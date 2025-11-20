@@ -9,7 +9,7 @@ export default function RootLayout() {
         animation: 'none',
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen name="(session)" />
       <Stack.Screen name="(tabs)" />
     </Stack>
   );

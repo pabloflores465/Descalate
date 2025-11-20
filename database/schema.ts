@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, blob } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -9,6 +9,9 @@ export const users = sqliteTable('users', {
   name: text('name'),
   picture: text('picture'),
   google_id: text('google_id'),
+  age: integer('age'),
+  gender: text('gender'),
+  profile_image: blob('profile_image', { mode: 'buffer' }),
   created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
 });
 
@@ -45,6 +48,9 @@ export type User = {
   name: string | null;
   picture: string | null;
   google_id: string | null;
+  age: number | null;
+  gender: string | null;
+  profile_image: Buffer | null;
   created_at: string;
 };
 
@@ -60,3 +66,24 @@ export type LoginUser = {
 };
 export type GoogleUser = Pick<NewUser, 'email' | 'name' | 'picture' | 'google_id'>;
 export type UpdateUser = Partial<Omit<NewUser, 'id' | 'created_at'>>;
+
+export const anxietyLogs = sqliteTable('anxiety_logs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  user_id: integer('user_id').notNull().references(() => users.id),
+  anxiety_level: integer('anxiety_level').notNull(),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
+});
+
+export const selectAnxietyLogSchema = createSelectSchema(anxietyLogs);
+export const insertAnxietyLogSchema = createInsertSchema(anxietyLogs);
+
+export type AnxietyLog = {
+  id: number;
+  user_id: number;
+  anxiety_level: number;
+  notes: string | null;
+  created_at: string;
+};
+
+export type NewAnxietyLog = Omit<AnxietyLog, 'id' | 'created_at'>;
