@@ -273,8 +273,8 @@ export default function AuthScreen() {
       resizeMode="cover"
     >
       <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
-        <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill="white" />
-        <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill="white" />
+        <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill={Colors.surfaceElevated} />
+        <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill={Colors.surfaceElevated} />
       </Svg>
       <View
         style={{
@@ -284,7 +284,7 @@ export default function AuthScreen() {
           right: 0,
           transform: [{ translateY: -200 }],
           height: 450,
-          backgroundColor: 'white',
+          backgroundColor: Colors.surfaceElevated,
           padding: 30,
           justifyContent: 'center',
           overflow: 'visible',

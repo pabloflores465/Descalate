@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, blob } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -11,7 +11,7 @@ export const users = sqliteTable('users', {
   google_id: text('google_id'),
   age: integer('age'),
   gender: text('gender'),
-  profile_image: blob('profile_image', { mode: 'buffer' }),
+  profile_image: text('profile_image'),
   created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
 });
 
@@ -50,7 +50,7 @@ export type User = {
   google_id: string | null;
   age: number | null;
   gender: string | null;
-  profile_image: Buffer | null;
+  profile_image: string | null;
   created_at: string;
 };
 

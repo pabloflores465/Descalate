@@ -18,6 +18,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
+import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -175,9 +176,9 @@ export default function HomeScreen() {
     >
       <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
         {/* Right Superior Triangle */}
-        <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill="white" />
+        <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill={Colors.surfaceElevated} />
         {/* Left Inferior Triangle */}
-        <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill="white" />
+        <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill={Colors.surfaceElevated} />
       </Svg>
       <View
         style={{
@@ -187,7 +188,7 @@ export default function HomeScreen() {
           right: 0,
           transform: [{ translateY: -150 }],
           height: 350,
-          backgroundColor: 'white',
+          backgroundColor: Colors.surfaceElevated,
           padding: 30,
           justifyContent: 'center',
           overflow: 'visible',
@@ -195,11 +196,11 @@ export default function HomeScreen() {
       >
         <Text
           style={{
-            marginTop: 10,
+            marginTop: Spacing.sm,
             marginBottom: 5,
-            marginHorizontal: 20,
-            fontSize: 16,
-            color: 'gray',
+            marginHorizontal: Spacing.xl,
+            fontSize: FontSize.md,
+            color: Colors.text.secondary,
           }}
         >
           Email
@@ -209,29 +210,30 @@ export default function HomeScreen() {
           onChangeText={setEmail}
           keyboardType="email-address"
           placeholder="ejemplo@gmail.com"
-          placeholderTextColor="#999"
+          placeholderTextColor={Colors.text.placeholder}
           autoCapitalize="none"
           style={{
-            borderRadius: 9999,
+            borderRadius: BorderRadius.round,
             paddingVertical: 15,
-            paddingHorizontal: 20,
-            backgroundColor: '#f5f5f5',
-            fontSize: 16,
+            paddingHorizontal: Spacing.xl,
+            backgroundColor: Colors.input.background,
+            fontSize: FontSize.md,
             borderWidth: 1,
-            borderColor: errors.email ? 'red' : '#e0e0e0',
+            borderColor: errors.email ? Colors.input.borderError : Colors.input.border,
+            color: Colors.text.primary,
           }}
         />
         {errors.email && (
-          <Text style={{ color: 'red', marginTop: 5, marginHorizontal: 20 }}>{errors.email}</Text>
+          <Text style={{ color: Colors.status.error, marginTop: 5, marginHorizontal: Spacing.xl }}>{errors.email}</Text>
         )}
 
         <Text
           style={{
-            marginTop: 10,
+            marginTop: Spacing.sm,
             marginBottom: 5,
-            marginHorizontal: 20,
-            fontSize: 16,
-            color: 'gray',
+            marginHorizontal: Spacing.xl,
+            fontSize: FontSize.md,
+            color: Colors.text.secondary,
           }}
         >
           Contraseña
@@ -240,7 +242,7 @@ export default function HomeScreen() {
           value={password}
           onChangeText={setPassword}
           placeholder="••••••••"
-          placeholderTextColor="#999"
+          placeholderTextColor={Colors.text.placeholder}
           secureTextEntry={true}
           autoCapitalize="none"
           autoComplete="password"
@@ -248,17 +250,18 @@ export default function HomeScreen() {
           maxLength={50}
           onSubmitEditing={() => handleRegister(email, password)}
           style={{
-            borderRadius: 9999,
+            borderRadius: BorderRadius.round,
             paddingVertical: 15,
-            paddingHorizontal: 20,
-            backgroundColor: '#f5f5f5',
-            fontSize: 16,
+            paddingHorizontal: Spacing.xl,
+            backgroundColor: Colors.input.background,
+            fontSize: FontSize.md,
             borderWidth: 1,
-            borderColor: errors.password ? 'red' : '#e0e0e0',
+            borderColor: errors.password ? Colors.input.borderError : Colors.input.border,
+            color: Colors.text.primary,
           }}
         />
         {errors.password && (
-          <Text style={{ color: 'red', marginTop: 5, marginHorizontal: 20 }}>
+          <Text style={{ color: Colors.status.error, marginTop: 5, marginHorizontal: Spacing.xl }}>
             {errors.password}
           </Text>
         )}
@@ -268,12 +271,12 @@ export default function HomeScreen() {
           disabled={isLoading || isGoogleLoading}
           style={({ pressed }) => ({
             backgroundColor:
-              isLoading || isGoogleLoading ? '#999' : pressed ? '#4a7c59' : '#5a8c6a',
-            borderRadius: 50,
-            paddingVertical: 16,
-            paddingHorizontal: 60,
-            marginTop: 20,
-            marginBottom: 20,
+              isLoading || isGoogleLoading ? Colors.text.disabled : pressed ? Colors.primaryDark : Colors.primary,
+            borderRadius: BorderRadius.round,
+            paddingVertical: Spacing.lg,
+            paddingHorizontal: Spacing.massive,
+            marginTop: Spacing.xl,
+            marginBottom: Spacing.xl,
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
@@ -281,19 +284,19 @@ export default function HomeScreen() {
           })}
         >
           {isLoading ? (
-            <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+            <ActivityIndicator color={Colors.white} size="small" style={{ marginRight: Spacing.sm }} />
           ) : (
             <AntDesign
               name="login"
               size={20}
-              color="white"
-              style={{ marginRight: 10, fontWeight: 'bold' }}
+              color={Colors.white}
+              style={{ marginRight: Spacing.sm, fontWeight: 'bold' }}
             />
           )}
           <Text
             style={{
-              color: 'white',
-              fontSize: 18,
+              color: Colors.white,
+              fontSize: FontSize.lg,
               fontWeight: 'bold',
               textAlign: 'center',
             }}
@@ -306,10 +309,10 @@ export default function HomeScreen() {
           onPress={handleGoogleRegister}
           disabled={!request || isLoading || isGoogleLoading}
           style={{
-            backgroundColor: !request || isLoading || isGoogleLoading ? '#999' : '#4285F4',
-            borderRadius: 50,
+            backgroundColor: !request || isLoading || isGoogleLoading ? Colors.text.disabled : Colors.google,
+            borderRadius: BorderRadius.round,
             padding: 15,
-            marginTop: 10,
+            marginTop: Spacing.sm,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
@@ -317,11 +320,11 @@ export default function HomeScreen() {
           }}
         >
           {isGoogleLoading ? (
-            <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+            <ActivityIndicator color={Colors.white} size="small" style={{ marginRight: Spacing.sm }} />
           ) : (
-            <AntDesign name="google" size={20} color="white" style={{ marginRight: 10 }} />
+            <AntDesign name="google" size={20} color={Colors.white} style={{ marginRight: Spacing.sm }} />
           )}
-          <Text style={{ color: 'white', textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
+          <Text style={{ color: Colors.white, textAlign: 'center', fontSize: FontSize.md, fontWeight: 'bold' }}>
             {isGoogleLoading ? 'Cargando...' : 'Continuar con Google'}
           </Text>
         </Pressable>

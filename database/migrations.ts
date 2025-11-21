@@ -30,6 +30,9 @@ const MIGRATIONS = [
           name TEXT,
           picture TEXT,
           google_id TEXT,
+          age INTEGER,
+          gender TEXT,
+          profile_image TEXT,
           created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
         CREATE INDEX idx_users_email ON users(email);
@@ -39,18 +42,35 @@ const MIGRATIONS = [
   {
     version: 3,
     up: async (db: SQLite.SQLiteDatabase) => {
-      await db.execAsync(`
-        ALTER TABLE users ADD COLUMN age INTEGER;
-        ALTER TABLE users ADD COLUMN gender TEXT;
-      `);
+      try {
+        await db.execAsync(`
+          ALTER TABLE users ADD COLUMN age INTEGER;
+        `);
+        console.log('Migration v3: age column added successfully');
+      } catch (error) {
+        console.log('Migration v3: age column might already exist, skipping...');
+      }
+      try {
+        await db.execAsync(`
+          ALTER TABLE users ADD COLUMN gender TEXT;
+        `);
+        console.log('Migration v3: gender column added successfully');
+      } catch (error) {
+        console.log('Migration v3: gender column might already exist, skipping...');
+      }
     },
   },
   {
     version: 4,
     up: async (db: SQLite.SQLiteDatabase) => {
-      await db.execAsync(`
-        ALTER TABLE users ADD COLUMN profile_image BLOB;
-      `);
+      try {
+        await db.execAsync(`
+          ALTER TABLE users ADD COLUMN profile_image TEXT;
+        `);
+        console.log('Migration v4: profile_image column added successfully');
+      } catch (error) {
+        console.log('Migration v4: Column might already exist, skipping...', error);
+      }
     },
   },
   {

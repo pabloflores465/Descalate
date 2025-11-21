@@ -19,6 +19,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "bcryptjs": "^3.0.3",
+    "buffer": "^6.0.3",
     "drizzle-orm": "^0.44.7",
     "drizzle-zod": "^0.8.3",
     "expo": "~54.0.23",

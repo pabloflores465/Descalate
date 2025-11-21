@@ -12,13 +12,13 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
-import { db } from '@/database/db';
+import { db, resetDatabase } from '@/database/db';
 import { users, type User } from '@/database/schema';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { eq } from 'drizzle-orm';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+import { File } from 'expo-file-system';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -46,8 +46,7 @@ export default function ProfileScreen() {
 
         if (!hasNewImage) {
           if (userData.profile_image) {
-            const base64Image = `data:image/jpeg;base64,${userData.profile_image.toString('base64')}`;
-            setProfileImageUri(base64Image);
+            setProfileImageUri(userData.profile_image);
           } else {
             setProfileImageUri(null);
           }
@@ -113,26 +112,20 @@ export default function ProfileScreen() {
         return;
       }
 
-      let imageBuffer: Buffer | null = null;
-
-      if (profileImageUri && !profileImageUri.startsWith('data:image')) {
-        const base64 = await FileSystem.readAsStringAsync(profileImageUri, {
-          encoding: 'base64',
-        });
-        imageBuffer = Buffer.from(base64, 'base64');
-      } else if (profileImageUri && profileImageUri.startsWith('data:image')) {
-        const base64Data = profileImageUri.split(',')[1];
-        imageBuffer = Buffer.from(base64Data, 'base64');
-      }
-
       const updateData: any = {
         name: name.trim(),
         age: ageNumber,
         gender: gender.trim() || null,
       };
 
-      if (imageBuffer) {
-        updateData.profile_image = imageBuffer;
+      if (hasNewImage && profileImageUri) {
+        if (!profileImageUri.startsWith('data:image')) {
+          const file = new File(profileImageUri);
+          const base64 = await file.base64();
+          updateData.profile_image = `data:image/jpeg;base64,${base64}`;
+        } else {
+          updateData.profile_image = profileImageUri;
+        }
       }
 
       await db
@@ -165,6 +158,34 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: () => {
             router.replace('/(session)/auth');
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const handleResetDatabase = () => {
+    Alert.alert(
+      'Resetear base de datos',
+      'Esto eliminara todos los datos y tendras que volver a registrarte. ¿Estas seguro?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Resetear',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await resetDatabase();
+              router.replace('/(session)/auth');
+              Alert.alert('Exito', 'Base de datos reseteada. Puedes registrarte de nuevo.');
+            } catch (error) {
+              console.error('Error resetting database:', error);
+              Alert.alert('Error', 'Fallo al resetear la base de datos');
+            }
           },
         },
       ],
@@ -295,6 +316,17 @@ export default function ProfileScreen() {
           >
             <Ionicons name="log-out" size={20} color="white" style={{ marginRight: 10 }} />
             <Text style={styles.logoutText}>Log Out</Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.resetButton,
+              { backgroundColor: pressed ? '#c0392b' : '#e67e22' },
+            ]}
+            onPress={handleResetDatabase}
+          >
+            <Ionicons name="warning" size={20} color="white" style={{ marginRight: 10 }} />
+            <Text style={styles.resetText}>Reset Database (Temporary)</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -467,6 +499,21 @@ const styles = StyleSheet.create({
   logoutText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  resetButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e67e22',
+    borderRadius: 50,
+    paddingVertical: 15,
+    marginTop: 10,
+    gap: 10,
+  },
+  resetText: {
+    color: 'white',
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
