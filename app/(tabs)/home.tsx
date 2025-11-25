@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Pressable, Animated, Dimensions } from 'react-n
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -16,36 +17,36 @@ type AnxietyLevel = {
 const anxietyLevels: AnxietyLevel[] = [
   {
     level: 1,
-    title: 'Calm',
-    description: 'Relaxed and at peace. Breathing is steady and thoughts are clear.',
+    title: 'Calma',
+    description: 'Relajado y en paz. La respiracion es estable y los pensamientos son claros.',
     colors: ['#667eea', '#764ba2'],
     icon: 'happy-outline',
   },
   {
     level: 2,
-    title: 'Mild',
-    description: 'Slightly tense. Minor worries present but manageable.',
+    title: 'Leve',
+    description: 'Ligeramente tenso. Preocupaciones menores presentes pero manejables.',
     colors: ['#84fab0', '#8fd3f4'],
     icon: 'fitness-outline',
   },
   {
     level: 3,
-    title: 'Moderate',
-    description: 'Noticeably anxious. Heart rate may increase, restlessness begins.',
+    title: 'Moderada',
+    description: 'Notablemente ansioso. El ritmo cardiaco puede aumentar, comienza la inquietud.',
     colors: ['#ffd89b', '#19547b'],
     icon: 'warning-outline',
   },
   {
     level: 4,
-    title: 'High',
-    description: 'Strong anxiety. Difficulty concentrating, racing thoughts.',
+    title: 'Alta',
+    description: 'Ansiedad fuerte. Dificultad para concentrarse, pensamientos acelerados.',
     colors: ['#f093fb', '#f5576c'],
     icon: 'alert-circle-outline',
   },
   {
     level: 5,
-    title: 'Severe',
-    description: 'Intense anxiety or panic. Overwhelming feelings, physical symptoms present.',
+    title: 'Severa',
+    description: 'Ansiedad intensa o panico. Sentimientos abrumadores, sintomas fisicos presentes.',
     colors: ['#fa709a', '#fee140'],
     icon: 'flash-outline',
   },
@@ -54,11 +55,13 @@ const anxietyLevels: AnxietyLevel[] = [
 function AnxietyCard({
   level,
   isExpanded,
-  onPress
+  onPress,
+  onContinue
 }: {
   level: AnxietyLevel;
   isExpanded: boolean;
   onPress: () => void;
+  onContinue: () => void;
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const iconScaleAnim = useRef(new Animated.Value(1)).current;
@@ -193,6 +196,28 @@ function AnxietyCard({
                 <Text style={styles.cardDescription}>{level.description}</Text>
               </Animated.View>
             )}
+
+            {isExpanded && (
+              <Animated.View
+                style={[
+                  styles.continueButtonContainer,
+                  {
+                    opacity: descriptionOpacityAnim,
+                    transform: [{
+                      translateY: descriptionTranslateAnim,
+                    }],
+                  },
+                ]}
+              >
+                <Pressable
+                  onPress={onContinue}
+                  style={styles.continueButton}
+                >
+                  <Text style={styles.continueButtonText}>Continuar</Text>
+                  <Ionicons name="arrow-forward" size={18} color="#fff" />
+                </Pressable>
+              </Animated.View>
+            )}
           </LinearGradient>
         </Animated.View>
       </Pressable>
@@ -211,12 +236,20 @@ export default function HomeScreen() {
     }
   };
 
+  const handleContinue = (level: number) => {
+    setExpandedLevel(null);
+    router.push({
+      pathname: '/exercises',
+      params: { level },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="pulse" size={48} color="#5a8c6a" />
-        <Text style={styles.title}>Anxiety Levels</Text>
-        <Text style={styles.subtitle}>Tap each card to learn more</Text>
+        <Text style={styles.title}>Niveles de Ansiedad</Text>
+        <Text style={styles.subtitle}>Toca cada tarjeta para saber mas</Text>
       </View>
 
       <View style={styles.cardsContainer}>
@@ -226,6 +259,7 @@ export default function HomeScreen() {
             level={level}
             isExpanded={expandedLevel === level.level}
             onPress={() => handleCardPress(level.level)}
+            onContinue={() => handleContinue(level.level)}
           />
         ))}
       </View>
@@ -375,5 +409,31 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.1)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+  },
+  continueButtonContainer: {
+    marginTop: 24,
+    alignItems: 'center',
+  },
+  continueButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  continueButtonText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 });

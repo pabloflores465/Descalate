@@ -11,6 +11,18 @@ export default function RootLayout() {
     >
       <Stack.Screen name="(session)" />
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="exercises"
+        options={{
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="tips"
+        options={{
+          animation: 'slide_from_right',
+        }}
+      />
     </Stack>
   );
 }
