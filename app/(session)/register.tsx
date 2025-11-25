@@ -19,7 +19,9 @@ import { useRouter } from 'expo-router';
 import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
-import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -28,7 +30,6 @@ bcrypt.setRandomFallback((len: number) => {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { setCurrentUserEmail } = useAuth();
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
@@ -92,8 +93,8 @@ export default function HomeScreen() {
             });
 
           console.log('Google user saved successfully');
-          await setCurrentUserEmail(userInfo.email);
-          router.push('/home');
+          await AsyncStorage.setItem(AUTH_STORAGE_KEY, userInfo.email);
+          router.replace('/home');
         } catch (error) {
           console.error('Error saving Google user:', error);
         } finally {
@@ -156,9 +157,9 @@ export default function HomeScreen() {
       });
 
       console.log('User registered successfully');
-      await setCurrentUserEmail(validationResult.data.email);
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
       Alert.alert('Success', 'Account created successfully');
-      router.push('/home');
+      router.replace('/home');
     } catch (error: any) {
       console.error('Error registering user:', error);
 

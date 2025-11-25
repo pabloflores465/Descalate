@@ -10,20 +10,21 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { db, resetDatabase } from '@/database/db';
 import { users, type User } from '@/database/schema';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
 import { eq } from 'drizzle-orm';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
-import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { currentUserEmail, setCurrentUserEmail } = useAuth();
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,20 +35,40 @@ export default function ProfileScreen() {
   const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
   const [hasNewImage, setHasNewImage] = useState(false);
 
-  const loadUserData = async () => {
+  const loadEmailFromStorage = async () => {
+    try {
+      const email = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      console.log('Profile: Loaded email from AsyncStorage:', email);
+      setCurrentUserEmail(email);
+      return email;
+    } catch (error) {
+      console.error('Error loading email from storage:', error);
+      return null;
+    }
+  };
+
+  const clearEmailFromStorage = async () => {
+    try {
+      await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+      setCurrentUserEmail(null);
+    } catch (error) {
+      console.error('Error clearing email:', error);
+    }
+  };
+
+  const loadUserData = async (email: string | null) => {
+    if (!email) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
-
-      if (!currentUserEmail) {
-        console.error('No current user email found');
-        router.replace('/(session)/auth');
-        return;
-      }
 
       const userResult = await db
         .select()
         .from(users)
-        .where(eq(users.email, currentUserEmail))
+        .where(eq(users.email, email))
         .limit(1);
 
       if (userResult.length > 0) {
@@ -64,9 +85,6 @@ export default function ProfileScreen() {
             setProfileImageUri(null);
           }
         }
-      } else {
-        console.error('User not found in database');
-        router.replace('/(session)/auth');
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -78,8 +96,14 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       setHasNewImage(false);
-      loadUserData();
-    }, [currentUserEmail])
+      loadEmailFromStorage().then(email => {
+        if (email) {
+          loadUserData(email);
+        } else {
+          setIsLoading(false);
+        }
+      });
+    }, [])
   );
 
   const pickImage = async () => {
@@ -151,7 +175,7 @@ export default function ProfileScreen() {
 
       setHasNewImage(false);
       Alert.alert('Success', 'Profile updated successfully');
-      loadUserData();
+      loadUserData(currentUserEmail);
     } catch (error) {
       console.error('Error updating profile:', error);
       Alert.alert('Error', 'Failed to update profile');
@@ -173,7 +197,7 @@ export default function ProfileScreen() {
           text: 'Cerrar sesion',
           style: 'destructive',
           onPress: async () => {
-            await setCurrentUserEmail(null);
+            await clearEmailFromStorage();
             router.replace('/(session)/auth');
           },
         },
@@ -197,6 +221,7 @@ export default function ProfileScreen() {
           onPress: async () => {
             try {
               await resetDatabase();
+              await clearEmailFromStorage();
               router.replace('/(session)/auth');
               Alert.alert('Exito', 'Base de datos reseteada. Puedes registrarte de nuevo.');
             } catch (error) {

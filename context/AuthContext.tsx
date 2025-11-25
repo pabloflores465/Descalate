@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loadStoredEmail = async () => {
     try {
       const storedEmail = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      console.log('AuthContext: Loaded stored email:', storedEmail);
       if (storedEmail) {
         setCurrentUserEmailState(storedEmail);
       }
@@ -34,12 +35,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setCurrentUserEmail = async (email: string | null) => {
     try {
+      console.log('AuthContext: Setting email to:', email);
       if (email) {
         await AsyncStorage.setItem(AUTH_STORAGE_KEY, email);
       } else {
         await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
       }
       setCurrentUserEmailState(email);
+      console.log('AuthContext: Email state updated');
     } catch (error) {
       console.error('Error storing email:', error);
     }

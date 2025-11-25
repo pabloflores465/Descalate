@@ -20,6 +20,9 @@ import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -84,7 +87,8 @@ export default function AuthScreen() {
             }
 
             console.log('Google user logged in successfully');
-            router.push('/home');
+            await AsyncStorage.setItem(AUTH_STORAGE_KEY, userInfo.email);
+            router.replace('/home');
           } else {
             const validationResult = googleUserSchema.safeParse({
               email: userInfo.email,
@@ -111,7 +115,8 @@ export default function AuthScreen() {
               });
 
             console.log('Google user saved successfully');
-            router.push('/home');
+            await AsyncStorage.setItem(AUTH_STORAGE_KEY, userInfo.email);
+            router.replace('/home');
           }
         } catch (error) {
           console.error('Error handling Google user:', error);
@@ -187,8 +192,10 @@ export default function AuthScreen() {
       }
 
       console.log('User logged in successfully');
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
+      console.log('Email saved:', validationResult.data.email);
       Alert.alert('Exito', 'Sesion iniciada exitosamente');
-      router.push('/home');
+      router.replace('/home');
     } catch (error: any) {
       console.error('Error logging in:', error);
       Alert.alert('Error', 'Fallo al iniciar sesion');
@@ -243,8 +250,9 @@ export default function AuthScreen() {
       });
 
       console.log('User registered successfully');
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
       Alert.alert('Exito', 'Cuenta creada exitosamente');
-      router.push('/home');
+      router.replace('/home');
     } catch (error: any) {
       console.error('Error registering user:', error);
 

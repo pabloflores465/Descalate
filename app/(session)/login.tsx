@@ -20,7 +20,9 @@ import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
-import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -29,7 +31,6 @@ bcrypt.setRandomFallback((len: number) => {
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { setCurrentUserEmail } = useAuth();
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
@@ -84,8 +85,8 @@ export default function LoginScreen() {
           }
 
           console.log('Google user logged in successfully');
-          await setCurrentUserEmail(userInfo.email);
-          router.push('/home');
+          await AsyncStorage.setItem(AUTH_STORAGE_KEY, userInfo.email);
+          router.replace('/home');
         } catch (error) {
           console.error('Error logging in with Google:', error);
           Alert.alert('Error', 'Failed to login with Google');
@@ -160,10 +161,10 @@ export default function LoginScreen() {
         return;
       }
 
-      console.log('User logged in successfully');
-      await setCurrentUserEmail(validationResult.data.email);
-      Alert.alert('Success', 'Logged in successfully');
-      router.push('/home');
+      console.log('Login successful, saving email to storage');
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
+      console.log('Email saved to AsyncStorage');
+      router.replace('/home');
     } catch (error: any) {
       console.error('Error logging in:', error);
       Alert.alert('Error', 'Failed to login');
