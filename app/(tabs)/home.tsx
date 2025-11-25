@@ -70,58 +70,76 @@ function AnxietyCard({
   const descriptionTranslateAnim = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
-    // Stop all running animations first
-    scaleAnim.stopAnimation(() => {
-      iconScaleAnim.stopAnimation(() => {
-        badgeScaleAnim.stopAnimation(() => {
-          descriptionOpacityAnim.stopAnimation(() => {
-            descriptionTranslateAnim.stopAnimation(() => {
-              if (isExpanded) {
-                Animated.parallel([
-                  Animated.spring(scaleAnim, {
-                    toValue: 1.05,
-                    friction: 6,
-                    tension: 40,
-                    useNativeDriver: true,
-                  }),
-                  Animated.spring(iconScaleAnim, {
-                    toValue: 2.5,
-                    friction: 8,
-                    tension: 50,
-                    useNativeDriver: true,
-                  }),
-                  Animated.spring(badgeScaleAnim, {
-                    toValue: 1.5,
-                    friction: 8,
-                    tension: 50,
-                    useNativeDriver: true,
-                  }),
-                  Animated.timing(descriptionOpacityAnim, {
-                    toValue: 1,
-                    duration: 500,
-                    delay: 200,
-                    useNativeDriver: true,
-                  }),
-                  Animated.timing(descriptionTranslateAnim, {
-                    toValue: 0,
-                    duration: 500,
-                    delay: 200,
-                    useNativeDriver: true,
-                  }),
-                ]).start();
-              } else {
-                // Reset immediately to default values
-                scaleAnim.setValue(1);
-                iconScaleAnim.setValue(1);
-                badgeScaleAnim.setValue(1);
-                descriptionOpacityAnim.setValue(0);
-                descriptionTranslateAnim.setValue(20);
-              }
-            });
-          });
-        });
-      });
-    });
+    if (isExpanded) {
+      // Animate to expanded state from current values
+      Animated.parallel([
+        Animated.spring(scaleAnim, {
+          toValue: 1.05,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.spring(iconScaleAnim, {
+          toValue: 2.5,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.spring(badgeScaleAnim, {
+          toValue: 1.5,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.sequence([
+          Animated.delay(100),
+          Animated.parallel([
+            Animated.timing(descriptionOpacityAnim, {
+              toValue: 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.timing(descriptionTranslateAnim, {
+              toValue: 0,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]),
+      ]).start();
+    } else {
+      // Animate back to collapsed state
+      Animated.parallel([
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.spring(iconScaleAnim, {
+          toValue: 1,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.spring(badgeScaleAnim, {
+          toValue: 1,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.timing(descriptionOpacityAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(descriptionTranslateAnim, {
+          toValue: 20,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
   }, [isExpanded]);
 
   return (
@@ -139,11 +157,12 @@ function AnxietyCard({
             {
               transform: [{ scale: scaleAnim }],
               overflow: 'hidden',
+              backgroundColor: level.colors[0],
             },
           ]}
         >
           <LinearGradient
-            colors={level.colors}
+            colors={level.colors as [string, string, ...string[]]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[

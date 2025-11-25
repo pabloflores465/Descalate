@@ -19,9 +19,11 @@ import { useCallback } from 'react';
 import { eq } from 'drizzle-orm';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { currentUserEmail, setCurrentUserEmail } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -35,10 +37,21 @@ export default function ProfileScreen() {
   const loadUserData = async () => {
     try {
       setIsLoading(true);
-      const allUsers = await db.select().from(users).limit(1);
 
-      if (allUsers.length > 0) {
-        const userData = allUsers[0];
+      if (!currentUserEmail) {
+        console.error('No current user email found');
+        router.replace('/(session)/auth');
+        return;
+      }
+
+      const userResult = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, currentUserEmail))
+        .limit(1);
+
+      if (userResult.length > 0) {
+        const userData = userResult[0];
         setUser(userData);
         setName(userData.name || '');
         setAge(userData.age?.toString() || '');
@@ -51,6 +64,9 @@ export default function ProfileScreen() {
             setProfileImageUri(null);
           }
         }
+      } else {
+        console.error('User not found in database');
+        router.replace('/(session)/auth');
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -63,7 +79,7 @@ export default function ProfileScreen() {
     useCallback(() => {
       setHasNewImage(false);
       loadUserData();
-    }, [])
+    }, [currentUserEmail])
   );
 
   const pickImage = async () => {
@@ -156,7 +172,8 @@ export default function ProfileScreen() {
         {
           text: 'Cerrar sesion',
           style: 'destructive',
-          onPress: () => {
+          onPress: async () => {
+            await setCurrentUserEmail(null);
             router.replace('/(session)/auth');
           },
         },

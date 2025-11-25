@@ -19,6 +19,7 @@ import { useRouter } from 'expo-router';
 import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -27,6 +28,7 @@ bcrypt.setRandomFallback((len: number) => {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { setCurrentUserEmail } = useAuth();
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
@@ -90,6 +92,7 @@ export default function HomeScreen() {
             });
 
           console.log('Google user saved successfully');
+          await setCurrentUserEmail(userInfo.email);
           router.push('/home');
         } catch (error) {
           console.error('Error saving Google user:', error);
@@ -153,6 +156,7 @@ export default function HomeScreen() {
       });
 
       console.log('User registered successfully');
+      await setCurrentUserEmail(validationResult.data.email);
       Alert.alert('Success', 'Account created successfully');
       router.push('/home');
     } catch (error: any) {

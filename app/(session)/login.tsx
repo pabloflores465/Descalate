@@ -20,6 +20,7 @@ import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -28,6 +29,7 @@ bcrypt.setRandomFallback((len: number) => {
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { setCurrentUserEmail } = useAuth();
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
 
@@ -82,6 +84,7 @@ export default function LoginScreen() {
           }
 
           console.log('Google user logged in successfully');
+          await setCurrentUserEmail(userInfo.email);
           router.push('/home');
         } catch (error) {
           console.error('Error logging in with Google:', error);
@@ -158,6 +161,7 @@ export default function LoginScreen() {
       }
 
       console.log('User logged in successfully');
+      await setCurrentUserEmail(validationResult.data.email);
       Alert.alert('Success', 'Logged in successfully');
       router.push('/home');
     } catch (error: any) {
