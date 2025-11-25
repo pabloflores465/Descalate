@@ -70,8 +70,15 @@ function AnxietyCard({
   const descriptionTranslateAnim = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
+    // Stop any running animations first
+    scaleAnim.stopAnimation();
+    iconScaleAnim.stopAnimation();
+    badgeScaleAnim.stopAnimation();
+    descriptionOpacityAnim.stopAnimation();
+    descriptionTranslateAnim.stopAnimation();
+
     if (isExpanded) {
-      // Animate to expanded state from current values
+      // Animate to expanded state
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1.05,
@@ -108,7 +115,10 @@ function AnxietyCard({
         ]),
       ]).start();
     } else {
-      // Animate back to collapsed state
+      // Reset to collapsed state immediately then animate
+      descriptionOpacityAnim.setValue(0);
+      descriptionTranslateAnim.setValue(20);
+
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1,
@@ -126,16 +136,6 @@ function AnxietyCard({
           toValue: 1,
           friction: 8,
           tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.timing(descriptionOpacityAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(descriptionTranslateAnim, {
-          toValue: 20,
-          duration: 200,
           useNativeDriver: true,
         }),
       ]).start();
