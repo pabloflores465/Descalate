@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { useSession } from '@/context/SessionContext';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -19,35 +20,35 @@ const anxietyLevels: AnxietyLevel[] = [
     level: 1,
     title: 'Calma',
     description: 'Relajado y en paz. La respiracion es estable y los pensamientos son claros.',
-    colors: ['#667eea', '#764ba2'],
+    colors: ['#5a67d8', '#6b46c1'],
     icon: 'happy-outline',
   },
   {
     level: 2,
     title: 'Leve',
     description: 'Ligeramente tenso. Preocupaciones menores presentes pero manejables.',
-    colors: ['#84fab0', '#8fd3f4'],
+    colors: ['#2d9a6e', '#2b7a9b'],
     icon: 'fitness-outline',
   },
   {
     level: 3,
     title: 'Moderada',
     description: 'Notablemente ansioso. El ritmo cardiaco puede aumentar, comienza la inquietud.',
-    colors: ['#ffd89b', '#19547b'],
+    colors: ['#d97706', '#1e4e6d'],
     icon: 'warning-outline',
   },
   {
     level: 4,
     title: 'Alta',
     description: 'Ansiedad fuerte. Dificultad para concentrarse, pensamientos acelerados.',
-    colors: ['#f093fb', '#f5576c'],
+    colors: ['#c026d3', '#dc2626'],
     icon: 'alert-circle-outline',
   },
   {
     level: 5,
     title: 'Severa',
     description: 'Ansiedad intensa o panico. Sentimientos abrumadores, sintomas fisicos presentes.',
-    colors: ['#fa709a', '#fee140'],
+    colors: ['#be185d', '#ea580c'],
     icon: 'flash-outline',
   },
 ];
@@ -64,36 +65,18 @@ function AnxietyCard({
   onContinue: () => void;
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const iconScaleAnim = useRef(new Animated.Value(1)).current;
-  const badgeScaleAnim = useRef(new Animated.Value(1)).current;
   const descriptionOpacityAnim = useRef(new Animated.Value(0)).current;
   const descriptionTranslateAnim = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
-    // Stop any running animations first
     scaleAnim.stopAnimation();
-    iconScaleAnim.stopAnimation();
-    badgeScaleAnim.stopAnimation();
     descriptionOpacityAnim.stopAnimation();
     descriptionTranslateAnim.stopAnimation();
 
     if (isExpanded) {
-      // Animate to expanded state
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1.05,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(iconScaleAnim, {
-          toValue: 2.5,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(badgeScaleAnim, {
-          toValue: 1.5,
           friction: 8,
           tension: 40,
           useNativeDriver: true,
@@ -115,47 +98,31 @@ function AnxietyCard({
         ]),
       ]).start();
     } else {
-      // Reset to collapsed state immediately then animate
       descriptionOpacityAnim.setValue(0);
       descriptionTranslateAnim.setValue(20);
 
-      Animated.parallel([
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(iconScaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(badgeScaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 8,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
     }
   }, [isExpanded]);
 
   return (
-    <Animated.View
+    <View
       style={[
         styles.cardWrapper,
         isExpanded && styles.cardWrapperExpanded,
       ]}
     >
       <Pressable onPress={onPress} style={{ flex: 1 }}>
-        <Animated.View
+        <View
           style={[
             styles.card,
             isExpanded && styles.cardExpanded,
             {
-              transform: [{ scale: scaleAnim }],
               overflow: 'hidden',
               backgroundColor: level.colors[0],
             },
@@ -171,29 +138,23 @@ function AnxietyCard({
             ]}
           >
             <View style={styles.cardHeader}>
-              <Animated.View
-                style={{
-                  transform: [{ scale: iconScaleAnim }],
-                }}
-              >
+              <View style={isExpanded ? styles.iconContainerExpanded : styles.iconContainer}>
                 <Ionicons
                   name={level.icon}
-                  size={36}
+                  size={isExpanded ? 72 : 36}
                   color="rgba(255, 255, 255, 0.95)"
                 />
-              </Animated.View>
-              <Animated.View
+              </View>
+              <View
                 style={[
                   styles.levelBadge,
-                  {
-                    transform: [{ scale: badgeScaleAnim }],
-                  },
+                  isExpanded && styles.levelBadgeExpanded,
                 ]}
               >
                 <Text style={[styles.levelNumber, isExpanded && styles.levelNumberExpanded]}>
                   {level.level}
                 </Text>
-              </Animated.View>
+              </View>
             </View>
 
             <Text style={[styles.cardTitle, isExpanded && styles.cardTitleExpanded]}>
@@ -238,14 +199,15 @@ function AnxietyCard({
               </Animated.View>
             )}
           </LinearGradient>
-        </Animated.View>
+        </View>
       </Pressable>
-    </Animated.View>
+    </View>
   );
 }
 
 export default function HomeScreen() {
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
+  const { startSession } = useSession();
 
   const handleCardPress = (level: number) => {
     if (expandedLevel === level) {
@@ -257,6 +219,7 @@ export default function HomeScreen() {
 
   const handleContinue = (level: number) => {
     setExpandedLevel(null);
+    startSession(level);
     router.push({
       pathname: '/exercises',
       params: { level },
@@ -313,7 +276,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#7F8C8D',
+    color: '#566573',
     marginTop: 10,
     fontWeight: '500',
   },
@@ -371,6 +334,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  iconContainer: {
+  },
+  iconContainerExpanded: {
+    marginBottom: 8,
+  },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     width: 44,
@@ -384,6 +352,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+  },
+  levelBadgeExpanded: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
   levelNumber: {
     color: '#fff',

@@ -90,6 +90,30 @@ const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 6,
+    up: async (db: SQLite.SQLiteDatabase) => {
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          anxiety_level INTEGER NOT NULL,
+          selected_exercises TEXT,
+          tip_id INTEGER,
+          tip_title TEXT,
+          tip_category TEXT,
+          final_action TEXT,
+          duration_seconds INTEGER,
+          completed_at TEXT,
+          created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+        CREATE INDEX IF NOT EXISTS idx_sessions_created_at ON sessions(created_at);
+        CREATE INDEX IF NOT EXISTS idx_sessions_anxiety_level ON sessions(anxiety_level);
+      `);
+    },
+  },
 ];
 
 async function getCurrentVersion(db: SQLite.SQLiteDatabase): Promise<number> {

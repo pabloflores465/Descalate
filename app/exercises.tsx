@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState, useRef, useEffect } from 'react';
+import { useSession } from '@/context/SessionContext';
 
 type Exercise = {
   id: number;
@@ -144,11 +146,11 @@ const exercisesByLevel: Record<number, Exercise[]> = {
 };
 
 const levelColors: Record<number, string[]> = {
-  1: ['#667eea', '#764ba2'],
-  2: ['#84fab0', '#8fd3f4'],
-  3: ['#ffd89b', '#19547b'],
-  4: ['#f093fb', '#f5576c'],
-  5: ['#fa709a', '#fee140'],
+  1: ['#5a67d8', '#6b46c1'],
+  2: ['#2d9a6e', '#2b7a9b'],
+  3: ['#d97706', '#1e4e6d'],
+  4: ['#c026d3', '#dc2626'],
+  5: ['#be185d', '#ea580c'],
 };
 
 const levelTitles: Record<number, string> = {
@@ -159,22 +161,171 @@ const levelTitles: Record<number, string> = {
   5: 'Severa',
 };
 
-function ExerciseCard({ exercise, colors }: { exercise: Exercise; colors: string[] }) {
+function ExerciseCard({
+  exercise,
+  colors,
+  isSelected,
+  isExpanded,
+  onSelect,
+  onExpand
+}: {
+  exercise: Exercise;
+  colors: string[];
+  isSelected: boolean;
+  isExpanded: boolean;
+  onSelect: () => void;
+  onExpand: () => void;
+}) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const contentOpacity = useRef(new Animated.Value(0)).current;
+  const contentTranslate = useRef(new Animated.Value(20)).current;
+  const checkScaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (isExpanded) {
+      Animated.parallel([
+        Animated.spring(scaleAnim, {
+          toValue: 1.02,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.sequence([
+          Animated.delay(100),
+          Animated.parallel([
+            Animated.timing(contentOpacity, {
+              toValue: 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.spring(contentTranslate, {
+              toValue: 0,
+              friction: 8,
+              tension: 40,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]),
+      ]).start();
+    } else {
+      contentOpacity.setValue(0);
+      contentTranslate.setValue(20);
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 8,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isExpanded]);
+
+  useEffect(() => {
+    if (isSelected) {
+      Animated.sequence([
+        Animated.spring(checkScaleAnim, {
+          toValue: 1.3,
+          friction: 3,
+          tension: 200,
+          useNativeDriver: true,
+        }),
+        Animated.spring(checkScaleAnim, {
+          toValue: 1,
+          friction: 3,
+          tension: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isSelected]);
+
   return (
-    <View style={styles.exerciseCard}>
-      <View style={styles.exerciseCardContent}>
-        <View style={[styles.exerciseIconContainer, { backgroundColor: colors[0] + '20' }]}>
-          <Ionicons name={exercise.icon} size={28} color={colors[0]} />
-        </View>
-        <View style={styles.exerciseInfo}>
-          <Text style={styles.exerciseTitle}>{exercise.title}</Text>
-          <Text style={styles.exerciseDescription}>{exercise.description}</Text>
-          <View style={styles.durationContainer}>
-            <Ionicons name="time-outline" size={14} color="#7F8C8D" />
-            <Text style={styles.durationText}>{exercise.duration}</Text>
+    <View
+      style={[
+        styles.exerciseCardWrapper,
+        isExpanded && styles.exerciseCardWrapperExpanded,
+      ]}
+    >
+      <Pressable onPress={onExpand} style={styles.exerciseCardPressable}>
+        <LinearGradient
+          colors={isExpanded ? colors : ['#ffffff', '#ffffff']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[
+            styles.exerciseCard,
+            isExpanded && styles.exerciseCardExpanded,
+          ]}
+        >
+          <View style={styles.exerciseCardContent}>
+            <View
+              style={[
+                styles.exerciseIconContainer,
+                isExpanded && styles.exerciseIconContainerExpanded,
+                {
+                  backgroundColor: isExpanded ? 'rgba(255,255,255,0.25)' : colors[0] + '20',
+                }
+              ]}
+            >
+              <Ionicons
+                name={exercise.icon}
+                size={isExpanded ? 48 : 28}
+                color={isExpanded ? '#fff' : colors[0]}
+              />
+            </View>
+            <View style={styles.exerciseInfo}>
+              <Text style={[
+                styles.exerciseTitle,
+                isExpanded && styles.exerciseTitleExpanded
+              ]}>
+                {exercise.title}
+              </Text>
+              {!isExpanded && (
+                <View style={styles.durationContainer}>
+                  <Ionicons name="time-outline" size={14} color="#566573" />
+                  <Text style={styles.durationText}>{exercise.duration}</Text>
+                </View>
+              )}
+            </View>
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation();
+                onSelect();
+              }}
+              style={styles.selectButtonContainer}
+            >
+              <Animated.View
+                style={[
+                  styles.selectCircle,
+                  isSelected && { backgroundColor: isExpanded ? '#fff' : colors[0], borderColor: isExpanded ? '#fff' : colors[0] },
+                  isExpanded && !isSelected && { borderColor: 'rgba(255,255,255,0.6)' },
+                  { transform: [{ scale: checkScaleAnim }] },
+                ]}
+              >
+                {isSelected && (
+                  <Ionicons name="checkmark" size={18} color={isExpanded ? colors[0] : '#fff'} />
+                )}
+              </Animated.View>
+            </Pressable>
           </View>
-        </View>
-      </View>
+
+          {isExpanded && (
+            <Animated.View
+              style={[
+                styles.expandedContent,
+                {
+                  opacity: contentOpacity,
+                  transform: [{ translateY: contentTranslate }],
+                },
+              ]}
+            >
+              <View style={styles.durationBadge}>
+                <Ionicons name="time-outline" size={16} color="#fff" />
+                <Text style={styles.durationBadgeText}>{exercise.duration}</Text>
+              </View>
+              <Text style={styles.exerciseDescriptionExpanded}>{exercise.description}</Text>
+            </Animated.View>
+          )}
+        </LinearGradient>
+      </Pressable>
     </View>
   );
 }
@@ -185,8 +336,32 @@ export default function ExercisesScreen() {
   const exercises = exercisesByLevel[level] || exercisesByLevel[3];
   const colors = levelColors[level] || levelColors[3];
   const levelTitle = levelTitles[level] || 'Moderate';
+  const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
+  const [expandedExerciseId, setExpandedExerciseId] = useState<number | null>(null);
+  const { setSelectedExercises } = useSession();
+
+  const handleSelectExercise = (exerciseId: number) => {
+    setSelectedExerciseIds(prev => {
+      if (prev.includes(exerciseId)) {
+        return prev.filter(id => id !== exerciseId);
+      } else {
+        return [...prev, exerciseId];
+      }
+    });
+  };
+
+  const handleExpandExercise = (exerciseId: number) => {
+    setExpandedExerciseId(prev => prev === exerciseId ? null : exerciseId);
+  };
 
   const handleContinueToTips = () => {
+    if (selectedExerciseIds.length === 0) {
+      return;
+    }
+    const selectedExercisesData = exercises
+      .filter(ex => selectedExerciseIds.includes(ex.id))
+      .map(ex => ({ id: ex.id, title: ex.title, duration: ex.duration }));
+    setSelectedExercises(selectedExercisesData);
     router.push({
       pathname: '/tips',
       params: { level },
@@ -215,20 +390,31 @@ export default function ExercisesScreen() {
         </View>
       </LinearGradient>
       <Text style={styles.sectionTitle}>
-        Prueba estos ejercicios para ayudar a manejar tu ansiedad:
+        Selecciona un ejercicio para continuar:
       </Text>
     </>
   );
 
   const renderFooter = () => (
-    <Pressable style={styles.continueButton} onPress={handleContinueToTips}>
+    <Pressable
+      style={[
+        styles.continueButton,
+        selectedExerciseIds.length === 0 && styles.continueButtonDisabled
+      ]}
+      onPress={handleContinueToTips}
+      disabled={selectedExerciseIds.length === 0}
+    >
       <LinearGradient
-        colors={colors}
+        colors={selectedExerciseIds.length > 0 ? colors : ['#cccccc', '#999999']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.continueButtonGradient}
       >
-        <Text style={styles.continueButtonText}>Continuar a Consejos</Text>
+        <Text style={styles.continueButtonText}>
+          {selectedExerciseIds.length > 0
+            ? `Continuar con ${selectedExerciseIds.length} ejercicio${selectedExerciseIds.length > 1 ? 's' : ''}`
+            : 'Selecciona al menos un ejercicio'}
+        </Text>
         <Ionicons name="arrow-forward" size={20} color="#fff" />
       </LinearGradient>
     </Pressable>
@@ -240,7 +426,16 @@ export default function ExercisesScreen() {
       contentContainerStyle={styles.scrollContent}
       data={exercises}
       keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => <ExerciseCard exercise={item} colors={colors} />}
+      renderItem={({ item }) => (
+        <ExerciseCard
+          exercise={item}
+          colors={colors}
+          isSelected={selectedExerciseIds.includes(item.id)}
+          isExpanded={expandedExerciseId === item.id}
+          onSelect={() => handleSelectExercise(item.id)}
+          onExpand={() => handleExpandExercise(item.id)}
+        />
+      )}
       ListHeaderComponent={renderHeader}
       ListFooterComponent={renderFooter}
       showsVerticalScrollIndicator={true}
@@ -294,26 +489,43 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    color: '#7F8C8D',
+    color: '#566573',
     marginBottom: 20,
     marginTop: 20,
     marginHorizontal: 20,
     textAlign: 'center',
   },
-  exerciseCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    marginBottom: 16,
+  exerciseCardWrapper: {
+    marginBottom: 12,
     marginHorizontal: 20,
+  },
+  exerciseCardWrapperExpanded: {
+    marginBottom: 16,
+  },
+  exerciseCardPressable: {
+    flex: 1,
+  },
+  exerciseCard: {
+    flex: 1,
+    borderRadius: 16,
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
   },
+  exerciseCardExpanded: {
+    borderRadius: 24,
+    padding: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   exerciseCardContent: {
     flexDirection: 'row',
-    padding: 16,
+    alignItems: 'center',
   },
   exerciseIconContainer: {
     width: 56,
@@ -323,29 +535,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
   },
+  exerciseIconContainerExpanded: {
+    width: 80,
+    height: 80,
+    borderRadius: 24,
+  },
   exerciseInfo: {
     flex: 1,
   },
   exerciseTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
     color: '#2C3E50',
-    marginBottom: 6,
   },
-  exerciseDescription: {
-    fontSize: 14,
-    color: '#7F8C8D',
-    lineHeight: 20,
-    marginBottom: 8,
+  exerciseTitleExpanded: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: '800',
   },
   durationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    marginTop: 4,
   },
   durationText: {
     fontSize: 13,
-    color: '#7F8C8D',
+    color: '#566573',
+    fontWeight: '500',
+  },
+  selectButtonContainer: {
+    padding: 8,
+  },
+  selectCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#CBD5E1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  expandedContent: {
+    marginTop: 20,
+  },
+  durationBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+    gap: 6,
+    marginBottom: 16,
+  },
+  durationBadgeText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  exerciseDescriptionExpanded: {
+    fontSize: 16,
+    color: '#fff',
+    lineHeight: 24,
     fontWeight: '500',
   },
   continueButton: {
@@ -371,5 +625,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '700',
+  },
+  continueButtonDisabled: {
+    opacity: 0.7,
   },
 });

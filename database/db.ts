@@ -10,6 +10,7 @@ export async function resetDatabase() {
     await expoDb.execAsync(`
       DROP TABLE IF EXISTS users;
       DROP TABLE IF EXISTS anxiety_logs;
+      DROP TABLE IF EXISTS sessions;
       DROP TABLE IF EXISTS migrations;
     `);
     console.log('Database tables dropped successfully');

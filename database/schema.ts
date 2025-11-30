@@ -87,3 +87,36 @@ export type AnxietyLog = {
 };
 
 export type NewAnxietyLog = Omit<AnxietyLog, 'id' | 'created_at'>;
+
+export const sessions = sqliteTable('sessions', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  user_id: integer('user_id').notNull().references(() => users.id),
+  anxiety_level: integer('anxiety_level').notNull(),
+  selected_exercises: text('selected_exercises'),
+  tip_id: integer('tip_id'),
+  tip_title: text('tip_title'),
+  tip_category: text('tip_category'),
+  final_action: text('final_action'),
+  duration_seconds: integer('duration_seconds'),
+  completed_at: text('completed_at'),
+  created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
+});
+
+export const selectSessionSchema = createSelectSchema(sessions);
+export const insertSessionSchema = createInsertSchema(sessions);
+
+export type Session = {
+  id: number;
+  user_id: number;
+  anxiety_level: number;
+  selected_exercises: string | null;
+  tip_id: number | null;
+  tip_title: string | null;
+  tip_category: string | null;
+  final_action: string | null;
+  duration_seconds: number | null;
+  completed_at: string | null;
+  created_at: string;
+};
+
+export type NewSession = Omit<Session, 'id' | 'created_at'>;
