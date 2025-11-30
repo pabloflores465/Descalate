@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BarChart, PieChart } from 'react-native-gifted-charts';
-import { useState, useEffect, useCallback } from 'react';
+import { BarChart, PieChart, LineChart } from 'react-native-gifted-charts';
+import { useState, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -29,6 +29,12 @@ type PieData = {
   color: string;
   text: string;
   label: string;
+};
+
+type LineData = {
+  value: number;
+  label?: string;
+  dataPointText?: string;
 };
 
 const levelColors: Record<number, string> = {
@@ -70,6 +76,8 @@ export default function ChartsScreen() {
   });
   const [levelDistribution, setLevelDistribution] = useState<PieData[]>([]);
   const [weeklyData, setWeeklyData] = useState<BarData[]>([]);
+  const [monthlyData, setMonthlyData] = useState<LineData[]>([]);
+  const [yearlyData, setYearlyData] = useState<LineData[]>([]);
   const [topExercises, setTopExercises] = useState<{ name: string; count: number }[]>([]);
   const [topCategories, setTopCategories] = useState<{ name: string; count: number }[]>([]);
 
@@ -93,6 +101,8 @@ export default function ChartsScreen() {
         });
         setLevelDistribution([]);
         setWeeklyData([]);
+        setMonthlyData([]);
+        setYearlyData([]);
         setTopExercises([]);
         setTopCategories([]);
         return;
@@ -175,6 +185,49 @@ export default function ChartsScreen() {
         });
       }
       setWeeklyData(last7Days);
+
+      // Monthly data - last 6 months
+      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const last6Months: LineData[] = [];
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        const monthSessions = sessionRows.filter(s => {
+          const sessionDate = new Date(s.created_at);
+          return sessionDate.getMonth() === month && sessionDate.getFullYear() === year;
+        });
+        const avgLevel = monthSessions.length > 0
+          ? monthSessions.reduce((sum, s) => sum + s.anxiety_level, 0) / monthSessions.length
+          : 0;
+        last6Months.push({
+          value: Math.round(avgLevel * 10) / 10,
+          label: monthNames[month],
+          dataPointText: avgLevel > 0 ? avgLevel.toFixed(1) : '',
+        });
+      }
+      setMonthlyData(last6Months);
+
+      // Yearly data - last 3 years
+      const last3Years: LineData[] = [];
+      const currentYear = new Date().getFullYear();
+      for (let i = 2; i >= 0; i--) {
+        const year = currentYear - i;
+        const yearSessions = sessionRows.filter(s => {
+          const sessionDate = new Date(s.created_at);
+          return sessionDate.getFullYear() === year;
+        });
+        const avgLevel = yearSessions.length > 0
+          ? yearSessions.reduce((sum, s) => sum + s.anxiety_level, 0) / yearSessions.length
+          : 0;
+        last3Years.push({
+          value: Math.round(avgLevel * 10) / 10,
+          label: year.toString(),
+          dataPointText: avgLevel > 0 ? avgLevel.toFixed(1) : '',
+        });
+      }
+      setYearlyData(last3Years);
 
       const topEx = Object.entries(exerciseCounts)
         .sort(([, a], [, b]) => b - a)
@@ -294,30 +347,126 @@ export default function ChartsScreen() {
 
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Ultimos 7 Dias</Text>
-              <Ionicons name="trending-up" size={24} color="#5a8c6a" />
+              <Text style={styles.cardTitle}>Tendencia Semanal</Text>
+              <Ionicons name="calendar-outline" size={24} color="#5a8c6a" />
             </View>
+            <Text style={styles.chartSubtitle}>Nivel promedio de ansiedad - ultimos 7 dias</Text>
             <View style={styles.chartWrapper}>
-              <BarChart
-                data={weeklyData}
-                barWidth={32}
-                noOfSections={5}
-                maxValue={5}
-                yAxisThickness={0}
-                xAxisThickness={1}
+              <LineChart
+                data={weeklyData.map(d => ({ value: d.value, label: d.label }))}
+                width={SCREEN_WIDTH - 100}
+                height={150}
+                spacing={40}
+                initialSpacing={15}
+                color="#5a67d8"
+                thickness={3}
+                hideDataPoints={false}
+                dataPointsColor="#5a67d8"
+                dataPointsRadius={5}
                 xAxisColor="#E0E0E0"
-                hideRules
-                showGradient
-                isAnimated
-                animationDuration={600}
+                yAxisColor="#E0E0E0"
                 yAxisTextStyle={styles.axisText}
                 xAxisLabelTextStyle={styles.axisText}
-                height={150}
-                spacing={16}
-                barBorderRadius={6}
+                hideRules
+                yAxisThickness={0}
+                xAxisThickness={1}
+                noOfSections={5}
+                maxValue={5}
+                curved
+                areaChart
+                startFillColor="rgba(90, 103, 216, 0.3)"
+                endFillColor="rgba(90, 103, 216, 0.01)"
+                isAnimated
+                animationDuration={600}
               />
             </View>
           </View>
+
+          {monthlyData.some(d => d.value > 0) && (
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>Tendencia Mensual</Text>
+                <Ionicons name="trending-up" size={24} color="#5a8c6a" />
+              </View>
+              <Text style={styles.chartSubtitle}>Nivel promedio de ansiedad - ultimos 6 meses</Text>
+              <View style={styles.chartWrapper}>
+                <LineChart
+                  data={monthlyData}
+                  width={SCREEN_WIDTH - 100}
+                  height={180}
+                  spacing={50}
+                  initialSpacing={20}
+                  color="#5a8c6a"
+                  thickness={3}
+                  hideDataPoints={false}
+                  dataPointsColor="#5a8c6a"
+                  dataPointsRadius={6}
+                  textColor="#7F8C8D"
+                  textFontSize={11}
+                  textShiftY={-8}
+                  textShiftX={-5}
+                  xAxisColor="#E0E0E0"
+                  yAxisColor="#E0E0E0"
+                  yAxisTextStyle={styles.axisText}
+                  xAxisLabelTextStyle={styles.axisText}
+                  hideRules
+                  yAxisThickness={0}
+                  xAxisThickness={1}
+                  noOfSections={5}
+                  maxValue={5}
+                  curved
+                  areaChart
+                  startFillColor="rgba(90, 140, 106, 0.3)"
+                  endFillColor="rgba(90, 140, 106, 0.01)"
+                  isAnimated
+                  animationDuration={800}
+                />
+              </View>
+            </View>
+          )}
+
+          {yearlyData.some(d => d.value > 0) && (
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>Tendencia Anual</Text>
+                <Ionicons name="analytics" size={24} color="#5a8c6a" />
+              </View>
+              <Text style={styles.chartSubtitle}>Nivel promedio de ansiedad por ano</Text>
+              <View style={styles.chartWrapper}>
+                <LineChart
+                  data={yearlyData}
+                  width={SCREEN_WIDTH - 100}
+                  height={180}
+                  spacing={80}
+                  initialSpacing={40}
+                  color="#c026d3"
+                  thickness={3}
+                  hideDataPoints={false}
+                  dataPointsColor="#c026d3"
+                  dataPointsRadius={8}
+                  textColor="#7F8C8D"
+                  textFontSize={12}
+                  textShiftY={-10}
+                  textShiftX={-8}
+                  xAxisColor="#E0E0E0"
+                  yAxisColor="#E0E0E0"
+                  yAxisTextStyle={styles.axisText}
+                  xAxisLabelTextStyle={styles.axisText}
+                  hideRules
+                  yAxisThickness={0}
+                  xAxisThickness={1}
+                  noOfSections={5}
+                  maxValue={5}
+                  curved
+                  areaChart
+                  startFillColor="rgba(192, 38, 211, 0.2)"
+                  endFillColor="rgba(192, 38, 211, 0.01)"
+                  isAnimated
+                  animationDuration={800}
+                />
+              </View>
+            </View>
+          )}
 
           {levelDistribution.length > 0 && (
             <View style={styles.card}>
@@ -598,6 +747,11 @@ const styles = StyleSheet.create({
   chartWrapper: {
     marginTop: 8,
     alignItems: 'center',
+  },
+  chartSubtitle: {
+    fontSize: 13,
+    color: '#7F8C8D',
+    marginBottom: 12,
   },
   axisText: {
     color: '#7F8C8D',
