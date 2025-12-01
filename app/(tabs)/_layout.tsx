@@ -116,52 +116,6 @@ function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
   );
 }
 
-function TooltipComponent({
-  isFirstStep,
-  isLastStep,
-  handleNext,
-  handlePrev,
-  handleStop,
-  currentStep
-}: {
-  isFirstStep: boolean;
-  isLastStep: boolean;
-  handleNext: () => void;
-  handlePrev: () => void;
-  handleStop: () => void;
-  currentStep?: { text: string; order: number; name: string };
-}) {
-  if (!currentStep) return null;
-
-  return (
-    <View style={styles.tooltipContainer}>
-      <Text style={styles.tooltipText}>{currentStep.text}</Text>
-      <View style={styles.tooltipButtons}>
-        {!isFirstStep && (
-          <Pressable onPress={handlePrev} style={styles.tooltipButton}>
-            <Ionicons name="chevron-back" size={18} color="#5a8c6a" />
-            <Text style={styles.tooltipButtonText}>Anterior</Text>
-          </Pressable>
-        )}
-        {!isLastStep ? (
-          <Pressable onPress={handleNext} style={[styles.tooltipButton, styles.tooltipButtonPrimary]}>
-            <Text style={styles.tooltipButtonTextPrimary}>Siguiente</Text>
-            <Ionicons name="chevron-forward" size={18} color="#fff" />
-          </Pressable>
-        ) : (
-          <Pressable onPress={handleStop} style={[styles.tooltipButton, styles.tooltipButtonPrimary]}>
-            <Text style={styles.tooltipButtonTextPrimary}>Entendido</Text>
-            <Ionicons name="checkmark" size={18} color="#fff" />
-          </Pressable>
-        )}
-      </View>
-      <Pressable onPress={handleStop} style={styles.skipButton}>
-        <Text style={styles.skipButtonText}>Saltar tutorial</Text>
-      </Pressable>
-    </View>
-  );
-}
-
 function TabLayoutContent() {
   const { shouldShowTutorial, completeTutorial, isLoading } = useTutorial();
   const { start, copilotEvents } = useCopilot();
@@ -253,11 +207,16 @@ export default function TabLayout() {
   return (
     <CopilotProvider
       stepNumberComponent={() => null}
-      tooltipComponent={TooltipComponent as unknown as React.ComponentType}
-      backdropColor="rgba(0, 0, 0, 0.75)"
+      backdropColor="rgba(0, 0, 0, 0.7)"
       animationDuration={300}
-      arrowColor="#fff"
-      verticalOffset={0}
+      arrowColor="#5a8c6a"
+      tooltipStyle={styles.tooltip}
+      labels={{
+        skip: 'Saltar',
+        previous: 'Anterior',
+        next: 'Siguiente',
+        finish: 'Entendido',
+      }}
     >
       <TabLayoutContent />
     </CopilotProvider>
@@ -295,57 +254,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: 'rgba(90, 140, 106, 0.15)',
   },
-  tooltipContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    maxWidth: 320,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  tooltipText: {
-    fontSize: 16,
-    color: '#2C3E50',
-    lineHeight: 24,
-    marginBottom: 16,
-  },
-  tooltipButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
-  },
-  tooltipButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#f1f8f3',
-    gap: 4,
-  },
-  tooltipButtonPrimary: {
+  tooltip: {
     backgroundColor: '#5a8c6a',
-  },
-  tooltipButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#5a8c6a',
-  },
-  tooltipButtonTextPrimary: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  skipButton: {
-    alignSelf: 'center',
-    marginTop: 12,
-    paddingVertical: 8,
-  },
-  skipButtonText: {
-    fontSize: 13,
-    color: '#95A5A6',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
 });
