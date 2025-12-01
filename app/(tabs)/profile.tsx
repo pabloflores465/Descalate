@@ -221,7 +221,14 @@ export default function ProfileScreen() {
           onPress: async () => {
             try {
               await resetDatabase();
-              await clearEmailFromStorage();
+              // Clear all AsyncStorage keys
+              await AsyncStorage.multiRemove([
+                AUTH_STORAGE_KEY,
+                '@descalate_tutorial_complete',
+                '@descalate_onboarding_complete',
+                '@descalate_profile_complete',
+              ]);
+              setCurrentUserEmail(null);
               router.replace('/(session)/auth');
               Alert.alert('Exito', 'Base de datos reseteada. Puedes registrarte de nuevo.');
             } catch (error) {

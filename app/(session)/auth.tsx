@@ -21,6 +21,7 @@ import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTutorial } from '@/context/TutorialContext';
 
 const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
@@ -31,6 +32,7 @@ bcrypt.setRandomFallback((len: number) => {
 
 export default function AuthScreen() {
   const router = useRouter();
+  const { resetTutorial } = useTutorial();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
@@ -250,6 +252,8 @@ export default function AuthScreen() {
 
       console.log('User registered successfully');
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
+      // Reset tutorial flag for new users so they see the tutorial
+      await resetTutorial();
       router.replace('/(session)/onboarding');
     } catch (error: any) {
       console.error('Error registering user:', error);

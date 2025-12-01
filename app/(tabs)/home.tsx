@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager, InteractionManager } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
-import { AttachStep } from 'react-native-spotlight-tour';
+import { AttachStep, useSpotlightTour } from 'react-native-spotlight-tour';
+import { useTutorial } from '@/context/TutorialContext';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -129,6 +130,45 @@ function AnxietyCard({
 export default function HomeScreen() {
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const { startSession } = useSession();
+  const { start } = useSpotlightTour();
+  const { tutorialTrigger, shouldShowTutorial, isLoading: tutorialLoading } = useTutorial();
+  const hasStartedTour = useRef(false);
+
+  // Debug log
+  useEffect(() => {
+    console.log('[Tutorial Debug] State:', {
+      tutorialTrigger,
+      shouldShowTutorial,
+      tutorialLoading,
+      hasStartedTour: hasStartedTour.current,
+    });
+  }, [tutorialTrigger, shouldShowTutorial, tutorialLoading]);
+
+  // Start tutorial when ready - simplified logic
+  useEffect(() => {
+    if (!tutorialLoading && shouldShowTutorial && !hasStartedTour.current) {
+      console.log('[Tutorial Debug] Conditions met, starting tour in 800ms...');
+      const timer = setTimeout(() => {
+        if (!hasStartedTour.current) {
+          hasStartedTour.current = true;
+          console.log('[Tutorial Debug] Calling start()');
+          start();
+        }
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [tutorialLoading, shouldShowTutorial, start]);
+
+  // Reset flag when screen loses focus
+  useFocusEffect(
+    useCallback(() => {
+      console.log('[Tutorial Debug] Screen focused');
+      return () => {
+        console.log('[Tutorial Debug] Screen unfocused');
+        hasStartedTour.current = false;
+      };
+    }, [])
+  );
 
   const handleCardPress = (level: number) => {
     LayoutAnimation.configureNext({

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TUTORIAL_COMPLETE_KEY = '@descalate_tutorial_complete';
@@ -8,6 +8,8 @@ type TutorialContextType = {
   completeTutorial: () => Promise<void>;
   resetTutorial: () => Promise<void>;
   isLoading: boolean;
+  tutorialTrigger: number;
+  requestTutorialStart: () => void;
 };
 
 const TutorialContext = createContext<TutorialContextType | undefined>(undefined);
@@ -15,6 +17,7 @@ const TutorialContext = createContext<TutorialContextType | undefined>(undefined
 export function TutorialProvider({ children }: { children: ReactNode }) {
   const [shouldShowTutorial, setShouldShowTutorial] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [tutorialTrigger, setTutorialTrigger] = useState(0);
 
   useEffect(() => {
     checkTutorialStatus();
@@ -49,9 +52,15 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const requestTutorialStart = useCallback(() => {
+    if (shouldShowTutorial && !isLoading) {
+      setTutorialTrigger(prev => prev + 1);
+    }
+  }, [shouldShowTutorial, isLoading]);
+
   return (
     <TutorialContext.Provider
-      value={{ shouldShowTutorial, completeTutorial, resetTutorial, isLoading }}
+      value={{ shouldShowTutorial, completeTutorial, resetTutorial, isLoading, tutorialTrigger, requestTutorialStart }}
     >
       {children}
     </TutorialContext.Provider>

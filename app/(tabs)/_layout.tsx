@@ -5,7 +5,6 @@ import { useRef, useEffect } from 'react';
 import {
   SpotlightTourProvider,
   TourStep,
-  useSpotlightTour,
 } from 'react-native-spotlight-tour';
 import { useTutorial } from '@/context/TutorialContext';
 
@@ -223,7 +222,7 @@ const tourSteps: TourStep[] = [
 ];
 
 export default function TabLayout() {
-  const { shouldShowTutorial, completeTutorial, isLoading } = useTutorial();
+  const { completeTutorial } = useTutorial();
 
   const handleTourStop = () => {
     completeTutorial();
@@ -234,30 +233,10 @@ export default function TabLayout() {
       steps={tourSteps}
       overlayColor="rgba(0, 0, 0, 0.75)"
       onStop={handleTourStop}
-      floatingProps={{
-        middleware: [],
-        placement: 'bottom',
-      }}
     >
-      <TourStarter shouldStart={!isLoading && shouldShowTutorial} />
       <TabLayoutContent />
     </SpotlightTourProvider>
   );
-}
-
-function TourStarter({ shouldStart }: { shouldStart: boolean }) {
-  const { start } = useSpotlightTour();
-
-  useEffect(() => {
-    if (shouldStart) {
-      const timer = setTimeout(() => {
-        start();
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [shouldStart, start]);
-
-  return null;
 }
 
 const styles = StyleSheet.create({
