@@ -129,8 +129,10 @@ function TooltipComponent({
   handleNext: () => void;
   handlePrev: () => void;
   handleStop: () => void;
-  currentStep: { text: string; order: number; name: string };
+  currentStep?: { text: string; order: number; name: string };
 }) {
+  if (!currentStep) return null;
+
   return (
     <View style={styles.tooltipContainer}>
       <Text style={styles.tooltipText}>{currentStep.text}</Text>
