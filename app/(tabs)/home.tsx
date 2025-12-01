@@ -119,14 +119,14 @@ function AnxietyCard({
                 />
               </Animated.View>
             </View>
-            <View style={[styles.levelBadge, isExpanded && styles.levelBadgeExpanded]}>
-              <Text style={[styles.levelNumber, isExpanded && styles.levelNumberExpanded]}>
+            <View style={styles.levelBadge}>
+              <Text style={styles.levelNumber}>
                 {level.level}
               </Text>
             </View>
           </View>
 
-          <Text style={[styles.cardTitle, isExpanded && styles.cardTitleExpanded]}>
+          <Text style={styles.cardTitle}>
             {level.title}
           </Text>
 
@@ -318,7 +318,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   cardExpanded: {
-    padding: 20,
     borderRadius: 24,
   },
   cardHeader: {
@@ -343,36 +342,15 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.4)',
   },
-  levelBadgeExpanded: {
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-  },
   levelNumber: {
     color: '#fff',
     fontWeight: '900',
     fontSize: 16,
   },
-  levelNumberExpanded: {
-    color: '#fff',
-    fontWeight: '900',
-    fontSize: 22,
-  },
   cardTitle: {
     color: '#fff',
     fontWeight: '800',
     fontSize: 20,
-  },
-  cardTitleExpanded: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 38,
-    marginBottom: 16,
   },
   descriptionContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
