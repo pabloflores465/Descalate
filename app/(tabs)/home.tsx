@@ -71,54 +71,35 @@ function AnxietyCard({
   onContinue: () => void;
 }) {
   const contentOpacity = useRef(new Animated.Value(0)).current;
-  const iconScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (isExpanded) {
-      Animated.parallel([
-        Animated.timing(contentOpacity, {
-          toValue: 1,
-          duration: 300,
-          delay: 150,
-          useNativeDriver: true,
-        }),
-        Animated.spring(iconScale, {
-          toValue: 1.4,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      contentOpacity.setValue(0);
-      Animated.spring(iconScale, {
+      Animated.timing(contentOpacity, {
         toValue: 1,
-        friction: 8,
-        tension: 40,
+        duration: 300,
+        delay: 150,
         useNativeDriver: true,
       }).start();
+    } else {
+      contentOpacity.setValue(0);
     }
-  }, [isExpanded, contentOpacity, iconScale]);
+  }, [isExpanded, contentOpacity]);
 
   return (
-    <View style={[styles.cardWrapper, isExpanded && styles.cardWrapperExpanded]}>
+    <View style={styles.cardWrapper}>
       <Pressable onPress={onPress}>
         <LinearGradient
           colors={level.colors as [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.card, isExpanded && styles.cardExpanded]}
+          style={styles.card}
         >
           <View style={styles.cardHeader}>
-            <View style={styles.iconContainer}>
-              <Animated.View style={{ transform: [{ scale: iconScale }] }}>
-                <Ionicons
-                  name={level.icon}
-                  size={32}
-                  color="rgba(255, 255, 255, 0.95)"
-                />
-              </Animated.View>
-            </View>
+            <Ionicons
+              name={level.icon}
+              size={32}
+              color="rgba(255, 255, 255, 0.95)"
+            />
             <View style={styles.levelBadge}>
               <Text style={styles.levelNumber}>
                 {level.level}
@@ -310,27 +291,15 @@ const styles = StyleSheet.create({
   cardWrapper: {
     minHeight: 95,
   },
-  cardWrapperExpanded: {
-    zIndex: 10,
-  },
   card: {
     padding: 16,
     borderRadius: 20,
-  },
-  cardExpanded: {
-    borderRadius: 24,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
