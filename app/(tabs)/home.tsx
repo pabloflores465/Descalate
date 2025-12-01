@@ -110,13 +110,15 @@ function AnxietyCard({
           style={[styles.card, isExpanded && styles.cardExpanded]}
         >
           <View style={styles.cardHeader}>
-            <Animated.View style={{ transform: [{ scale: iconScale }] }}>
-              <Ionicons
-                name={level.icon}
-                size={32}
-                color="rgba(255, 255, 255, 0.95)"
-              />
-            </Animated.View>
+            <View style={styles.iconContainer}>
+              <Animated.View style={{ transform: [{ scale: iconScale }] }}>
+                <Ionicons
+                  name={level.icon}
+                  size={32}
+                  color="rgba(255, 255, 255, 0.95)"
+                />
+              </Animated.View>
+            </View>
             <View style={[styles.levelBadge, isExpanded && styles.levelBadgeExpanded]}>
               <Text style={[styles.levelNumber, isExpanded && styles.levelNumberExpanded]}>
                 {level.level}
@@ -324,6 +326,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
