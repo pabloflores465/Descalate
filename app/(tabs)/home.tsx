@@ -4,8 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
-import { useTutorial } from '@/context/TutorialContext';
-import { CopilotProvider, CopilotStep, walkthroughable, useCopilot } from 'react-native-copilot';
+import { CopilotStep, walkthroughable } from 'react-native-copilot';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -129,39 +128,9 @@ function AnxietyCard({
   );
 }
 
-function HomeContent() {
+export default function HomeScreen() {
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const { startSession } = useSession();
-  const { shouldShowTutorial, completeTutorial, isLoading: tutorialLoading } = useTutorial();
-  const { start, copilotEvents } = useCopilot();
-  const [tutorialStarted, setTutorialStarted] = useState(false);
-
-  // Reset tutorialStarted when shouldShowTutorial changes to true
-  useEffect(() => {
-    if (shouldShowTutorial) {
-      setTutorialStarted(false);
-    }
-  }, [shouldShowTutorial]);
-
-  useEffect(() => {
-    if (!tutorialLoading && shouldShowTutorial && !tutorialStarted) {
-      const timer = setTimeout(() => {
-        start();
-        setTutorialStarted(true);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [shouldShowTutorial, tutorialStarted, tutorialLoading, start]);
-
-  useEffect(() => {
-    const handleStop = () => {
-      completeTutorial();
-    };
-    copilotEvents.on('stop', handleStop);
-    return () => {
-      copilotEvents.off('stop', handleStop);
-    };
-  }, [completeTutorial, copilotEvents]);
 
   const handleCardPress = (level: number) => {
     LayoutAnimation.configureNext({
@@ -224,26 +193,6 @@ function HomeContent() {
         </CopilotStep>
       </ScrollView>
     </View>
-  );
-}
-
-export default function HomeScreen() {
-  return (
-    <CopilotProvider
-      stepNumberComponent={() => null}
-      tooltipStyle={styles.tooltip}
-      backdropColor="rgba(0, 0, 0, 0.7)"
-      animationDuration={300}
-      labels={{
-        skip: 'Saltar',
-        previous: 'Anterior',
-        next: 'Siguiente',
-        finish: 'Terminar',
-      }}
-      arrowColor="#fff"
-    >
-      <HomeContent />
-    </CopilotProvider>
   );
 }
 
@@ -351,11 +300,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 17,
     fontWeight: '700',
-  },
-  tooltip: {
-    backgroundColor: '#5a8c6a',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
   },
 });
