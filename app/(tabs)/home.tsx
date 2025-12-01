@@ -4,13 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
-import { CopilotStep, walkthroughable } from 'react-native-copilot';
+import { AttachStep } from 'react-native-spotlight-tour';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
-const WalkthroughableView = walkthroughable(View);
 
 type AnxietyLevel = {
   level: number;
@@ -157,29 +155,21 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <CopilotStep
-        text="Bienvenido a Descalate. Aqui veras los niveles de ansiedad disponibles."
-        order={1}
-        name="header"
-      >
-        <WalkthroughableView style={styles.header}>
+      <AttachStep index={0} style={{ width: '100%' }}>
+        <View style={styles.header}>
           <Ionicons name="pulse" size={48} color="#5a8c6a" />
           <Text style={styles.title}>Niveles de Ansiedad</Text>
           <Text style={styles.subtitle}>Toca cada tarjeta para saber mas</Text>
-        </WalkthroughableView>
-      </CopilotStep>
+        </View>
+      </AttachStep>
 
       <ScrollView
         style={styles.cardsContainer}
         contentContainerStyle={styles.cardsContentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <CopilotStep
-          text="Cada tarjeta representa un nivel de ansiedad del 1 al 5. Toca una para ver mas detalles y comenzar una sesion de ejercicios."
-          order={2}
-          name="cards"
-        >
-          <WalkthroughableView style={styles.cardsInner}>
+        <AttachStep index={1} style={{ width: '100%' }}>
+          <View style={styles.cardsInner}>
             {anxietyLevels.slice().reverse().map((level) => (
               <AnxietyCard
                 key={level.level}
@@ -189,8 +179,8 @@ export default function HomeScreen() {
                 onContinue={() => handleContinue(level.level)}
               />
             ))}
-          </WalkthroughableView>
-        </CopilotStep>
+          </View>
+        </AttachStep>
       </ScrollView>
     </View>
   );

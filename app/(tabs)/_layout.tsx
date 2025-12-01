@@ -2,10 +2,12 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Pressable, StyleSheet, Animated, Text } from 'react-native';
 import { useRef, useEffect } from 'react';
-import { CopilotProvider, CopilotStep, walkthroughable, useCopilot } from 'react-native-copilot';
+import {
+  SpotlightTourProvider,
+  TourStep,
+  useSpotlightTour,
+} from 'react-native-spotlight-tour';
 import { useTutorial } from '@/context/TutorialContext';
-
-const WalkthroughableView = walkthroughable(View);
 
 type TabIconProps = {
   name: keyof typeof Ionicons.glyphMap;
@@ -117,28 +119,6 @@ function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
 }
 
 function TabLayoutContent() {
-  const { shouldShowTutorial, completeTutorial, isLoading } = useTutorial();
-  const { start, copilotEvents } = useCopilot();
-
-  useEffect(() => {
-    if (!isLoading && shouldShowTutorial) {
-      const timer = setTimeout(() => {
-        start();
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [shouldShowTutorial, isLoading, start]);
-
-  useEffect(() => {
-    const handleStop = () => {
-      completeTutorial();
-    };
-    copilotEvents.on('stop', handleStop);
-    return () => {
-      copilotEvents.off('stop', handleStop);
-    };
-  }, [completeTutorial, copilotEvents]);
-
   return (
     <Tabs
       screenOptions={{
@@ -203,24 +183,81 @@ function TabLayoutContent() {
   );
 }
 
+const tourSteps: TourStep[] = [
+  {
+    render: ({ next }) => (
+      <View style={styles.tooltipContainer}>
+        <Text style={styles.tooltipTitle}>Bienvenido a Descalate</Text>
+        <Text style={styles.tooltipText}>
+          Esta app te ayudara a manejar tu ansiedad con ejercicios y consejos personalizados.
+        </Text>
+        <View style={styles.tooltipButtons}>
+          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+            <Text style={styles.tooltipButtonTextPrimary}>Siguiente</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    ),
+  },
+  {
+    render: ({ stop, previous }) => (
+      <View style={styles.tooltipContainer}>
+        <Text style={styles.tooltipTitle}>Niveles de Ansiedad</Text>
+        <Text style={styles.tooltipText}>
+          Selecciona el nivel que mejor describe como te sientes. Cada nivel tiene ejercicios especificos para ayudarte.
+        </Text>
+        <View style={styles.tooltipButtons}>
+          <Pressable onPress={previous} style={styles.tooltipButton}>
+            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+            <Text style={styles.tooltipButtonText}>Anterior</Text>
+          </Pressable>
+          <Pressable onPress={stop} style={styles.tooltipButtonPrimary}>
+            <Text style={styles.tooltipButtonTextPrimary}>Entendido</Text>
+            <Ionicons name="checkmark" size={18} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    ),
+  },
+];
+
 export default function TabLayout() {
+  const { shouldShowTutorial, completeTutorial, isLoading } = useTutorial();
+
+  const handleTourStop = () => {
+    completeTutorial();
+  };
+
   return (
-    <CopilotProvider
-      stepNumberComponent={() => null}
-      backdropColor="rgba(0, 0, 0, 0.7)"
-      animationDuration={300}
-      arrowColor="#5a8c6a"
-      tooltipStyle={styles.tooltip}
-      labels={{
-        skip: 'Saltar',
-        previous: 'Anterior',
-        next: 'Siguiente',
-        finish: 'Entendido',
+    <SpotlightTourProvider
+      steps={tourSteps}
+      overlayColor="rgba(0, 0, 0, 0.75)"
+      onStop={handleTourStop}
+      floatingProps={{
+        middleware: [],
+        placement: 'bottom',
       }}
     >
+      <TourStarter shouldStart={!isLoading && shouldShowTutorial} />
       <TabLayoutContent />
-    </CopilotProvider>
+    </SpotlightTourProvider>
   );
+}
+
+function TourStarter({ shouldStart }: { shouldStart: boolean }) {
+  const { start } = useSpotlightTour();
+
+  useEffect(() => {
+    if (shouldStart) {
+      const timer = setTimeout(() => {
+        start();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldStart, start]);
+
+  return null;
 }
 
 const styles = StyleSheet.create({
@@ -254,10 +291,60 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: 'rgba(90, 140, 106, 0.15)',
   },
-  tooltip: {
-    backgroundColor: '#5a8c6a',
+  tooltipContainer: {
+    backgroundColor: '#fff',
     borderRadius: 16,
+    padding: 20,
+    maxWidth: 300,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  tooltipTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  tooltipText: {
+    fontSize: 15,
+    color: '#566573',
+    lineHeight: 22,
+    marginBottom: 16,
+  },
+  tooltipButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+  },
+  tooltipButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderRadius: 20,
+    backgroundColor: '#f1f8f3',
+    gap: 6,
+  },
+  tooltipButtonPrimary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#5a8c6a',
+    gap: 6,
+  },
+  tooltipButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#5a8c6a',
+  },
+  tooltipButtonTextPrimary: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
   },
 });

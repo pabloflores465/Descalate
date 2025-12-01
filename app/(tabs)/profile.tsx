@@ -21,9 +21,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTutorial } from '@/context/TutorialContext';
-import { CopilotStep, walkthroughable } from 'react-native-copilot';
-
-const WalkthroughableView = walkthroughable(View);
 
 const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
@@ -307,33 +304,27 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <CopilotStep
-          text="Este es tu perfil. Aqui puedes ver y editar tu informacion personal, cambiar tu foto de perfil y configurar tu cuenta."
-          order={3}
-          name="profile-header"
-        >
-          <WalkthroughableView style={styles.headerSection}>
-            <Pressable style={styles.avatarContainer} onPress={pickImage}>
-              {profileImageUri || user?.picture ? (
-                <Image
-                  key={profileImageUri || user?.picture}
-                  source={{ uri: profileImageUri || user?.picture || undefined }}
-                  style={styles.avatarImage}
-                  resizeMode="cover"
-                />
-              ) : (
-                <View style={styles.avatar}>
-                  <Ionicons name="person" size={60} color="#fff" />
-                </View>
-              )}
-              <View style={styles.cameraIconContainer}>
-                <Ionicons name="camera" size={20} color="#fff" />
+        <View style={styles.headerSection}>
+          <Pressable style={styles.avatarContainer} onPress={pickImage}>
+            {profileImageUri || user?.picture ? (
+              <Image
+                key={profileImageUri || user?.picture}
+                source={{ uri: profileImageUri || user?.picture || undefined }}
+                style={styles.avatarImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={styles.avatar}>
+                <Ionicons name="person" size={60} color="#fff" />
               </View>
-            </Pressable>
+            )}
+            <View style={styles.cameraIconContainer}>
+              <Ionicons name="camera" size={20} color="#fff" />
+            </View>
+          </Pressable>
 
-            <Text style={styles.email}>{user?.email}</Text>
-          </WalkthroughableView>
-        </CopilotStep>
+          <Text style={styles.email}>{user?.email}</Text>
+        </View>
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Profile Information</Text>
