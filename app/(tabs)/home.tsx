@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager, InteractionManager } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -6,64 +6,59 @@ import { router, useFocusEffect } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
 import { AttachStep, useSpotlightTour } from 'react-native-spotlight-tour';
 import { useTutorial } from '@/context/TutorialContext';
+import { useTranslation } from 'react-i18next';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-type AnxietyLevel = {
+type AnxietyLevelConfig = {
   level: number;
-  title: string;
-  description: string;
   colors: string[];
   icon: keyof typeof Ionicons.glyphMap;
 };
 
-const anxietyLevels: AnxietyLevel[] = [
+const anxietyLevelConfigs: AnxietyLevelConfig[] = [
   {
     level: 1,
-    title: 'Calma',
-    description: 'Relajado y en paz. La respiracion es estable y los pensamientos son claros.',
     colors: ['#5a67d8', '#6b46c1'],
     icon: 'happy-outline',
   },
   {
     level: 2,
-    title: 'Leve',
-    description: 'Ligeramente tenso. Preocupaciones menores presentes pero manejables.',
     colors: ['#2d9a6e', '#2b7a9b'],
     icon: 'fitness-outline',
   },
   {
     level: 3,
-    title: 'Moderada',
-    description: 'Notablemente ansioso. El ritmo cardiaco puede aumentar, comienza la inquietud.',
     colors: ['#d97706', '#1e4e6d'],
     icon: 'warning-outline',
   },
   {
     level: 4,
-    title: 'Alta',
-    description: 'Ansiedad fuerte. Dificultad para concentrarse, pensamientos acelerados.',
     colors: ['#c026d3', '#dc2626'],
     icon: 'alert-circle-outline',
   },
   {
     level: 5,
-    title: 'Severa',
-    description: 'Ansiedad intensa o panico. Sentimientos abrumadores, sintomas fisicos presentes.',
     colors: ['#be185d', '#ea580c'],
     icon: 'flash-outline',
   },
 ];
 
 function AnxietyCard({
-  level,
+  levelConfig,
+  title,
+  description,
+  continueText,
   isExpanded,
   onPress,
   onContinue,
 }: {
-  level: AnxietyLevel;
+  levelConfig: AnxietyLevelConfig;
+  title: string;
+  description: string;
+  continueText: string;
   isExpanded: boolean;
   onPress: () => void;
   onContinue: () => void;
@@ -87,36 +82,36 @@ function AnxietyCard({
     <View style={styles.cardWrapper}>
       <Pressable onPress={onPress}>
         <LinearGradient
-          colors={level.colors as [string, string, ...string[]]}
+          colors={levelConfig.colors as [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.card}
         >
           <View style={styles.cardHeader}>
             <Ionicons
-              name={level.icon}
+              name={levelConfig.icon}
               size={32}
               color="rgba(255, 255, 255, 0.95)"
             />
             <View style={styles.levelBadge}>
               <Text style={styles.levelNumber}>
-                {level.level}
+                {levelConfig.level}
               </Text>
             </View>
           </View>
 
           <Text style={styles.cardTitle}>
-            {level.title}
+            {title}
           </Text>
 
           {isExpanded && (
             <Animated.View style={{ opacity: contentOpacity }}>
               <View style={styles.descriptionContainer}>
-                <Text style={styles.cardDescription}>{level.description}</Text>
+                <Text style={styles.cardDescription}>{description}</Text>
               </View>
 
               <Pressable onPress={onContinue} style={styles.continueButton}>
-                <Text style={styles.continueButtonText}>Continuar</Text>
+                <Text style={styles.continueButtonText}>{continueText}</Text>
                 <Ionicons name="arrow-forward" size={18} color="#fff" />
               </Pressable>
             </Animated.View>
@@ -131,27 +126,16 @@ export default function HomeScreen() {
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const { startSession } = useSession();
   const { start } = useSpotlightTour();
-  const { tutorialTrigger, shouldShowTutorial, isLoading: tutorialLoading } = useTutorial();
+  const { shouldShowTutorial, isLoading: tutorialLoading } = useTutorial();
+  const { t } = useTranslation();
   const hasStartedTour = useRef(false);
 
-  // Debug log
-  useEffect(() => {
-    console.log('[Tutorial Debug] State:', {
-      tutorialTrigger,
-      shouldShowTutorial,
-      tutorialLoading,
-      hasStartedTour: hasStartedTour.current,
-    });
-  }, [tutorialTrigger, shouldShowTutorial, tutorialLoading]);
-
-  // Start tutorial when ready - simplified logic
+  // Start tutorial when ready
   useEffect(() => {
     if (!tutorialLoading && shouldShowTutorial && !hasStartedTour.current) {
-      console.log('[Tutorial Debug] Conditions met, starting tour in 800ms...');
       const timer = setTimeout(() => {
         if (!hasStartedTour.current) {
           hasStartedTour.current = true;
-          console.log('[Tutorial Debug] Calling start()');
           start();
         }
       }, 800);
@@ -162,9 +146,7 @@ export default function HomeScreen() {
   // Reset flag when screen loses focus
   useFocusEffect(
     useCallback(() => {
-      console.log('[Tutorial Debug] Screen focused');
       return () => {
-        console.log('[Tutorial Debug] Screen unfocused');
         hasStartedTour.current = false;
       };
     }, [])
@@ -198,8 +180,8 @@ export default function HomeScreen() {
       <AttachStep index={0} style={{ width: '100%' }}>
         <View style={styles.header}>
           <Ionicons name="pulse" size={48} color="#5a8c6a" />
-          <Text style={styles.title}>Niveles de Ansiedad</Text>
-          <Text style={styles.subtitle}>Toca cada tarjeta para saber mas</Text>
+          <Text style={styles.title}>{t('home.title')}</Text>
+          <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
         </View>
       </AttachStep>
 
@@ -209,17 +191,24 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <AttachStep index={1} style={{ width: '100%' }}>
-          <View style={styles.cardsInner}>
-            {anxietyLevels.slice().reverse().map((level) => (
-              <AnxietyCard
-                key={level.level}
-                level={level}
-                isExpanded={expandedLevel === level.level}
-                onPress={() => handleCardPress(level.level)}
-                onContinue={() => handleContinue(level.level)}
-              />
-            ))}
-          </View>
+          <AttachStep index={2} style={{ width: '100%' }}>
+            <AttachStep index={5} style={{ width: '100%' }}>
+              <View style={styles.cardsInner}>
+                {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
+                  <AnxietyCard
+                    key={levelConfig.level}
+                    levelConfig={levelConfig}
+                    title={t(`anxietyLevels.${levelConfig.level}.title`)}
+                    description={t(`anxietyLevels.${levelConfig.level}.description`)}
+                    continueText={t('home.continueButton')}
+                    isExpanded={expandedLevel === levelConfig.level}
+                    onPress={() => handleCardPress(levelConfig.level)}
+                    onContinue={() => handleContinue(levelConfig.level)}
+                  />
+                ))}
+              </View>
+            </AttachStep>
+          </AttachStep>
         </AttachStep>
       </ScrollView>
     </View>

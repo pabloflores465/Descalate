@@ -18,12 +18,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native';
 import { File } from 'expo-file-system';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 const PROFILE_COMPLETE_KEY = '@descalate_profile_complete';
 
 export default function CompleteProfileScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [currentEmail, setCurrentEmail] = useState<string | null>(null);
 
@@ -47,8 +50,8 @@ export default function CompleteProfileScreen() {
 
       if (!permissionResult.granted) {
         Alert.alert(
-          'Permiso requerido',
-          'Por favor permite el acceso a tus fotos para cambiar tu imagen de perfil'
+          t('completeProfile.alerts.permissionRequired'),
+          t('completeProfile.errors.photoPermissionRequired')
         );
         return;
       }
@@ -70,12 +73,12 @@ export default function CompleteProfileScreen() {
 
   const handleComplete = async () => {
     if (!name.trim()) {
-      Alert.alert('Error', 'Por favor ingresa tu nombre');
+      Alert.alert(t('common.error'), t('completeProfile.errors.nameRequired'));
       return;
     }
 
     if (!currentEmail) {
-      Alert.alert('Error', 'No se encontro la sesion');
+      Alert.alert(t('common.error'), t('completeProfile.errors.sessionNotFound'));
       return;
     }
 
@@ -84,7 +87,7 @@ export default function CompleteProfileScreen() {
     try {
       const ageNumber = age ? parseInt(age) : null;
       if (age && (isNaN(ageNumber!) || ageNumber! < 1 || ageNumber! > 150)) {
-        Alert.alert('Error', 'Por favor ingresa una edad valida');
+        Alert.alert(t('common.error'), t('completeProfile.errors.invalidAge'));
         setIsLoading(false);
         return;
       }
@@ -108,7 +111,7 @@ export default function CompleteProfileScreen() {
       router.replace('/(tabs)/home');
     } catch (error) {
       console.error('Error completing profile:', error);
-      Alert.alert('Error', 'No se pudo guardar el perfil');
+      Alert.alert(t('common.error'), t('completeProfile.errors.saveFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -123,6 +126,7 @@ export default function CompleteProfileScreen() {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
+          <LanguageSelector style={styles.languageSelector} />
           <Pressable style={styles.avatarContainer} onPress={pickImage}>
             {profileImageUri ? (
               <Image source={{ uri: profileImageUri }} style={styles.avatarImage} />
@@ -136,31 +140,31 @@ export default function CompleteProfileScreen() {
             </View>
           </Pressable>
 
-          <Text style={styles.title}>Completa tu Perfil</Text>
-          <Text style={styles.subtitle}>Personaliza tu experiencia</Text>
+          <Text style={styles.title}>{t('completeProfile.title')}</Text>
+          <Text style={styles.subtitle}>{t('completeProfile.subtitle')}</Text>
         </View>
 
         <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>INFORMACION PERSONAL</Text>
+          <Text style={styles.sectionTitle}>{t('completeProfile.sections.personalInfo')}</Text>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Nombre *</Text>
+            <Text style={styles.label}>{t('completeProfile.fields.name')}</Text>
             <TextInput
               style={styles.input}
               value={name}
               onChangeText={setName}
-              placeholder="Ingresa tu nombre"
+              placeholder={t('completeProfile.fields.namePlaceholder')}
               placeholderTextColor="#999"
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Edad</Text>
+            <Text style={styles.label}>{t('completeProfile.fields.age')}</Text>
             <TextInput
               style={styles.input}
               value={age}
               onChangeText={setAge}
-              placeholder="Ingresa tu edad"
+              placeholder={t('completeProfile.fields.agePlaceholder')}
               placeholderTextColor="#999"
               keyboardType="numeric"
               maxLength={3}
@@ -168,7 +172,7 @@ export default function CompleteProfileScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Genero</Text>
+            <Text style={styles.label}>{t('completeProfile.fields.gender')}</Text>
             <View style={styles.genderContainer}>
               <Pressable
                 style={[styles.genderButton, gender === 'Male' && styles.genderButtonActive]}
@@ -178,7 +182,7 @@ export default function CompleteProfileScreen() {
                 <Text
                   style={[styles.genderButtonText, gender === 'Male' && styles.genderButtonTextActive]}
                 >
-                  Hombre
+                  {t('completeProfile.genderOptions.male')}
                 </Text>
               </Pressable>
 
@@ -190,7 +194,7 @@ export default function CompleteProfileScreen() {
                 <Text
                   style={[styles.genderButtonText, gender === 'Female' && styles.genderButtonTextActive]}
                 >
-                  Mujer
+                  {t('completeProfile.genderOptions.female')}
                 </Text>
               </Pressable>
 
@@ -202,7 +206,7 @@ export default function CompleteProfileScreen() {
                 <Text
                   style={[styles.genderButtonText, gender === 'Other' && styles.genderButtonTextActive]}
                 >
-                  Otro
+                  {t('completeProfile.genderOptions.other')}
                 </Text>
               </Pressable>
             </View>
@@ -219,12 +223,12 @@ export default function CompleteProfileScreen() {
               <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginRight: 10 }} />
             )}
             <Text style={styles.saveButtonText}>
-              {isLoading ? 'Guardando...' : 'Continuar'}
+              {isLoading ? t('completeProfile.buttons.saving') : t('completeProfile.buttons.continue')}
             </Text>
           </Pressable>
 
           <Pressable style={styles.skipButton} onPress={handleSkip}>
-            <Text style={styles.skipText}>Completar despues</Text>
+            <Text style={styles.skipText}>{t('completeProfile.buttons.completeLater')}</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -254,6 +258,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
+  },
+  languageSelector: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
   },
   avatarContainer: {
     marginBottom: 16,

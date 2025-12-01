@@ -1,9 +1,16 @@
 import { Stack } from 'expo-router';
+import { useEffect } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
 import { SessionProvider } from '@/context/SessionContext';
 import { TutorialProvider } from '@/context/TutorialContext';
+import '@/locales/i18n';
+import { initializeLanguage } from '@/locales/i18n';
 
 export default function RootLayout() {
+  useEffect(() => {
+    initializeLanguage();
+  }, []);
+
   return (
     <AuthProvider>
       <SessionProvider>

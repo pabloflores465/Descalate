@@ -4,43 +4,45 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const ONBOARDING_KEY = '@descalate_onboarding_complete';
 
 type Slide = {
   key: string;
-  title: string;
-  text: string;
+  titleKey: string;
+  textKey: string;
   icon: keyof typeof Ionicons.glyphMap;
   colors: [string, string];
 };
 
-const slides: Slide[] = [
+const slidesConfig: Slide[] = [
   {
     key: '1',
-    title: 'Bienvenido a Descalate',
-    text: 'Tu companero personal para manejar la ansiedad y encontrar la calma interior cuando mas lo necesitas.',
+    titleKey: 'onboarding.slides.welcome.title',
+    textKey: 'onboarding.slides.welcome.text',
     icon: 'heart-outline',
     colors: ['#5a8c6a', '#3d6b4f'],
   },
   {
     key: '2',
-    title: 'Entiende tu Ansiedad',
-    text: 'Aprende a identificar y comprender tus niveles de ansiedad. El primer paso para manejarla es reconocerla.',
+    titleKey: 'onboarding.slides.understand.title',
+    textKey: 'onboarding.slides.understand.text',
     icon: 'eye-outline',
     colors: ['#5a67d8', '#4c51bf'],
   },
   {
     key: '3',
-    title: 'Herramientas a tu Alcance',
-    text: 'Accede a ejercicios de respiracion, meditacion y tecnicas probadas cientificamente para reducir la ansiedad.',
+    titleKey: 'onboarding.slides.tools.title',
+    textKey: 'onboarding.slides.tools.text',
     icon: 'medical-outline',
     colors: ['#2d9a6e', '#228b5b'],
   },
   {
     key: '4',
-    title: 'Tu Progreso Importa',
-    text: 'Cada sesion cuenta. Observa como mejoras con el tiempo y celebra tus logros en el camino hacia el bienestar.',
+    titleKey: 'onboarding.slides.progress.title',
+    textKey: 'onboarding.slides.progress.text',
     icon: 'trending-up-outline',
     colors: ['#c026d3', '#a21caf'],
   },
@@ -48,6 +50,7 @@ const slides: Slide[] = [
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleDone = async () => {
     await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
@@ -60,8 +63,8 @@ export default function OnboardingScreen() {
         <View style={styles.iconContainer}>
           <Ionicons name={item.icon} size={120} color="rgba(255,255,255,0.9)" />
         </View>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.text}>{item.text}</Text>
+        <Text style={styles.title}>{t(item.titleKey)}</Text>
+        <Text style={styles.text}>{t(item.textKey)}</Text>
       </LinearGradient>
     );
   };
@@ -85,28 +88,40 @@ export default function OnboardingScreen() {
   const renderSkipButton = () => {
     return (
       <View style={styles.skipButton}>
-        <Text style={styles.skipText}>Saltar</Text>
+        <Text style={styles.skipText}>{t('common.skip')}</Text>
       </View>
     );
   };
 
   return (
-    <AppIntroSlider
-      data={slides}
-      renderItem={renderItem}
-      onDone={handleDone}
-      showSkipButton
-      onSkip={handleDone}
-      renderNextButton={renderNextButton}
-      renderDoneButton={renderDoneButton}
-      renderSkipButton={renderSkipButton}
-      dotStyle={styles.dot}
-      activeDotStyle={styles.activeDot}
-    />
+    <View style={styles.container}>
+      <LanguageSelector style={styles.languageSelector} />
+      <AppIntroSlider
+        data={slidesConfig}
+        renderItem={renderItem}
+        onDone={handleDone}
+        showSkipButton
+        onSkip={handleDone}
+        renderNextButton={renderNextButton}
+        renderDoneButton={renderDoneButton}
+        renderSkipButton={renderSkipButton}
+        dotStyle={styles.dot}
+        activeDotStyle={styles.activeDot}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  languageSelector: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
   slide: {
     flex: 1,
     alignItems: 'center',

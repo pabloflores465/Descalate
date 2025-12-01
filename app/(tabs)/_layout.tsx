@@ -1,12 +1,15 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Pressable, StyleSheet, Animated, Text } from 'react-native';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import {
   SpotlightTourProvider,
   TourStep,
+  AttachStep,
 } from 'react-native-spotlight-tour';
 import { useTutorial } from '@/context/TutorialContext';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 
 type TabIconProps = {
   name: keyof typeof Ionicons.glyphMap;
@@ -154,13 +157,15 @@ function TabLayoutContent() {
         name="charts"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <AnimatedTabIcon
-              name="stats-chart"
-              nameOutline="stats-chart-outline"
-              color={color}
-              size={26}
-              focused={focused}
-            />
+            <AttachStep index={3}>
+              <AnimatedTabIcon
+                name="stats-chart"
+                nameOutline="stats-chart-outline"
+                color={color}
+                size={26}
+                focused={focused}
+              />
+            </AttachStep>
           ),
         }}
       />
@@ -168,13 +173,15 @@ function TabLayoutContent() {
         name="profile"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <AnimatedTabIcon
-              name="person"
-              nameOutline="person-outline"
-              color={color}
-              size={26}
-              focused={focused}
-            />
+            <AttachStep index={4}>
+              <AnimatedTabIcon
+                name="person"
+                nameOutline="person-outline"
+                color={color}
+                size={26}
+                focused={focused}
+              />
+            </AttachStep>
           ),
         }}
       />
@@ -182,37 +189,136 @@ function TabLayoutContent() {
   );
 }
 
-const tourSteps: TourStep[] = [
+const createTourSteps = (t: TFunction): TourStep[] => [
+  // Step 0: Welcome
   {
     render: ({ next }) => (
       <View style={styles.tooltipContainer}>
-        <Text style={styles.tooltipTitle}>Bienvenido a Descalate</Text>
-        <Text style={styles.tooltipText}>
-          Esta app te ayudara a manejar tu ansiedad con ejercicios y consejos personalizados.
-        </Text>
+        <View style={styles.tooltipHeader}>
+          <View style={styles.stepIndicator}>
+            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 1, total: 6 })}</Text>
+          </View>
+        </View>
+        <Text style={styles.tooltipTitle}>{t('tutorial.steps.welcome.title')}</Text>
+        <Text style={styles.tooltipText}>{t('tutorial.steps.welcome.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
-            <Text style={styles.tooltipButtonTextPrimary}>Siguiente</Text>
+            <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.start')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
         </View>
       </View>
     ),
   },
+  // Step 1: Anxiety levels
   {
-    render: ({ stop, previous }) => (
+    render: ({ next, previous }) => (
       <View style={styles.tooltipContainer}>
-        <Text style={styles.tooltipTitle}>Niveles de Ansiedad</Text>
-        <Text style={styles.tooltipText}>
-          Selecciona el nivel que mejor describe como te sientes. Cada nivel tiene ejercicios especificos para ayudarte.
-        </Text>
+        <View style={styles.tooltipHeader}>
+          <View style={styles.stepIndicator}>
+            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 2, total: 6 })}</Text>
+          </View>
+        </View>
+        <Text style={styles.tooltipTitle}>{t('tutorial.steps.anxietyLevels.title')}</Text>
+        <Text style={styles.tooltipText}>{t('tutorial.steps.anxietyLevels.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={previous} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
-            <Text style={styles.tooltipButtonText}>Anterior</Text>
+          </Pressable>
+          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+            <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    ),
+  },
+  // Step 2: Session flow explanation
+  {
+    render: ({ next, previous }) => (
+      <View style={styles.tooltipContainer}>
+        <View style={styles.tooltipHeader}>
+          <View style={styles.stepIndicator}>
+            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 3, total: 6 })}</Text>
+          </View>
+        </View>
+        <Text style={styles.tooltipTitle}>{t('tutorial.steps.howItWorks.title')}</Text>
+        <Text style={styles.tooltipText}>{t('tutorial.steps.howItWorks.description')}</Text>
+        <View style={styles.tooltipButtons}>
+          <Pressable onPress={previous} style={styles.tooltipButton}>
+            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+          </Pressable>
+          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+            <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    ),
+  },
+  // Step 3: Charts tab
+  {
+    render: ({ next, previous }) => (
+      <View style={styles.tooltipContainer}>
+        <View style={styles.tooltipHeader}>
+          <View style={styles.stepIndicator}>
+            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 4, total: 6 })}</Text>
+          </View>
+        </View>
+        <Text style={styles.tooltipTitle}>{t('tutorial.steps.statistics.title')}</Text>
+        <Text style={styles.tooltipText}>{t('tutorial.steps.statistics.description')}</Text>
+        <View style={styles.tooltipButtons}>
+          <Pressable onPress={previous} style={styles.tooltipButton}>
+            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+          </Pressable>
+          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+            <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    ),
+  },
+  // Step 4: Profile tab
+  {
+    render: ({ next, previous }) => (
+      <View style={styles.tooltipContainer}>
+        <View style={styles.tooltipHeader}>
+          <View style={styles.stepIndicator}>
+            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 5, total: 6 })}</Text>
+          </View>
+        </View>
+        <Text style={styles.tooltipTitle}>{t('tutorial.steps.profile.title')}</Text>
+        <Text style={styles.tooltipText}>{t('tutorial.steps.profile.description')}</Text>
+        <View style={styles.tooltipButtons}>
+          <Pressable onPress={previous} style={styles.tooltipButton}>
+            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+          </Pressable>
+          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+            <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    ),
+  },
+  // Step 5: Ready to start
+  {
+    render: ({ stop, previous }) => (
+      <View style={styles.tooltipContainer}>
+        <View style={styles.tooltipHeader}>
+          <View style={styles.stepIndicator}>
+            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 6, total: 6 })}</Text>
+          </View>
+        </View>
+        <Text style={styles.tooltipTitle}>{t('tutorial.steps.ready.title')}</Text>
+        <Text style={styles.tooltipText}>{t('tutorial.steps.ready.description')}</Text>
+        <View style={styles.tooltipButtons}>
+          <Pressable onPress={previous} style={styles.tooltipButton}>
+            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
           </Pressable>
           <Pressable onPress={stop} style={styles.tooltipButtonPrimary}>
-            <Text style={styles.tooltipButtonTextPrimary}>Entendido</Text>
+            <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.begin')}</Text>
             <Ionicons name="checkmark" size={18} color="#fff" />
           </Pressable>
         </View>
@@ -223,6 +329,9 @@ const tourSteps: TourStep[] = [
 
 export default function TabLayout() {
   const { completeTutorial } = useTutorial();
+  const { t } = useTranslation();
+
+  const tourSteps = useMemo(() => createTourSteps(t), [t]);
 
   const handleTourStop = () => {
     completeTutorial();
@@ -274,12 +383,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
-    maxWidth: 300,
+    maxWidth: 320,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
+  },
+  tooltipHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 8,
+  },
+  stepIndicator: {
+    backgroundColor: '#f1f8f3',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  stepIndicatorText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#5a8c6a',
   },
   tooltipTitle: {
     fontSize: 18,

@@ -6,6 +6,8 @@ type SelectedExercise = {
   id: number;
   title: string;
   duration: string;
+  translationKey?: string;
+  level?: number;
 };
 
 type SessionTip = {

@@ -1,0 +1,679 @@
+{
+  "common": {
+    "error": "Error",
+    "success": "Exito",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "save": "Guardar",
+    "loading": "Cargando...",
+    "next": "Siguiente",
+    "skip": "Saltar",
+    "start": "Comenzar",
+    "finish": "Finalizar"
+  },
+  "auth": {
+    "tabs": {
+      "login": "Iniciar sesion",
+      "register": "Registrarse"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Contrasena",
+      "emailPlaceholder": "ejemplo@gmail.com"
+    },
+    "buttons": {
+      "loggingIn": "Iniciando sesion...",
+      "login": "Iniciar sesion",
+      "registering": "Registrando...",
+      "register": "Registrarse",
+      "googleLoading": "Cargando...",
+      "googleContinue": "Continuar con Google"
+    },
+    "errors": {
+      "validationError": "Error de validacion",
+      "invalidCredentials": "Correo o contrasena invalidos",
+      "googleAccountExists": "Esta cuenta fue creada con Google. Por favor inicia sesion con Google.",
+      "loginFailed": "Fallo al iniciar sesion",
+      "emailAlreadyRegistered": "Este correo ya esta registrado",
+      "registrationFailed": "Fallo al crear la cuenta",
+      "userNotFound": "Usuario no encontrado",
+      "noAccountExists": "No existe una cuenta con este correo. Por favor registrate primero.",
+      "googleAuthFailed": "Fallo al autenticar con Google"
+    }
+  },
+  "onboarding": {
+    "slides": {
+      "welcome": {
+        "title": "Bienvenido a Descalate",
+        "text": "Tu companero personal para manejar la ansiedad y encontrar la calma interior cuando mas lo necesitas."
+      },
+      "understand": {
+        "title": "Entiende tu Ansiedad",
+        "text": "Aprende a identificar y comprender tus niveles de ansiedad. El primer paso para manejarla es reconocerla."
+      },
+      "tools": {
+        "title": "Herramientas a tu Alcance",
+        "text": "Accede a ejercicios de respiracion, meditacion y tecnicas probadas cientificamente para reducir la ansiedad."
+      },
+      "progress": {
+        "title": "Tu Progreso Importa",
+        "text": "Cada sesion cuenta. Observa como mejoras con el tiempo y celebra tus logros en el camino hacia el bienestar."
+      }
+    }
+  },
+  "completeProfile": {
+    "title": "Completa tu Perfil",
+    "subtitle": "Personaliza tu experiencia",
+    "sections": {
+      "personalInfo": "INFORMACION PERSONAL"
+    },
+    "fields": {
+      "name": "Nombre *",
+      "namePlaceholder": "Ingresa tu nombre",
+      "age": "Edad",
+      "agePlaceholder": "Ingresa tu edad",
+      "gender": "Genero"
+    },
+    "genderOptions": {
+      "male": "Hombre",
+      "female": "Mujer",
+      "other": "Otro"
+    },
+    "buttons": {
+      "saving": "Guardando...",
+      "continue": "Continuar",
+      "completeLater": "Completar despues"
+    },
+    "errors": {
+      "nameRequired": "Por favor ingresa tu nombre",
+      "sessionNotFound": "No se encontro la sesion",
+      "invalidAge": "Por favor ingresa una edad valida",
+      "photoPermissionRequired": "Por favor permite el acceso a tus fotos para cambiar tu imagen de perfil",
+      "saveFailed": "No se pudo guardar el perfil"
+    },
+    "alerts": {
+      "permissionRequired": "Permiso requerido"
+    }
+  },
+  "home": {
+    "title": "Niveles de Ansiedad",
+    "subtitle": "Toca cada tarjeta para saber mas",
+    "continueButton": "Continuar"
+  },
+  "anxietyLevels": {
+    "1": {
+      "title": "Calma",
+      "description": "Relajado y en paz. La respiracion es estable y los pensamientos son claros."
+    },
+    "2": {
+      "title": "Leve",
+      "description": "Ligeramente tenso. Preocupaciones menores presentes pero manejables."
+    },
+    "3": {
+      "title": "Moderada",
+      "description": "Notablemente ansioso. El ritmo cardiaco puede aumentar, comienza la inquietud."
+    },
+    "4": {
+      "title": "Alta",
+      "description": "Ansiedad fuerte. Dificultad para concentrarse, pensamientos acelerados."
+    },
+    "5": {
+      "title": "Severa",
+      "description": "Ansiedad intensa o panico. Sentimientos abrumadores, sintomas fisicos presentes."
+    }
+  },
+  "tutorial": {
+    "steps": {
+      "welcome": {
+        "title": "Bienvenido a Descalate",
+        "description": "Esta aplicacion te ayudara a manejar tu ansiedad de manera efectiva. Te guiaremos a traves de las funciones principales."
+      },
+      "anxietyLevels": {
+        "title": "Niveles de Ansiedad",
+        "description": "Aqui puedes seleccionar tu nivel actual de ansiedad del 1 al 5. Cada nivel tiene ejercicios y consejos personalizados para ti."
+      },
+      "howItWorks": {
+        "title": "Como funciona una sesion",
+        "description": "1. Selecciona tu nivel de ansiedad\n2. Elige ejercicios recomendados\n3. Recibe consejos personalizados\n4. Registra tu progreso"
+      },
+      "statistics": {
+        "title": "Estadisticas",
+        "description": "En esta pestana podras ver tu historial de sesiones, graficas de progreso y estadisticas sobre tu manejo de la ansiedad."
+      },
+      "profile": {
+        "title": "Tu Perfil",
+        "description": "Aqui puedes actualizar tu informacion personal, cambiar tu foto de perfil y gestionar tu cuenta."
+      },
+      "ready": {
+        "title": "Listo para comenzar",
+        "description": "Ya conoces las funciones principales. Comienza seleccionando tu nivel de ansiedad actual y descubre ejercicios y consejos para ti."
+      }
+    },
+    "buttons": {
+      "start": "Comenzar",
+      "next": "Siguiente",
+      "begin": "Empezar"
+    },
+    "stepIndicator": "{{current}}/{{total}}"
+  },
+  "exercises": {
+    "title": "Selecciona Ejercicios",
+    "subtitle": "Para Ansiedad {{levelTitle}} (Nivel {{level}})",
+    "sectionTitle": "Toca para ver detalles, luego selecciona:",
+    "actionTitle": "Que deseas hacer ahora?",
+    "startSession": "Comenzar Sesion",
+    "duration": "{{minutes}} min",
+    "levels": {
+      "1": {
+        "exercises": {
+          "mindfulBreathing": {
+            "title": "Respiracion Consciente",
+            "description": "Concientiza tu respiracion natural sin cambiarla. Observa como el aire entra y sale.",
+            "duration": 5
+          },
+          "gratitudeJournal": {
+            "title": "Diario de Gratitud",
+            "description": "Escribe tres cosas por las que estas agradecido hoy. Reflexiona sobre los aspectos positivos de tu vida.",
+            "duration": 10
+          },
+          "gentleStretching": {
+            "title": "Estiramiento Suave",
+            "description": "Estiramientos lentos y suaves para relajar tu cuerpo y mantener la calma.",
+            "duration": 10
+          }
+        }
+      },
+      "2": {
+        "exercises": {
+          "boxBreathing": {
+            "title": "Respiracion Cuadrada",
+            "description": "Inhala 4 segundos, manten 4, exhala 4, manten 4. Repite el ciclo para calmar tu sistema nervioso.",
+            "duration": 5
+          },
+          "progressiveMuscleRelaxation": {
+            "title": "Relajacion Muscular Progresiva",
+            "description": "Tensa y relaja cada grupo muscular sistematicamente para liberar tension fisica.",
+            "duration": 15
+          },
+          "mindfulWalking": {
+            "title": "Caminata Consciente",
+            "description": "Camina lentamente prestando atencion a cada paso y a las sensaciones de tu cuerpo.",
+            "duration": 15
+          }
+        }
+      },
+      "3": {
+        "exercises": {
+          "breathing478": {
+            "title": "Tecnica de Respiracion 4-7-8",
+            "description": "Inhala 4 segundos, manten 7, exhala 8. Esta tecnica activa tu sistema nervioso parasimpatico.",
+            "duration": 5
+          },
+          "bodyScan": {
+            "title": "Meditacion de Escaneo Corporal",
+            "description": "Recorre mentalmente tu cuerpo desde los pies hasta la cabeza, notando y liberando tensiones.",
+            "duration": 15
+          },
+          "grounding54321": {
+            "title": "Ejercicio de Anclaje (5-4-3-2-1)",
+            "description": "Identifica 5 cosas que ves, 4 que tocas, 3 que oyes, 2 que hueles y 1 que saboreas.",
+            "duration": 5
+          }
+        }
+      },
+      "4": {
+        "exercises": {
+          "deepDiaphragmatic": {
+            "title": "Respiracion Diafragmatica Profunda",
+            "description": "Respiracion profunda desde el diafragma para activar la respuesta de relajacion del cuerpo.",
+            "duration": 10
+          },
+          "guidedVisualization": {
+            "title": "Visualizacion Guiada",
+            "description": "Imagina un lugar seguro y tranquilo con todos tus sentidos para reducir la ansiedad.",
+            "duration": 15
+          },
+          "physicalRelease": {
+            "title": "Liberacion de Actividad Fisica",
+            "description": "Movimientos fisicos intensos para liberar energia ansiosa acumulada en el cuerpo.",
+            "duration": 10
+          },
+          "coldWater": {
+            "title": "Tecnica del Agua Fria",
+            "description": "Aplica agua fria en tu cara o munecas para activar el reflejo de inmersion y calmar tu sistema.",
+            "duration": 2
+          }
+        }
+      },
+      "5": {
+        "exercises": {
+          "emergencyGrounding": {
+            "title": "Anclaje de Emergencia",
+            "description": "Tecnicas rapidas de anclaje: sostener hielo, apretar algo, nombrar objetos a tu alrededor.",
+            "duration": 2
+          },
+          "tippTechnique": {
+            "title": "Tecnica TIPP",
+            "description": "Temperatura, Intensidad de ejercicio, Respiracion Pausada, Relajacion muscular Progresiva.",
+            "duration": 10
+          },
+          "safePlace": {
+            "title": "Visualizacion del Lugar Seguro",
+            "description": "Crea y visualiza un lugar mentalmente seguro donde puedas refugiarte durante el panico.",
+            "duration": 5
+          },
+          "butterflyHug": {
+            "title": "Abrazo de Mariposa",
+            "description": "Cruza los brazos sobre el pecho y alterna palmaditas suaves mientras respiras profundamente.",
+            "duration": 5
+          }
+        }
+      }
+    }
+  },
+  "tips": {
+    "title": "Consejo",
+    "subtitle": "Para Ansiedad {{levelTitle}} (Nivel {{level}})",
+    "sectionTitle": "Aqui tienes un consejo para ti:",
+    "actionTitle": "Que deseas hacer ahora?",
+    "selectNewLevel": "Seleccionar Nuevo Nivel",
+    "finishSession": "Finalizar Sesion",
+    "levelSelection": {
+      "title": "Selecciona un Nivel",
+      "subtitle": "Como te sientes ahora?"
+    },
+    "categories": {
+      "lifestyle": "Estilo de vida",
+      "mindfulness": "Mindfulness",
+      "social": "Social",
+      "selfKnowledge": "Autoconocimiento",
+      "diet": "Dieta",
+      "balance": "Equilibrio",
+      "exercise": "Ejercicio",
+      "cognitive": "Cognitivo",
+      "environment": "Ambiente",
+      "selfCare": "Autocuidado",
+      "digitalWellbeing": "Bienestar digital",
+      "grounding": "Anclaje",
+      "support": "Apoyo",
+      "growth": "Crecimiento",
+      "expression": "Expresion",
+      "professional": "Profesional",
+      "sensory": "Sensorial",
+      "planning": "Planificacion",
+      "hope": "Esperanza"
+    },
+    "levels": {
+      "1": {
+        "tips": {
+          "maintainRoutine": {
+            "title": "Manten Tu Rutina",
+            "category": "lifestyle",
+            "content": "Una rutina consistente ayuda a mantener bajos los niveles de ansiedad.",
+            "steps": [
+              "Establece horarios regulares para dormir y despertar",
+              "Planifica tus comidas a horas consistentes",
+              "Incluye tiempo para actividades que disfrutas",
+              "Mantien un equilibrio entre trabajo y descanso"
+            ]
+          },
+          "dailyMindfulness": {
+            "title": "Practica Mindfulness Diario",
+            "category": "mindfulness",
+            "content": "La practica regular de mindfulness fortalece tu capacidad de manejar el estres.",
+            "steps": [
+              "Dedica 5-10 minutos diarios a la meditacion",
+              "Practica comer conscientemente en al menos una comida",
+              "Toma pausas breves para respirar durante el dia",
+              "Observa tus pensamientos sin juzgarlos",
+              "Practica la gratitud antes de dormir"
+            ]
+          },
+          "stayConnected": {
+            "title": "Mantente Conectado",
+            "category": "social",
+            "content": "Las conexiones sociales son fundamentales para el bienestar emocional.",
+            "steps": [
+              "Programa tiempo regular con amigos o familia",
+              "Participa en actividades comunitarias",
+              "Comparte tus sentimientos con personas de confianza",
+              "Ofrece ayuda a otros cuando puedas"
+            ]
+          }
+        }
+      },
+      "2": {
+        "tips": {
+          "identifyTriggers": {
+            "title": "Identifica Tus Desencadenantes",
+            "category": "selfKnowledge",
+            "content": "Conocer que dispara tu ansiedad es el primer paso para manejarla.",
+            "steps": [
+              "Lleva un diario de momentos ansiosos",
+              "Anota que estabas haciendo cuando surgieron",
+              "Identifica patrones en tus desencadenantes",
+              "Desarrolla estrategias especificas para cada uno"
+            ]
+          },
+          "limitCaffeine": {
+            "title": "Limita el Consumo de Cafeina",
+            "category": "diet",
+            "content": "La cafeina puede aumentar los sintomas de ansiedad.",
+            "steps": [
+              "Reduce gradualmente el consumo de cafe",
+              "Evita la cafeina despues del mediodia",
+              "Prueba alternativas como te de hierbas",
+              "Mantente hidratado con agua"
+            ]
+          },
+          "takeBreaks": {
+            "title": "Toma Descansos Regulares",
+            "category": "balance",
+            "content": "Los descansos previenen la acumulacion de estres.",
+            "steps": [
+              "Usa la tecnica Pomodoro (25 min trabajo, 5 descanso)",
+              "Levantate y estirate cada hora",
+              "Sal a tomar aire fresco cuando puedas",
+              "Desconectate de pantallas durante los descansos"
+            ]
+          },
+          "getMoving": {
+            "title": "Ponte en Movimiento",
+            "category": "exercise",
+            "content": "El ejercicio regular reduce significativamente la ansiedad.",
+            "steps": [
+              "Camina al menos 20 minutos diarios",
+              "Prueba yoga o estiramientos suaves",
+              "Baila o haz ejercicio que disfrutes",
+              "Sube escaleras en lugar de usar el ascensor"
+            ]
+          }
+        }
+      },
+      "3": {
+        "tips": {
+          "challengeNegativeThoughts": {
+            "title": "Desafia los Pensamientos Negativos",
+            "category": "cognitive",
+            "content": "Aprende a cuestionar y reencuadrar pensamientos ansiosos.",
+            "steps": [
+              "Identifica el pensamiento negativo",
+              "Preguntate: Es esto realmente cierto?",
+              "Busca evidencia a favor y en contra",
+              "Crea un pensamiento mas equilibrado"
+            ]
+          },
+          "createCalmEnvironment": {
+            "title": "Crea un Ambiente Tranquilo",
+            "category": "environment",
+            "content": "Tu entorno fisico afecta tu estado mental.",
+            "steps": [
+              "Reduce el desorden en tu espacio",
+              "Usa iluminacion suave cuando sea posible",
+              "Incorpora plantas o elementos naturales",
+              "Crea un rincon especial para relajarte",
+              "Usa aromas relajantes como lavanda"
+            ]
+          },
+          "practiceSelfCompassion": {
+            "title": "Practica la Autocompasion",
+            "category": "selfCare",
+            "content": "Se amable contigo mismo durante momentos dificiles.",
+            "steps": [
+              "Hablate como le hablarias a un amigo",
+              "Reconoce que todos tenemos momentos dificiles",
+              "No te juzgues por sentir ansiedad",
+              "Celebra tus pequenos logros"
+            ]
+          },
+          "limitScreenTime": {
+            "title": "Limita el Tiempo de Pantalla",
+            "category": "digitalWellbeing",
+            "content": "El exceso de pantallas puede aumentar la ansiedad.",
+            "steps": [
+              "Establece horarios sin telefono",
+              "Evita pantallas 1 hora antes de dormir",
+              "Desactiva notificaciones no esenciales",
+              "Haz una desintoxicacion digital periodica"
+            ]
+          }
+        }
+      },
+      "4": {
+        "tips": {
+          "useGroundingTechniques": {
+            "title": "Usa Tecnicas de Anclaje",
+            "category": "grounding",
+            "content": "El anclaje te ayuda a volver al momento presente.",
+            "steps": [
+              "Practica la tecnica 5-4-3-2-1 con tus sentidos",
+              "Sostien un objeto y describe su textura",
+              "Pon los pies firmemente en el suelo",
+              "Nombra cosas a tu alrededor en voz alta"
+            ]
+          },
+          "seekSupport": {
+            "title": "Busca Apoyo",
+            "category": "support",
+            "content": "No tienes que enfrentar la ansiedad solo.",
+            "steps": [
+              "Habla con alguien de confianza sobre como te sientes",
+              "Considera unirte a un grupo de apoyo",
+              "No tengas miedo de pedir ayuda",
+              "Acepta el apoyo cuando te lo ofrezcan"
+            ]
+          },
+          "avoidAvoidance": {
+            "title": "Evita la Evitacion",
+            "category": "growth",
+            "content": "Evitar situaciones puede empeorar la ansiedad a largo plazo.",
+            "steps": [
+              "Identifica que situaciones estas evitando",
+              "Acercate gradualmente a lo que temes",
+              "Celebra cada pequeno paso",
+              "Recuerda que la incomodidad es temporal"
+            ]
+          },
+          "writeItDown": {
+            "title": "Escribelo",
+            "category": "expression",
+            "content": "Escribir puede ayudar a procesar emociones intensas.",
+            "steps": [
+              "Escribe tus preocupaciones sin filtrar",
+              "Describe tus sensaciones fisicas",
+              "Anota posibles soluciones",
+              "Revisa lo escrito con perspectiva"
+            ]
+          },
+          "considerProfessionalHelp": {
+            "title": "Considera Ayuda Profesional",
+            "category": "professional",
+            "content": "Un profesional puede darte herramientas especializadas.",
+            "steps": [
+              "Investiga opciones de terapia en tu area",
+              "Considera la terapia cognitivo-conductual (TCC)",
+              "Habla con tu medico sobre tus sintomas",
+              "No veas buscar ayuda como una debilidad"
+            ]
+          }
+        }
+      },
+      "5": {
+        "tips": {
+          "focusOnSafety": {
+            "title": "Enfocate en la Seguridad",
+            "category": "grounding",
+            "content": "En momentos de panico, tu seguridad es lo primero.",
+            "steps": [
+              "Ve a un lugar donde te sientas seguro",
+              "Si es posible, sientate o recuestate",
+              "Recuerda que el panico pasara",
+              "Repite: Esto es temporal, estoy a salvo"
+            ]
+          },
+          "useYourSenses": {
+            "title": "Usa Tus Sentidos",
+            "category": "sensory",
+            "content": "Los estimulos sensoriales fuertes pueden interrumpir el panico.",
+            "steps": [
+              "Sostien hielo en tus manos",
+              "Huele algo fuerte como menta o citricos",
+              "Escucha musica o sonidos relajantes",
+              "Aplica agua fria en tu cara"
+            ]
+          },
+          "haveEmergencyContact": {
+            "title": "Ten un Contacto de Emergencia",
+            "category": "support",
+            "content": "Tener a quien llamar puede ser crucial en momentos dificiles.",
+            "steps": [
+              "Identifica 1-3 personas de confianza",
+              "Informales que pueden ser tu apoyo",
+              "Ten sus numeros facilmente accesibles",
+              "Practica que decir cuando los llames"
+            ]
+          },
+          "createCrisisPlan": {
+            "title": "Crea un Plan de Crisis",
+            "category": "planning",
+            "content": "Un plan preparado te da estructura cuando mas lo necesitas.",
+            "steps": [
+              "Escribe los pasos a seguir durante una crisis",
+              "Incluye tecnicas que te han funcionado",
+              "Ten numeros de emergencia a la mano",
+              "Revisa y actualiza el plan regularmente"
+            ]
+          },
+          "seekProfessionalHelp": {
+            "title": "Busca Ayuda Profesional",
+            "category": "professional",
+            "content": "La ansiedad severa requiere atencion profesional.",
+            "steps": [
+              "Contacta a un profesional de salud mental",
+              "Si estas en crisis, llama a una linea de ayuda",
+              "Considera opciones de tratamiento",
+              "Recuerda que buscar ayuda es valiente"
+            ]
+          },
+          "rememberThisWillPass": {
+            "title": "Recuerda: Esto Pasara",
+            "category": "hope",
+            "content": "Incluso los momentos mas dificiles son temporales.",
+            "steps": [
+              "Los ataques de panico suelen durar 10-20 minutos",
+              "Has sobrevivido momentos dificiles antes",
+              "Tu cuerpo no puede mantener el panico indefinidamente",
+              "Despues de la tormenta viene la calma"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "charts": {
+    "title": "Estadisticas",
+    "subtitle": "Tu historial de sesiones",
+    "noData": {
+      "title": "Sin datos aun",
+      "message": "Completa tu primera sesion para ver tus estadisticas aqui"
+    },
+    "stats": {
+      "totalSessions": "Sesiones Totales",
+      "thisWeek": "Esta Semana",
+      "exercises": "Ejercicios",
+      "avgTime": "Tiempo Promedio"
+    },
+    "cards": {
+      "avgLevel": "Nivel Promedio",
+      "weeklyTrend": "Tendencia Semanal",
+      "monthlyTrend": "Tendencia Mensual",
+      "yearlyTrend": "Tendencia Anual",
+      "levelDistribution": "Distribucion de Niveles",
+      "favoriteExercises": "Ejercicios Favoritos",
+      "tipCategories": "Categorias de Consejos",
+      "recentSessions": "Sesiones Recientes"
+    },
+    "chartSubtitles": {
+      "weekly": "Nivel promedio de ansiedad - ultimos 7 dias",
+      "monthly": "Nivel promedio de ansiedad - ultimos 6 meses",
+      "yearly": "Nivel promedio de ansiedad por ano"
+    },
+    "infoBox": {
+      "title": "Acerca de tus datos",
+      "text": "Estas estadisticas muestran tu progreso a traves de las sesiones. Continua usando la app para obtener mejores insights sobre tus patrones de ansiedad."
+    },
+    "sessions": "sesiones"
+  },
+  "profile": {
+    "sections": {
+      "profileInfo": "Informacion del Perfil"
+    },
+    "fields": {
+      "name": "Nombre *",
+      "namePlaceholder": "Ingresa tu nombre",
+      "age": "Edad",
+      "agePlaceholder": "Ingresa tu edad",
+      "gender": "Genero"
+    },
+    "genderOptions": {
+      "male": "Hombre",
+      "female": "Mujer",
+      "other": "Otro"
+    },
+    "buttons": {
+      "saving": "Guardando...",
+      "saveChanges": "Guardar Cambios",
+      "logOut": "Cerrar Sesion",
+      "resetTutorial": "Reiniciar Tutorial"
+    },
+    "devButtons": {
+      "resetDatabase": "Resetear Base de Datos",
+      "generateTestData": "Generar Datos de Prueba",
+      "generating": "Generando..."
+    },
+    "alerts": {
+      "logOut": {
+        "title": "Cerrar sesion",
+        "message": "Estas seguro que quieres cerrar sesion?",
+        "cancel": "Cancelar",
+        "confirm": "Cerrar sesion"
+      },
+      "resetDatabase": {
+        "title": "Resetear base de datos",
+        "message": "Esto eliminara todos los datos y tendras que volver a registrarte. Estas seguro?",
+        "cancel": "Cancelar",
+        "confirm": "Resetear"
+      },
+      "generateTestData": {
+        "title": "Generar datos de prueba",
+        "message": "Esto creara sesiones historicas del ultimo ano, mes y semana para probar las graficas. Continuar?",
+        "cancel": "Cancelar",
+        "confirm": "Generar"
+      },
+      "resetTutorial": {
+        "title": "Reiniciar tutorial",
+        "message": "Esto reiniciara el tutorial interactivo y te llevara a la pantalla de Inicio.",
+        "cancel": "Cancelar",
+        "confirm": "Reiniciar"
+      },
+      "success": {
+        "databaseReset": "Base de datos reseteada. Puedes registrarte de nuevo.",
+        "testDataGenerated": "Datos historicos generados correctamente. Ve a la pestana de estadisticas para verlos.",
+        "profileUpdated": "Perfil actualizado correctamente"
+      },
+      "errors": {
+        "databaseResetFailed": "Fallo al resetear la base de datos",
+        "testDataFailed": "Fallo al generar los datos de prueba",
+        "userNotFound": "No se encontro el usuario",
+        "photoPermission": "Por favor permite el acceso a tus fotos para cambiar tu imagen de perfil",
+        "imagePick": "Fallo al seleccionar imagen",
+        "profileUpdate": "Fallo al actualizar el perfil"
+      }
+    }
+  },
+  "tabs": {
+    "home": "Inicio",
+    "charts": "Estadisticas",
+    "profile": "Perfil"
+  }
+}

@@ -1,0 +1,679 @@
+{
+  "common": {
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "save": "Save",
+    "loading": "Loading...",
+    "next": "Next",
+    "skip": "Skip",
+    "start": "Start",
+    "finish": "Finish"
+  },
+  "auth": {
+    "tabs": {
+      "login": "Log In",
+      "register": "Sign Up"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "example@gmail.com"
+    },
+    "buttons": {
+      "loggingIn": "Logging in...",
+      "login": "Log In",
+      "registering": "Signing up...",
+      "register": "Sign Up",
+      "googleLoading": "Loading...",
+      "googleContinue": "Continue with Google"
+    },
+    "errors": {
+      "validationError": "Validation Error",
+      "invalidCredentials": "Invalid email or password",
+      "googleAccountExists": "This account was created with Google. Please log in with Google.",
+      "loginFailed": "Login failed",
+      "emailAlreadyRegistered": "This email is already registered",
+      "registrationFailed": "Failed to create account",
+      "userNotFound": "User not found",
+      "noAccountExists": "No account exists with this email. Please sign up first.",
+      "googleAuthFailed": "Failed to authenticate with Google"
+    }
+  },
+  "onboarding": {
+    "slides": {
+      "welcome": {
+        "title": "Welcome to Descalate",
+        "text": "Your personal companion for managing anxiety and finding inner calm when you need it most."
+      },
+      "understand": {
+        "title": "Understand Your Anxiety",
+        "text": "Learn to identify and understand your anxiety levels. The first step to managing it is recognizing it."
+      },
+      "tools": {
+        "title": "Tools at Your Fingertips",
+        "text": "Access breathing exercises, meditation, and scientifically proven techniques to reduce anxiety."
+      },
+      "progress": {
+        "title": "Your Progress Matters",
+        "text": "Every session counts. Watch how you improve over time and celebrate your achievements on the path to wellbeing."
+      }
+    }
+  },
+  "completeProfile": {
+    "title": "Complete Your Profile",
+    "subtitle": "Personalize your experience",
+    "sections": {
+      "personalInfo": "PERSONAL INFORMATION"
+    },
+    "fields": {
+      "name": "Name *",
+      "namePlaceholder": "Enter your name",
+      "age": "Age",
+      "agePlaceholder": "Enter your age",
+      "gender": "Gender"
+    },
+    "genderOptions": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "buttons": {
+      "saving": "Saving...",
+      "continue": "Continue",
+      "completeLater": "Complete later"
+    },
+    "errors": {
+      "nameRequired": "Please enter your name",
+      "sessionNotFound": "Session not found",
+      "invalidAge": "Please enter a valid age",
+      "photoPermissionRequired": "Please allow access to your photos to change your profile picture",
+      "saveFailed": "Could not save profile"
+    },
+    "alerts": {
+      "permissionRequired": "Permission required"
+    }
+  },
+  "home": {
+    "title": "Anxiety Levels",
+    "subtitle": "Tap each card to learn more",
+    "continueButton": "Continue"
+  },
+  "anxietyLevels": {
+    "1": {
+      "title": "Calm",
+      "description": "Relaxed and at peace. Breathing is steady and thoughts are clear."
+    },
+    "2": {
+      "title": "Mild",
+      "description": "Slightly tense. Minor worries present but manageable."
+    },
+    "3": {
+      "title": "Moderate",
+      "description": "Noticeably anxious. Heart rate may increase, restlessness begins."
+    },
+    "4": {
+      "title": "High",
+      "description": "Strong anxiety. Difficulty concentrating, racing thoughts."
+    },
+    "5": {
+      "title": "Severe",
+      "description": "Intense anxiety or panic. Overwhelming feelings, physical symptoms present."
+    }
+  },
+  "tutorial": {
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Descalate",
+        "description": "This app will help you manage your anxiety effectively. We'll guide you through the main features."
+      },
+      "anxietyLevels": {
+        "title": "Anxiety Levels",
+        "description": "Here you can select your current anxiety level from 1 to 5. Each level has personalized exercises and tips for you."
+      },
+      "howItWorks": {
+        "title": "How a Session Works",
+        "description": "1. Select your anxiety level\n2. Choose recommended exercises\n3. Receive personalized tips\n4. Track your progress"
+      },
+      "statistics": {
+        "title": "Statistics",
+        "description": "In this tab you can see your session history, progress charts, and statistics about your anxiety management."
+      },
+      "profile": {
+        "title": "Your Profile",
+        "description": "Here you can update your personal information, change your profile picture, and manage your account."
+      },
+      "ready": {
+        "title": "Ready to Start",
+        "description": "You now know the main features. Start by selecting your current anxiety level and discover exercises and tips for you."
+      }
+    },
+    "buttons": {
+      "start": "Start",
+      "next": "Next",
+      "begin": "Begin"
+    },
+    "stepIndicator": "{{current}}/{{total}}"
+  },
+  "exercises": {
+    "title": "Select Exercises",
+    "subtitle": "For {{levelTitle}} Anxiety (Level {{level}})",
+    "sectionTitle": "Tap to see details, then select:",
+    "actionTitle": "What would you like to do now?",
+    "startSession": "Start Session",
+    "duration": "{{minutes}} min",
+    "levels": {
+      "1": {
+        "exercises": {
+          "mindfulBreathing": {
+            "title": "Mindful Breathing",
+            "description": "Become aware of your natural breathing without changing it. Observe how air flows in and out.",
+            "duration": 5
+          },
+          "gratitudeJournal": {
+            "title": "Gratitude Journal",
+            "description": "Write three things you're grateful for today. Reflect on the positive aspects of your life.",
+            "duration": 10
+          },
+          "gentleStretching": {
+            "title": "Gentle Stretching",
+            "description": "Slow and gentle stretches to relax your body and maintain calm.",
+            "duration": 10
+          }
+        }
+      },
+      "2": {
+        "exercises": {
+          "boxBreathing": {
+            "title": "Box Breathing",
+            "description": "Inhale 4 seconds, hold 4, exhale 4, hold 4. Repeat the cycle to calm your nervous system.",
+            "duration": 5
+          },
+          "progressiveMuscleRelaxation": {
+            "title": "Progressive Muscle Relaxation",
+            "description": "Systematically tense and relax each muscle group to release physical tension.",
+            "duration": 15
+          },
+          "mindfulWalking": {
+            "title": "Mindful Walking",
+            "description": "Walk slowly paying attention to each step and the sensations in your body.",
+            "duration": 15
+          }
+        }
+      },
+      "3": {
+        "exercises": {
+          "breathing478": {
+            "title": "4-7-8 Breathing Technique",
+            "description": "Inhale 4 seconds, hold 7, exhale 8. This technique activates your parasympathetic nervous system.",
+            "duration": 5
+          },
+          "bodyScan": {
+            "title": "Body Scan Meditation",
+            "description": "Mentally scan your body from feet to head, noticing and releasing tensions.",
+            "duration": 15
+          },
+          "grounding54321": {
+            "title": "Grounding Exercise (5-4-3-2-1)",
+            "description": "Identify 5 things you see, 4 you touch, 3 you hear, 2 you smell, and 1 you taste.",
+            "duration": 5
+          }
+        }
+      },
+      "4": {
+        "exercises": {
+          "deepDiaphragmatic": {
+            "title": "Deep Diaphragmatic Breathing",
+            "description": "Deep breathing from the diaphragm to activate the body's relaxation response.",
+            "duration": 10
+          },
+          "guidedVisualization": {
+            "title": "Guided Visualization",
+            "description": "Imagine a safe and peaceful place with all your senses to reduce anxiety.",
+            "duration": 15
+          },
+          "physicalRelease": {
+            "title": "Physical Activity Release",
+            "description": "Intense physical movements to release anxious energy accumulated in the body.",
+            "duration": 10
+          },
+          "coldWater": {
+            "title": "Cold Water Technique",
+            "description": "Apply cold water to your face or wrists to activate the dive reflex and calm your system.",
+            "duration": 2
+          }
+        }
+      },
+      "5": {
+        "exercises": {
+          "emergencyGrounding": {
+            "title": "Emergency Grounding",
+            "description": "Quick grounding techniques: hold ice, squeeze something, name objects around you.",
+            "duration": 2
+          },
+          "tippTechnique": {
+            "title": "TIPP Technique",
+            "description": "Temperature, Intense exercise, Paced breathing, Progressive muscle relaxation.",
+            "duration": 10
+          },
+          "safePlace": {
+            "title": "Safe Place Visualization",
+            "description": "Create and visualize a mentally safe place where you can take refuge during panic.",
+            "duration": 5
+          },
+          "butterflyHug": {
+            "title": "Butterfly Hug",
+            "description": "Cross your arms over your chest and alternate gentle taps while breathing deeply.",
+            "duration": 5
+          }
+        }
+      }
+    }
+  },
+  "tips": {
+    "title": "Tip",
+    "subtitle": "For {{levelTitle}} Anxiety (Level {{level}})",
+    "sectionTitle": "Here's a tip for you:",
+    "actionTitle": "What would you like to do now?",
+    "selectNewLevel": "Select New Level",
+    "finishSession": "Finish Session",
+    "levelSelection": {
+      "title": "Select a Level",
+      "subtitle": "How are you feeling now?"
+    },
+    "categories": {
+      "lifestyle": "Lifestyle",
+      "mindfulness": "Mindfulness",
+      "social": "Social",
+      "selfKnowledge": "Self-knowledge",
+      "diet": "Diet",
+      "balance": "Balance",
+      "exercise": "Exercise",
+      "cognitive": "Cognitive",
+      "environment": "Environment",
+      "selfCare": "Self-care",
+      "digitalWellbeing": "Digital wellbeing",
+      "grounding": "Grounding",
+      "support": "Support",
+      "growth": "Growth",
+      "expression": "Expression",
+      "professional": "Professional",
+      "sensory": "Sensory",
+      "planning": "Planning",
+      "hope": "Hope"
+    },
+    "levels": {
+      "1": {
+        "tips": {
+          "maintainRoutine": {
+            "title": "Maintain Your Routine",
+            "category": "lifestyle",
+            "content": "A consistent routine helps keep anxiety levels low.",
+            "steps": [
+              "Set regular sleep and wake times",
+              "Plan your meals at consistent times",
+              "Include time for activities you enjoy",
+              "Maintain a balance between work and rest"
+            ]
+          },
+          "dailyMindfulness": {
+            "title": "Practice Daily Mindfulness",
+            "category": "mindfulness",
+            "content": "Regular mindfulness practice strengthens your ability to manage stress.",
+            "steps": [
+              "Dedicate 5-10 minutes daily to meditation",
+              "Practice mindful eating at least one meal",
+              "Take brief breathing breaks throughout the day",
+              "Observe your thoughts without judging them",
+              "Practice gratitude before bed"
+            ]
+          },
+          "stayConnected": {
+            "title": "Stay Connected",
+            "category": "social",
+            "content": "Social connections are fundamental for emotional wellbeing.",
+            "steps": [
+              "Schedule regular time with friends or family",
+              "Participate in community activities",
+              "Share your feelings with trusted people",
+              "Offer help to others when you can"
+            ]
+          }
+        }
+      },
+      "2": {
+        "tips": {
+          "identifyTriggers": {
+            "title": "Identify Your Triggers",
+            "category": "selfKnowledge",
+            "content": "Knowing what triggers your anxiety is the first step to managing it.",
+            "steps": [
+              "Keep a journal of anxious moments",
+              "Note what you were doing when they arose",
+              "Identify patterns in your triggers",
+              "Develop specific strategies for each one"
+            ]
+          },
+          "limitCaffeine": {
+            "title": "Limit Caffeine Intake",
+            "category": "diet",
+            "content": "Caffeine can increase anxiety symptoms.",
+            "steps": [
+              "Gradually reduce coffee consumption",
+              "Avoid caffeine after noon",
+              "Try alternatives like herbal tea",
+              "Stay hydrated with water"
+            ]
+          },
+          "takeBreaks": {
+            "title": "Take Regular Breaks",
+            "category": "balance",
+            "content": "Breaks prevent stress accumulation.",
+            "steps": [
+              "Use the Pomodoro technique (25 min work, 5 break)",
+              "Stand up and stretch every hour",
+              "Get fresh air when possible",
+              "Disconnect from screens during breaks"
+            ]
+          },
+          "getMoving": {
+            "title": "Get Moving",
+            "category": "exercise",
+            "content": "Regular exercise significantly reduces anxiety.",
+            "steps": [
+              "Walk at least 20 minutes daily",
+              "Try yoga or gentle stretching",
+              "Dance or do exercise you enjoy",
+              "Take stairs instead of elevator"
+            ]
+          }
+        }
+      },
+      "3": {
+        "tips": {
+          "challengeNegativeThoughts": {
+            "title": "Challenge Negative Thoughts",
+            "category": "cognitive",
+            "content": "Learn to question and reframe anxious thoughts.",
+            "steps": [
+              "Identify the negative thought",
+              "Ask yourself: Is this really true?",
+              "Look for evidence for and against",
+              "Create a more balanced thought"
+            ]
+          },
+          "createCalmEnvironment": {
+            "title": "Create a Calm Environment",
+            "category": "environment",
+            "content": "Your physical environment affects your mental state.",
+            "steps": [
+              "Reduce clutter in your space",
+              "Use soft lighting when possible",
+              "Incorporate plants or natural elements",
+              "Create a special corner for relaxation",
+              "Use relaxing scents like lavender"
+            ]
+          },
+          "practiceSelfCompassion": {
+            "title": "Practice Self-Compassion",
+            "category": "selfCare",
+            "content": "Be kind to yourself during difficult moments.",
+            "steps": [
+              "Talk to yourself as you would to a friend",
+              "Recognize that everyone has difficult moments",
+              "Don't judge yourself for feeling anxious",
+              "Celebrate your small achievements"
+            ]
+          },
+          "limitScreenTime": {
+            "title": "Limit Screen Time",
+            "category": "digitalWellbeing",
+            "content": "Excess screen time can increase anxiety.",
+            "steps": [
+              "Set phone-free times",
+              "Avoid screens 1 hour before bed",
+              "Turn off non-essential notifications",
+              "Do periodic digital detox"
+            ]
+          }
+        }
+      },
+      "4": {
+        "tips": {
+          "useGroundingTechniques": {
+            "title": "Use Grounding Techniques",
+            "category": "grounding",
+            "content": "Grounding helps you return to the present moment.",
+            "steps": [
+              "Practice the 5-4-3-2-1 technique with your senses",
+              "Hold an object and describe its texture",
+              "Put your feet firmly on the ground",
+              "Name things around you out loud"
+            ]
+          },
+          "seekSupport": {
+            "title": "Seek Support",
+            "category": "support",
+            "content": "You don't have to face anxiety alone.",
+            "steps": [
+              "Talk to someone you trust about how you feel",
+              "Consider joining a support group",
+              "Don't be afraid to ask for help",
+              "Accept support when offered"
+            ]
+          },
+          "avoidAvoidance": {
+            "title": "Avoid Avoidance",
+            "category": "growth",
+            "content": "Avoiding situations can worsen anxiety long-term.",
+            "steps": [
+              "Identify what situations you're avoiding",
+              "Gradually approach what you fear",
+              "Celebrate each small step",
+              "Remember that discomfort is temporary"
+            ]
+          },
+          "writeItDown": {
+            "title": "Write It Down",
+            "category": "expression",
+            "content": "Writing can help process intense emotions.",
+            "steps": [
+              "Write your worries without filtering",
+              "Describe your physical sensations",
+              "Note possible solutions",
+              "Review what you wrote with perspective"
+            ]
+          },
+          "considerProfessionalHelp": {
+            "title": "Consider Professional Help",
+            "category": "professional",
+            "content": "A professional can give you specialized tools.",
+            "steps": [
+              "Research therapy options in your area",
+              "Consider cognitive-behavioral therapy (CBT)",
+              "Talk to your doctor about your symptoms",
+              "Don't see seeking help as a weakness"
+            ]
+          }
+        }
+      },
+      "5": {
+        "tips": {
+          "focusOnSafety": {
+            "title": "Focus on Safety",
+            "category": "grounding",
+            "content": "In panic moments, your safety comes first.",
+            "steps": [
+              "Go to a place where you feel safe",
+              "If possible, sit or lie down",
+              "Remember that panic will pass",
+              "Repeat: This is temporary, I am safe"
+            ]
+          },
+          "useYourSenses": {
+            "title": "Use Your Senses",
+            "category": "sensory",
+            "content": "Strong sensory stimuli can interrupt panic.",
+            "steps": [
+              "Hold ice in your hands",
+              "Smell something strong like mint or citrus",
+              "Listen to relaxing music or sounds",
+              "Apply cold water to your face"
+            ]
+          },
+          "haveEmergencyContact": {
+            "title": "Have an Emergency Contact",
+            "category": "support",
+            "content": "Having someone to call can be crucial in difficult moments.",
+            "steps": [
+              "Identify 1-3 trusted people",
+              "Inform them they can be your support",
+              "Have their numbers easily accessible",
+              "Practice what to say when you call them"
+            ]
+          },
+          "createCrisisPlan": {
+            "title": "Create a Crisis Plan",
+            "category": "planning",
+            "content": "A prepared plan gives you structure when you need it most.",
+            "steps": [
+              "Write down steps to follow during a crisis",
+              "Include techniques that have worked for you",
+              "Have emergency numbers at hand",
+              "Review and update the plan regularly"
+            ]
+          },
+          "seekProfessionalHelp": {
+            "title": "Seek Professional Help",
+            "category": "professional",
+            "content": "Severe anxiety requires professional attention.",
+            "steps": [
+              "Contact a mental health professional",
+              "If you're in crisis, call a helpline",
+              "Consider treatment options",
+              "Remember that seeking help is brave"
+            ]
+          },
+          "rememberThisWillPass": {
+            "title": "Remember: This Will Pass",
+            "category": "hope",
+            "content": "Even the most difficult moments are temporary.",
+            "steps": [
+              "Panic attacks usually last 10-20 minutes",
+              "You have survived difficult moments before",
+              "Your body cannot maintain panic indefinitely",
+              "After the storm comes calm"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "charts": {
+    "title": "Statistics",
+    "subtitle": "Your session history",
+    "noData": {
+      "title": "No data yet",
+      "message": "Complete your first session to see your statistics here"
+    },
+    "stats": {
+      "totalSessions": "Total Sessions",
+      "thisWeek": "This Week",
+      "exercises": "Exercises",
+      "avgTime": "Avg Time"
+    },
+    "cards": {
+      "avgLevel": "Average Level",
+      "weeklyTrend": "Weekly Trend",
+      "monthlyTrend": "Monthly Trend",
+      "yearlyTrend": "Yearly Trend",
+      "levelDistribution": "Level Distribution",
+      "favoriteExercises": "Favorite Exercises",
+      "tipCategories": "Tip Categories",
+      "recentSessions": "Recent Sessions"
+    },
+    "chartSubtitles": {
+      "weekly": "Average anxiety level - last 7 days",
+      "monthly": "Average anxiety level - last 6 months",
+      "yearly": "Average anxiety level by year"
+    },
+    "infoBox": {
+      "title": "About your data",
+      "text": "These statistics show your progress through sessions. Continue using the app to get better insights into your anxiety patterns."
+    },
+    "sessions": "sessions"
+  },
+  "profile": {
+    "sections": {
+      "profileInfo": "Profile Information"
+    },
+    "fields": {
+      "name": "Name *",
+      "namePlaceholder": "Enter your name",
+      "age": "Age",
+      "agePlaceholder": "Enter your age",
+      "gender": "Gender"
+    },
+    "genderOptions": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "buttons": {
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "logOut": "Log Out",
+      "resetTutorial": "Reset Tutorial"
+    },
+    "devButtons": {
+      "resetDatabase": "Reset Database",
+      "generateTestData": "Generate Test Data",
+      "generating": "Generating..."
+    },
+    "alerts": {
+      "logOut": {
+        "title": "Log out",
+        "message": "Are you sure you want to log out?",
+        "cancel": "Cancel",
+        "confirm": "Log out"
+      },
+      "resetDatabase": {
+        "title": "Reset database",
+        "message": "This will delete all data and you will have to register again. Are you sure?",
+        "cancel": "Cancel",
+        "confirm": "Reset"
+      },
+      "generateTestData": {
+        "title": "Generate test data",
+        "message": "This will create historical sessions from the last year, month, and week to test the charts. Continue?",
+        "cancel": "Cancel",
+        "confirm": "Generate"
+      },
+      "resetTutorial": {
+        "title": "Reset tutorial",
+        "message": "This will reset the interactive tutorial and take you to the Home screen.",
+        "cancel": "Cancel",
+        "confirm": "Reset"
+      },
+      "success": {
+        "databaseReset": "Database reset. You can register again.",
+        "testDataGenerated": "Historical data generated successfully. Go to the statistics tab to see it.",
+        "profileUpdated": "Profile updated successfully"
+      },
+      "errors": {
+        "databaseResetFailed": "Failed to reset database",
+        "testDataFailed": "Failed to generate test data",
+        "userNotFound": "User not found",
+        "photoPermission": "Please allow access to your photos to change your profile picture",
+        "imagePick": "Failed to pick image",
+        "profileUpdate": "Failed to update profile"
+      }
+    }
+  },
+  "tabs": {
+    "home": "Home",
+    "charts": "Statistics",
+    "profile": "Profile"
+  }
+}

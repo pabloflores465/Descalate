@@ -5,6 +5,7 @@ import { useState, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -45,12 +46,13 @@ const levelColors: Record<number, string> = {
   5: '#be185d',
 };
 
-const levelNames: Record<number, string> = {
-  1: 'Calma',
-  2: 'Leve',
-  3: 'Moderada',
-  4: 'Alta',
-  5: 'Severa',
+// Mapping of all exercise translation keys by level for reverse lookup
+const exerciseKeysByLevel: Record<number, string[]> = {
+  1: ['mindfulBreathing', 'gratitudeJournal', 'gentleStretching'],
+  2: ['boxBreathing', 'progressiveMuscleRelaxation', 'mindfulWalking'],
+  3: ['breathing478', 'bodyScan', 'grounding54321'],
+  4: ['deepDiaphragmatic', 'guidedVisualization', 'physicalRelease', 'coldWater'],
+  5: ['emergencyGrounding', 'tippTechnique', 'safePlace', 'butterflyHug'],
 };
 
 const formatDuration = (seconds: number): string => {
@@ -64,6 +66,7 @@ const formatDuration = (seconds: number): string => {
 };
 
 export default function ChartsScreen() {
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({
@@ -78,7 +81,7 @@ export default function ChartsScreen() {
   const [weeklyData, setWeeklyData] = useState<BarData[]>([]);
   const [monthlyData, setMonthlyData] = useState<LineData[]>([]);
   const [yearlyData, setYearlyData] = useState<LineData[]>([]);
-  const [topExercises, setTopExercises] = useState<{ name: string; count: number }[]>([]);
+  const [topExercises, setTopExercises] = useState<{ name: string; count: number; translationKey?: string; level?: number }[]>([]);
   const [topCategories, setTopCategories] = useState<{ name: string; count: number }[]>([]);
 
   const loadData = useCallback(async () => {
@@ -114,14 +117,18 @@ export default function ChartsScreen() {
       const averageLevel = sessionRows.reduce((sum, s) => sum + s.anxiety_level, 0) / totalSessions;
 
       let totalExercises = 0;
-      const exerciseCounts: Record<string, number> = {};
+      const exerciseCounts: Record<string, { count: number; translationKey?: string; level?: number }> = {};
       sessionRows.forEach(session => {
         if (session.selected_exercises) {
           try {
-            const exercises = JSON.parse(session.selected_exercises) as { title: string }[];
+            const exercises = JSON.parse(session.selected_exercises) as { title: string; translationKey?: string; level?: number }[];
             totalExercises += exercises.length;
             exercises.forEach(ex => {
-              exerciseCounts[ex.title] = (exerciseCounts[ex.title] || 0) + 1;
+              const key = ex.translationKey && ex.level ? `${ex.level}:${ex.translationKey}` : ex.title;
+              if (!exerciseCounts[key]) {
+                exerciseCounts[key] = { count: 0, translationKey: ex.translationKey, level: ex.level };
+              }
+              exerciseCounts[key].count += 1;
             });
           } catch {
             // Ignore parsing errors
@@ -165,7 +172,7 @@ export default function ChartsScreen() {
         value: count,
         color: levelColors[Number(level)] || '#999',
         text: `${Math.round((count / totalSessions) * 100)}%`,
-        label: levelNames[Number(level)] || `Nivel ${level}`,
+        label: `${level}`,
       }));
       setLevelDistribution(pieData);
 
@@ -230,9 +237,14 @@ export default function ChartsScreen() {
       setYearlyData(last3Years);
 
       const topEx = Object.entries(exerciseCounts)
-        .sort(([, a], [, b]) => b - a)
+        .sort(([, a], [, b]) => b.count - a.count)
         .slice(0, 5)
-        .map(([name, count]) => ({ name, count }));
+        .map(([name, data]) => ({
+          name,
+          count: data.count,
+          translationKey: data.translationKey,
+          level: data.level,
+        }));
       setTopExercises(topEx);
 
       const topCat = Object.entries(categoryCounts)
@@ -269,16 +281,16 @@ export default function ChartsScreen() {
     >
       <View style={styles.header}>
         <Ionicons name="stats-chart" size={48} color="#5a8c6a" />
-        <Text style={styles.title}>Estadisticas</Text>
-        <Text style={styles.subtitle}>Tu historial de sesiones</Text>
+        <Text style={styles.title}>{t('charts.title')}</Text>
+        <Text style={styles.subtitle}>{t('charts.subtitle')}</Text>
       </View>
 
       {!hasData ? (
         <View style={styles.noDataContainer}>
           <Ionicons name="analytics-outline" size={80} color="#BDC3C7" />
-          <Text style={styles.noDataTitle}>Sin datos aun</Text>
+          <Text style={styles.noDataTitle}>{t('charts.noData.title')}</Text>
           <Text style={styles.noDataText}>
-            Completa tu primera sesion para ver tus estadisticas aqui
+            {t('charts.noData.message')}
           </Text>
         </View>
       ) : (
@@ -291,35 +303,35 @@ export default function ChartsScreen() {
               >
                 <Ionicons name="layers-outline" size={28} color="#fff" />
                 <Text style={styles.statNumberWhite}>{stats.totalSessions}</Text>
-                <Text style={styles.statLabelWhite}>Sesiones Totales</Text>
+                <Text style={styles.statLabelWhite}>{t('charts.stats.totalSessions')}</Text>
               </LinearGradient>
             </View>
 
             <View style={[styles.statCard, styles.statCardSecondary]}>
               <Ionicons name="calendar-outline" size={28} color="#5a67d8" />
               <Text style={styles.statNumber}>{stats.sessionsThisWeek}</Text>
-              <Text style={styles.statLabel}>Esta Semana</Text>
+              <Text style={styles.statLabel}>{t('charts.stats.thisWeek')}</Text>
             </View>
 
             <View style={[styles.statCard, styles.statCardSecondary]}>
               <Ionicons name="fitness-outline" size={28} color="#2d9a6e" />
               <Text style={styles.statNumber}>{stats.totalExercises}</Text>
-              <Text style={styles.statLabel}>Ejercicios</Text>
+              <Text style={styles.statLabel}>{t('charts.stats.exercises')}</Text>
             </View>
 
             <View style={[styles.statCard, styles.statCardSecondary]}>
               <Ionicons name="time-outline" size={28} color="#d97706" />
               <Text style={styles.statNumber}>{formatDuration(stats.averageDuration)}</Text>
-              <Text style={styles.statLabel}>Tiempo Promedio</Text>
+              <Text style={styles.statLabel}>{t('charts.stats.avgTime')}</Text>
             </View>
           </View>
 
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Nivel Promedio</Text>
+              <Text style={styles.cardTitle}>{t('charts.cards.avgLevel')}</Text>
               <View style={[styles.levelBadge, { backgroundColor: levelColors[Math.round(stats.averageLevel)] + '20' }]}>
                 <Text style={[styles.levelBadgeText, { color: levelColors[Math.round(stats.averageLevel)] }]}>
-                  {levelNames[Math.round(stats.averageLevel)] || 'N/A'}
+                  {t(`anxietyLevels.${Math.round(stats.averageLevel)}.title`) || 'N/A'}
                 </Text>
               </View>
             </View>
@@ -347,10 +359,10 @@ export default function ChartsScreen() {
 
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Tendencia Semanal</Text>
+              <Text style={styles.cardTitle}>{t('charts.cards.weeklyTrend')}</Text>
               <Ionicons name="calendar-outline" size={24} color="#5a8c6a" />
             </View>
-            <Text style={styles.chartSubtitle}>Nivel promedio de ansiedad - ultimos 7 dias</Text>
+            <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.weekly')}</Text>
             <View style={styles.chartWrapper}>
               <LineChart
                 data={weeklyData.map(d => ({ value: d.value, label: d.label }))}
@@ -386,10 +398,10 @@ export default function ChartsScreen() {
           {monthlyData.some(d => d.value > 0) && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Tendencia Mensual</Text>
+                <Text style={styles.cardTitle}>{t('charts.cards.monthlyTrend')}</Text>
                 <Ionicons name="trending-up" size={24} color="#5a8c6a" />
               </View>
-              <Text style={styles.chartSubtitle}>Nivel promedio de ansiedad - ultimos 6 meses</Text>
+              <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.monthly')}</Text>
               <View style={styles.chartWrapper}>
                 <LineChart
                   data={monthlyData}
@@ -430,10 +442,10 @@ export default function ChartsScreen() {
           {yearlyData.some(d => d.value > 0) && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Tendencia Anual</Text>
+                <Text style={styles.cardTitle}>{t('charts.cards.yearlyTrend')}</Text>
                 <Ionicons name="analytics" size={24} color="#5a8c6a" />
               </View>
-              <Text style={styles.chartSubtitle}>Nivel promedio de ansiedad por ano</Text>
+              <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.yearly')}</Text>
               <View style={styles.chartWrapper}>
                 <LineChart
                   data={yearlyData}
@@ -474,7 +486,7 @@ export default function ChartsScreen() {
           {levelDistribution.length > 0 && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Distribucion de Niveles</Text>
+                <Text style={styles.cardTitle}>{t('charts.cards.levelDistribution')}</Text>
                 <Ionicons name="pie-chart" size={24} color="#5a8c6a" />
               </View>
               <View style={styles.pieChartContainer}>
@@ -486,7 +498,7 @@ export default function ChartsScreen() {
                   centerLabelComponent={() => (
                     <View style={styles.pieCenter}>
                       <Text style={styles.pieCenterNumber}>{stats.totalSessions}</Text>
-                      <Text style={styles.pieCenterLabel}>sesiones</Text>
+                      <Text style={styles.pieCenterLabel}>{t('charts.sessions')}</Text>
                     </View>
                   )}
                 />
@@ -494,7 +506,7 @@ export default function ChartsScreen() {
                   {levelDistribution.map((item, index) => (
                     <View key={index} style={styles.pieLegendItem}>
                       <View style={[styles.pieLegendColor, { backgroundColor: item.color }]} />
-                      <Text style={styles.pieLegendText}>{item.label}</Text>
+                      <Text style={styles.pieLegendText}>{t(`anxietyLevels.${item.label}.title`)}</Text>
                       <Text style={styles.pieLegendValue}>{item.text}</Text>
                     </View>
                   ))}
@@ -506,27 +518,49 @@ export default function ChartsScreen() {
           {topExercises.length > 0 && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Ejercicios Favoritos</Text>
+                <Text style={styles.cardTitle}>{t('charts.cards.favoriteExercises')}</Text>
                 <Ionicons name="barbell" size={24} color="#5a8c6a" />
               </View>
-              {topExercises.map((exercise, index) => (
-                <View key={index} style={styles.listItem}>
-                  <View style={styles.listRank}>
-                    <Text style={styles.listRankText}>{index + 1}</Text>
+              {topExercises.map((exercise, index) => {
+                let displayName = exercise.name;
+
+                if (exercise.translationKey && exercise.level) {
+                  // New data with translation key
+                  displayName = t(`exercises.levels.${exercise.level}.exercises.${exercise.translationKey}.title`);
+                } else {
+                  // Old data - try to find translation key by matching title
+                  for (const [levelStr, keys] of Object.entries(exerciseKeysByLevel)) {
+                    const level = Number(levelStr);
+                    for (const key of keys) {
+                      const enTitle = t(`exercises.levels.${level}.exercises.${key}.title`, { lng: 'en' });
+                      const esTitle = t(`exercises.levels.${level}.exercises.${key}.title`, { lng: 'es' });
+                      if (exercise.name === enTitle || exercise.name === esTitle) {
+                        displayName = t(`exercises.levels.${level}.exercises.${key}.title`);
+                        break;
+                      }
+                    }
+                  }
+                }
+
+                return (
+                  <View key={index} style={styles.listItem}>
+                    <View style={styles.listRank}>
+                      <Text style={styles.listRankText}>{index + 1}</Text>
+                    </View>
+                    <Text style={styles.listItemText} numberOfLines={1}>{displayName}</Text>
+                    <View style={styles.listCount}>
+                      <Text style={styles.listCountText}>{exercise.count}x</Text>
+                    </View>
                   </View>
-                  <Text style={styles.listItemText} numberOfLines={1}>{exercise.name}</Text>
-                  <View style={styles.listCount}>
-                    <Text style={styles.listCountText}>{exercise.count}x</Text>
-                  </View>
-                </View>
-              ))}
+                );
+              })}
             </View>
           )}
 
           {topCategories.length > 0 && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Categorias de Consejos</Text>
+                <Text style={styles.cardTitle}>{t('charts.cards.tipCategories')}</Text>
                 <Ionicons name="bulb" size={24} color="#5a8c6a" />
               </View>
               {topCategories.map((category, index) => (
@@ -534,7 +568,7 @@ export default function ChartsScreen() {
                   <View style={[styles.listRank, { backgroundColor: '#f0f4f8' }]}>
                     <Ionicons name="bookmark" size={16} color="#5a8c6a" />
                   </View>
-                  <Text style={styles.listItemText}>{category.name}</Text>
+                  <Text style={styles.listItemText}>{t(`tips.categories.${category.name.toLowerCase()}`)}</Text>
                   <View style={styles.listCount}>
                     <Text style={styles.listCountText}>{category.count}x</Text>
                   </View>
@@ -545,7 +579,7 @@ export default function ChartsScreen() {
 
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Sesiones Recientes</Text>
+              <Text style={styles.cardTitle}>{t('charts.cards.recentSessions')}</Text>
               <Ionicons name="time" size={24} color="#5a8c6a" />
             </View>
             {sessions.slice(0, 5).map((session, index) => {
@@ -560,7 +594,7 @@ export default function ChartsScreen() {
                   </View>
                   <View style={styles.sessionInfo}>
                     <Text style={styles.sessionTitle}>
-                      {levelNames[session.anxiety_level]} - {exerciseCount} ejercicio{exerciseCount !== 1 ? 's' : ''}
+                      {t(`anxietyLevels.${session.anxiety_level}.title`)} - {exerciseCount} {t('charts.stats.exercises').toLowerCase()}
                     </Text>
                     <Text style={styles.sessionDate}>
                       {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
@@ -579,11 +613,10 @@ export default function ChartsScreen() {
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
               <Ionicons name="information-circle" size={24} color="#5a8c6a" />
-              <Text style={styles.infoTitle}>Acerca de tus datos</Text>
+              <Text style={styles.infoTitle}>{t('charts.infoBox.title')}</Text>
             </View>
             <Text style={styles.infoText}>
-              Estas estadisticas muestran tu progreso a traves de las sesiones.
-              Continua usando la app para obtener mejores insights sobre tus patrones de ansiedad.
+              {t('charts.infoBox.text')}
             </Text>
           </View>
         </View>

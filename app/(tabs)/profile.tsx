@@ -21,12 +21,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTutorial } from '@/context/TutorialContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { resetTutorial } = useTutorial();
+  const { t } = useTranslation();
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -112,8 +115,8 @@ export default function ProfileScreen() {
 
       if (!permissionResult.granted) {
         Alert.alert(
-          'Permission required',
-          'Please allow access to your photos to change your profile picture'
+          t('completeProfile.alerts.permissionRequired'),
+          t('profile.alerts.errors.photoPermission')
         );
         return;
       }
@@ -132,7 +135,7 @@ export default function ProfileScreen() {
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'Failed to pick image');
+      Alert.alert(t('common.error'), t('profile.alerts.errors.imagePick'));
     }
   };
 
@@ -143,14 +146,14 @@ export default function ProfileScreen() {
       setIsSaving(true);
 
       if (!name.trim()) {
-        Alert.alert('Error', 'Name is required');
+        Alert.alert(t('common.error'), t('completeProfile.errors.nameRequired'));
         setIsSaving(false);
         return;
       }
 
       const ageNumber = age ? parseInt(age) : null;
       if (age && (isNaN(ageNumber!) || ageNumber! < 1 || ageNumber! > 150)) {
-        Alert.alert('Error', 'Please enter a valid age');
+        Alert.alert(t('common.error'), t('completeProfile.errors.invalidAge'));
         setIsSaving(false);
         return;
       }
@@ -174,11 +177,11 @@ export default function ProfileScreen() {
       await db.update(users).set(updateData).where(eq(users.email, user.email));
 
       setHasNewImage(false);
-      Alert.alert('Success', 'Profile updated successfully');
+      Alert.alert(t('common.success'), t('profile.alerts.success.profileUpdated'));
       loadUserData(currentUserEmail);
     } catch (error) {
       console.error('Error updating profile:', error);
-      Alert.alert('Error', 'Failed to update profile');
+      Alert.alert(t('common.error'), t('profile.alerts.errors.profileUpdate'));
     } finally {
       setIsSaving(false);
     }
@@ -186,15 +189,15 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      'Cerrar sesion',
-      '¿Estas seguro que quieres cerrar sesion?',
+      t('profile.alerts.logOut.title'),
+      t('profile.alerts.logOut.message'),
       [
         {
-          text: 'Cancelar',
+          text: t('profile.alerts.logOut.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Cerrar sesion',
+          text: t('profile.alerts.logOut.confirm'),
           style: 'destructive',
           onPress: async () => {
             await clearEmailFromStorage();
@@ -208,15 +211,15 @@ export default function ProfileScreen() {
 
   const handleResetDatabase = () => {
     Alert.alert(
-      'Resetear base de datos',
-      'Esto eliminara todos los datos y tendras que volver a registrarte. ¿Estas seguro?',
+      t('profile.alerts.resetDatabase.title'),
+      t('profile.alerts.resetDatabase.message'),
       [
         {
-          text: 'Cancelar',
+          text: t('profile.alerts.resetDatabase.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Resetear',
+          text: t('profile.alerts.resetDatabase.confirm'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -230,10 +233,10 @@ export default function ProfileScreen() {
               ]);
               setCurrentUserEmail(null);
               router.replace('/(session)/auth');
-              Alert.alert('Exito', 'Base de datos reseteada. Puedes registrarte de nuevo.');
+              Alert.alert(t('common.success'), t('profile.alerts.success.databaseReset'));
             } catch (error) {
               console.error('Error resetting database:', error);
-              Alert.alert('Error', 'Fallo al resetear la base de datos');
+              Alert.alert(t('common.error'), t('profile.alerts.errors.databaseResetFailed'));
             }
           },
         },
@@ -244,18 +247,18 @@ export default function ProfileScreen() {
 
   const handleSeedData = () => {
     Alert.alert(
-      'Generar datos de prueba',
-      'Esto creara sesiones historicas del ultimo ano, mes y semana para probar las graficas. ¿Continuar?',
+      t('profile.alerts.generateTestData.title'),
+      t('profile.alerts.generateTestData.message'),
       [
         {
-          text: 'Cancelar',
+          text: t('profile.alerts.generateTestData.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Generar',
+          text: t('profile.alerts.generateTestData.confirm'),
           onPress: async () => {
             if (!user?.id) {
-              Alert.alert('Error', 'No se encontro el usuario');
+              Alert.alert(t('common.error'), t('profile.alerts.errors.userNotFound'));
               return;
             }
             try {
@@ -263,12 +266,12 @@ export default function ProfileScreen() {
               await clearSessions(user.id);
               await seedHistoricalSessions(user.id);
               Alert.alert(
-                'Exito',
-                'Datos historicos generados correctamente. Ve a la pestana de estadisticas para verlos.'
+                t('common.success'),
+                t('profile.alerts.success.testDataGenerated')
               );
             } catch (error) {
               console.error('Error seeding data:', error);
-              Alert.alert('Error', 'Fallo al generar los datos de prueba');
+              Alert.alert(t('common.error'), t('profile.alerts.errors.testDataFailed'));
             } finally {
               setIsSeeding(false);
             }
@@ -281,18 +284,18 @@ export default function ProfileScreen() {
 
   const handleResetTutorial = () => {
     Alert.alert(
-      'Reiniciar tutorial',
-      'Esto reiniciara el tutorial interactivo. La proxima vez que vayas a Inicio veras el tutorial de nuevo.',
+      t('profile.alerts.resetTutorial.title'),
+      t('profile.alerts.resetTutorial.message'),
       [
         {
-          text: 'Cancelar',
+          text: t('profile.alerts.resetTutorial.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Reiniciar',
+          text: t('profile.alerts.resetTutorial.confirm'),
           onPress: async () => {
             await resetTutorial();
-            Alert.alert('Exito', 'Tutorial reiniciado. Ve a Inicio para verlo.');
+            router.push('/(tabs)/home');
           },
         },
       ],
@@ -312,6 +315,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
+          <LanguageSelector style={styles.languageSelector} />
           <Pressable style={styles.avatarContainer} onPress={pickImage}>
             {profileImageUri || user?.picture ? (
               <Image
@@ -334,26 +338,26 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>Profile Information</Text>
+          <Text style={styles.sectionTitle}>{t('profile.sections.profileInfo')}</Text>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Name *</Text>
+            <Text style={styles.label}>{t('profile.fields.name')}</Text>
             <TextInput
               style={styles.input}
               value={name}
               onChangeText={setName}
-              placeholder="Enter your name"
+              placeholder={t('profile.fields.namePlaceholder')}
               placeholderTextColor="#999"
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Age</Text>
+            <Text style={styles.label}>{t('profile.fields.age')}</Text>
             <TextInput
               style={styles.input}
               value={age}
               onChangeText={setAge}
-              placeholder="Enter your age"
+              placeholder={t('profile.fields.agePlaceholder')}
               placeholderTextColor="#999"
               keyboardType="numeric"
               maxLength={3}
@@ -361,7 +365,7 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Gender</Text>
+            <Text style={styles.label}>{t('profile.fields.gender')}</Text>
             <View style={styles.genderContainer}>
               <Pressable
                 style={[styles.genderButton, gender === 'Male' && styles.genderButtonActive]}
@@ -374,7 +378,7 @@ export default function ProfileScreen() {
                     gender === 'Male' && styles.genderButtonTextActive,
                   ]}
                 >
-                  Male
+                  {t('profile.genderOptions.male')}
                 </Text>
               </Pressable>
 
@@ -393,7 +397,7 @@ export default function ProfileScreen() {
                     gender === 'Female' && styles.genderButtonTextActive,
                   ]}
                 >
-                  Female
+                  {t('profile.genderOptions.female')}
                 </Text>
               </Pressable>
 
@@ -412,7 +416,7 @@ export default function ProfileScreen() {
                     gender === 'Other' && styles.genderButtonTextActive,
                   ]}
                 >
-                  Other
+                  {t('profile.genderOptions.other')}
                 </Text>
               </Pressable>
             </View>
@@ -437,18 +441,7 @@ export default function ProfileScreen() {
                 style={{ marginRight: 10 }}
               />
             )}
-            <Text style={styles.saveButtonText}>{isSaving ? 'Saving...' : 'Save Changes'}</Text>
-          </Pressable>
-
-          <Pressable
-            style={({ pressed }) => [
-              styles.tutorialButton,
-              { backgroundColor: pressed ? '#6366f1' : '#818cf8' },
-            ]}
-            onPress={handleResetTutorial}
-          >
-            <Ionicons name="school" size={20} color="white" style={{ marginRight: 10 }} />
-            <Text style={styles.tutorialText}>Reiniciar Tutorial</Text>
+            <Text style={styles.saveButtonText}>{isSaving ? t('profile.buttons.saving') : t('profile.buttons.saveChanges')}</Text>
           </Pressable>
 
           <Pressable
@@ -459,7 +452,18 @@ export default function ProfileScreen() {
             onPress={handleLogout}
           >
             <Ionicons name="log-out" size={20} color="white" style={{ marginRight: 10 }} />
-            <Text style={styles.logoutText}>Log Out</Text>
+            <Text style={styles.logoutText}>{t('profile.buttons.logOut')}</Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.tutorialButton,
+              { backgroundColor: pressed ? '#2563eb' : '#3b82f6' },
+            ]}
+            onPress={handleResetTutorial}
+          >
+            <Ionicons name="school" size={20} color="white" style={{ marginRight: 10 }} />
+            <Text style={styles.tutorialText}>{t('profile.buttons.resetTutorial')}</Text>
           </Pressable>
 
           {__DEV__ && (
@@ -472,14 +476,14 @@ export default function ProfileScreen() {
                 onPress={handleResetDatabase}
               >
                 <Ionicons name="warning" size={20} color="white" style={{ marginRight: 10 }} />
-                <Text style={styles.resetText}>Reset Database</Text>
+                <Text style={styles.resetText}>{t('profile.devButtons.resetDatabase')}</Text>
               </Pressable>
 
               <Pressable
                 style={({ pressed }) => [
                   styles.seedButton,
                   isSeeding && styles.seedButtonDisabled,
-                  { backgroundColor: pressed && !isSeeding ? '#2563eb' : '#3b82f6' },
+                  { backgroundColor: pressed && !isSeeding ? '#6366f1' : '#818cf8' },
                 ]}
                 onPress={handleSeedData}
                 disabled={isSeeding}
@@ -490,7 +494,7 @@ export default function ProfileScreen() {
                   <Ionicons name="flask" size={20} color="white" style={{ marginRight: 10 }} />
                 )}
                 <Text style={styles.seedText}>
-                  {isSeeding ? 'Generando...' : 'Generar Datos de Prueba'}
+                  {isSeeding ? t('profile.devButtons.generating') : t('profile.devButtons.generateTestData')}
                 </Text>
               </Pressable>
             </>
@@ -523,6 +527,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
+  },
+  languageSelector: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
   },
   avatarContainer: {
     marginBottom: 16,

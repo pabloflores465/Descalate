@@ -4,6 +4,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from '@/context/SessionContext';
+import { useTranslation } from 'react-i18next';
 
 type Tip = {
   id: number;
@@ -14,304 +15,44 @@ type Tip = {
   steps: string[];
 };
 
-const tipsByLevel: Record<number, Tip[]> = {
+type TipConfig = {
+  id: number;
+  translationKey: string;
+  icon: keyof typeof Ionicons.glyphMap;
+};
+
+const tipConfigsByLevel: Record<number, TipConfig[]> = {
   1: [
-    {
-      id: 1,
-      title: 'Manten Tu Rutina',
-      content: 'Manten tu horario regular de sueno, ejercicio y habitos alimenticios saludables para conservar tu estado de calma.',
-      icon: 'calendar-outline',
-      category: 'Estilo de vida',
-      steps: [
-        'Establece una hora fija para dormir y despertar',
-        'Planifica tus comidas a horas regulares',
-        'Reserva 30 minutos diarios para actividad fisica',
-        'Crea una rutina matutina que te de energia',
-      ],
-    },
-    {
-      id: 2,
-      title: 'Practica Mindfulness Diario',
-      content: 'Incluso cuando te sientas tranquilo, la practica regular de meditacion construye resiliencia para momentos mas desafiantes.',
-      icon: 'leaf-outline',
-      category: 'Mindfulness',
-      steps: [
-        'Encuentra un lugar tranquilo y comodo',
-        'Cierra los ojos y respira profundamente 3 veces',
-        'Enfoca tu atencion en tu respiracion',
-        'Cuando tu mente divague, gentilmente regresa al presente',
-        'Practica por 5-10 minutos cada dia',
-      ],
-    },
-    {
-      id: 3,
-      title: 'Mantente Conectado',
-      content: 'Nutre tus relaciones y conexiones sociales. Son tu red de apoyo cuando la necesitas.',
-      icon: 'people-outline',
-      category: 'Social',
-      steps: [
-        'Contacta a un amigo o familiar hoy',
-        'Programa una actividad social esta semana',
-        'Escucha activamente cuando otros hablen',
-        'Comparte como te sientes con alguien de confianza',
-      ],
-    },
+    { id: 1, translationKey: 'maintainRoutine', icon: 'calendar-outline' },
+    { id: 2, translationKey: 'dailyMindfulness', icon: 'leaf-outline' },
+    { id: 3, translationKey: 'stayConnected', icon: 'people-outline' },
   ],
   2: [
-    {
-      id: 1,
-      title: 'Identifica Tus Desencadenantes',
-      content: 'Presta atencion a lo que causa tu ansiedad leve. La conciencia es el primer paso para manejarla.',
-      icon: 'search-outline',
-      category: 'Autoconocimiento',
-      steps: [
-        'Lleva un diario de momentos ansiosos',
-        'Anota que estabas haciendo cuando inicio',
-        'Identifica patrones en tus desencadenantes',
-        'Desarrolla estrategias especificas para cada uno',
-      ],
-    },
-    {
-      id: 2,
-      title: 'Limita el Consumo de Cafeina',
-      content: 'La cafeina puede amplificar los sintomas de ansiedad. Considera reducir o programar mejor tu consumo.',
-      icon: 'cafe-outline',
-      category: 'Dieta',
-      steps: [
-        'Reduce gradualmente tu consumo de cafe',
-        'Evita cafeina despues del mediodia',
-        'Sustituye por te herbal o agua',
-        'Observa como cambia tu nivel de ansiedad',
-      ],
-    },
-    {
-      id: 3,
-      title: 'Toma Descansos Regulares',
-      content: 'Alejate de situaciones estresantes periodicamente. Incluso descansos de 5 minutos ayudan a reiniciar tu mente.',
-      icon: 'pause-outline',
-      category: 'Equilibrio',
-      steps: [
-        'Programa alarmas cada 90 minutos de trabajo',
-        'Levantate y estira tu cuerpo',
-        'Mira por la ventana o sal al exterior',
-        'Respira profundamente 5 veces antes de continuar',
-      ],
-    },
-    {
-      id: 4,
-      title: 'Ponte en Movimiento',
-      content: 'La actividad fisica ligera libera endorfinas y ayuda a manejar los sintomas de ansiedad leve.',
-      icon: 'walk-outline',
-      category: 'Ejercicio',
-      steps: [
-        'Comienza con una caminata de 10 minutos',
-        'Estira tu cuerpo al despertar',
-        'Sube escaleras en lugar del elevador',
-        'Baila tu cancion favorita',
-      ],
-    },
+    { id: 1, translationKey: 'identifyTriggers', icon: 'search-outline' },
+    { id: 2, translationKey: 'limitCaffeine', icon: 'cafe-outline' },
+    { id: 3, translationKey: 'takeBreaks', icon: 'pause-outline' },
+    { id: 4, translationKey: 'getMoving', icon: 'walk-outline' },
   ],
   3: [
-    {
-      id: 1,
-      title: 'Desafia los Pensamientos Negativos',
-      content: 'Cuando surjan pensamientos ansiosos, cuestiona su validez. Preguntate: "Este pensamiento esta basado en hechos?"',
-      icon: 'bulb-outline',
-      category: 'Cognitivo',
-      steps: [
-        'Identifica el pensamiento negativo',
-        'Preguntate: "Que evidencia tengo?"',
-        'Considera explicaciones alternativas',
-        'Reformula el pensamiento de forma realista',
-      ],
-    },
-    {
-      id: 2,
-      title: 'Crea un Ambiente Tranquilo',
-      content: 'Reduce los estresores ambientales. Ordena tu espacio, usa aromas relajantes, pon musica suave.',
-      icon: 'home-outline',
-      category: 'Ambiente',
-      steps: [
-        'Ordena y limpia tu espacio',
-        'Reduce el ruido o pon musica relajante',
-        'Usa iluminacion suave y calida',
-        'Anade plantas o elementos naturales',
-        'Prueba aromaterapia con lavanda',
-      ],
-    },
-    {
-      id: 3,
-      title: 'Practica la Autocompasion',
-      content: 'Se amable contigo mismo. La ansiedad no es una debilidad. Tratate como tratarias a un buen amigo.',
-      icon: 'heart-outline',
-      category: 'Autocuidado',
-      steps: [
-        'Reconoce que es normal sentir ansiedad',
-        'Habla contigo mismo con amabilidad',
-        'Evita criticarte por sentirte ansioso',
-        'Date permiso para descansar cuando lo necesites',
-      ],
-    },
-    {
-      id: 4,
-      title: 'Limita el Tiempo de Pantalla',
-      content: 'Reduce la exposicion a noticias y redes sociales que puedan aumentar la ansiedad.',
-      icon: 'phone-portrait-outline',
-      category: 'Bienestar digital',
-      steps: [
-        'Establece horarios especificos para redes sociales',
-        'Desactiva notificaciones no esenciales',
-        'Evita pantallas 1 hora antes de dormir',
-        'Usa apps de bienestar para monitorear tu uso',
-      ],
-    },
+    { id: 1, translationKey: 'challengeNegativeThoughts', icon: 'bulb-outline' },
+    { id: 2, translationKey: 'createCalmEnvironment', icon: 'home-outline' },
+    { id: 3, translationKey: 'practiceSelfCompassion', icon: 'heart-outline' },
+    { id: 4, translationKey: 'limitScreenTime', icon: 'phone-portrait-outline' },
   ],
   4: [
-    {
-      id: 1,
-      title: 'Usa Tecnicas de Anclaje',
-      content: 'Concentrate en sensaciones fisicas: pies en el suelo, manos tocando superficies. Esto te ancla al presente.',
-      icon: 'footsteps-outline',
-      category: 'Anclaje',
-      steps: [
-        'Siente tus pies firmemente en el suelo',
-        'Nombra 5 cosas que puedes ver',
-        'Toca diferentes texturas a tu alrededor',
-        'Enfocate en tu respiracion por 1 minuto',
-      ],
-    },
-    {
-      id: 2,
-      title: 'Busca Apoyo',
-      content: 'Habla con alguien de confianza sobre como te sientes. La conexion reduce la intensidad de la ansiedad.',
-      icon: 'chatbubbles-outline',
-      category: 'Apoyo',
-      steps: [
-        'Identifica a alguien de confianza',
-        'Dile: "Necesito hablar, estoy ansioso"',
-        'Comparte como te sientes sin juzgarte',
-        'Permite que te escuchen y apoyen',
-      ],
-    },
-    {
-      id: 3,
-      title: 'Evita la Evitacion',
-      content: 'Aunque se siente mas seguro evitar los desencadenantes, la exposicion gradual ayuda a construir tolerancia.',
-      icon: 'trending-up-outline',
-      category: 'Crecimiento',
-      steps: [
-        'Identifica lo que estas evitando',
-        'Comienza con exposiciones pequenas',
-        'Aumenta gradualmente la dificultad',
-        'Celebra cada pequeno logro',
-      ],
-    },
-    {
-      id: 4,
-      title: 'Escribelo',
-      content: 'Escribir tus pensamientos ansiosos en un diario puede ayudar a externalizarlos y reducir su poder.',
-      icon: 'create-outline',
-      category: 'Expresion',
-      steps: [
-        'Toma papel y lapiz o abre una nota',
-        'Escribe todo lo que sientes sin filtrar',
-        'No te preocupes por la gramatica',
-        'Lee lo escrito y reflexiona',
-      ],
-    },
-    {
-      id: 5,
-      title: 'Considera Ayuda Profesional',
-      content: 'Si la ansiedad alta es frecuente, un profesional de salud mental puede proporcionar herramientas valiosas.',
-      icon: 'medical-outline',
-      category: 'Profesional',
-      steps: [
-        'Investiga terapeutas en tu area',
-        'Consulta con tu medico de cabecera',
-        'Considera terapia online como opcion',
-        'Da el primer paso y agenda una cita',
-      ],
-    },
+    { id: 1, translationKey: 'useGroundingTechniques', icon: 'footsteps-outline' },
+    { id: 2, translationKey: 'seekSupport', icon: 'chatbubbles-outline' },
+    { id: 3, translationKey: 'avoidAvoidance', icon: 'trending-up-outline' },
+    { id: 4, translationKey: 'writeItDown', icon: 'create-outline' },
+    { id: 5, translationKey: 'considerProfessionalHelp', icon: 'medical-outline' },
   ],
   5: [
-    {
-      id: 1,
-      title: 'Enfocate en la Seguridad',
-      content: 'Recuerdate que estas a salvo. Los ataques de panico son intensos pero no peligrosos. Pasaran.',
-      icon: 'shield-checkmark-outline',
-      category: 'Seguridad',
-      steps: [
-        'Repite: "Estoy a salvo, esto pasara"',
-        'Recuerda que un ataque de panico no te danara',
-        'Busca un lugar donde te sientas seguro',
-        'Respira lentamente: inhala 4, exhala 6',
-      ],
-    },
-    {
-      id: 2,
-      title: 'Usa Tus Sentidos',
-      content: 'Sosten hielo, huele algo fuerte, escucha musica - la entrada sensorial puede interrumpir el panico.',
-      icon: 'hand-left-outline',
-      category: 'Sensorial',
-      steps: [
-        'Sosten cubos de hielo en tus manos',
-        'Huele algo fuerte como menta o limon',
-        'Pon musica que te calme',
-        'Salpica agua fria en tu cara',
-      ],
-    },
-    {
-      id: 3,
-      title: 'Ten un Contacto de Emergencia',
-      content: 'Manten a una persona de confianza en marcado rapido que pueda ayudarte en momentos severos.',
-      icon: 'call-outline',
-      category: 'Apoyo',
-      steps: [
-        'Elige a alguien de confianza',
-        'Explicale tu situacion con anticipacion',
-        'Guardalo en marcado rapido',
-        'Acordar una palabra clave si necesitas ayuda',
-      ],
-    },
-    {
-      id: 4,
-      title: 'Crea un Plan de Crisis',
-      content: 'Escribe los pasos a seguir cuando llegue el panico. Tener un plan reduce el estres del momento.',
-      icon: 'document-text-outline',
-      category: 'Planificacion',
-      steps: [
-        'Escribe que hacer primero (respirar)',
-        'Lista tecnicas que te han funcionado',
-        'Incluye numeros de emergencia',
-        'Guarda el plan en tu telefono',
-      ],
-    },
-    {
-      id: 5,
-      title: 'Busca Ayuda Profesional',
-      content: 'La ansiedad severa requiere apoyo profesional. No hay verguenza en buscar ayuda - demuestra fortaleza.',
-      icon: 'medkit-outline',
-      category: 'Profesional',
-      steps: [
-        'Reconoce que necesitas apoyo',
-        'Llama a una linea de crisis si es urgente',
-        'Agenda una cita con un profesional',
-        'Considera medicacion si es recomendada',
-      ],
-    },
-    {
-      id: 6,
-      title: 'Recuerda: Esto Pasara',
-      content: 'La ansiedad es temporal. Incluso el panico mas intenso disminuye. Has sobrevivido cada momento dificil.',
-      icon: 'sunny-outline',
-      category: 'Esperanza',
-      steps: [
-        'Repite: "Esto es temporal"',
-        'Recuerda momentos dificiles que superaste',
-        'Visualiza como te sentiras cuando pase',
-        'Confía en tu capacidad de superar esto',
-      ],
-    },
+    { id: 1, translationKey: 'focusOnSafety', icon: 'shield-checkmark-outline' },
+    { id: 2, translationKey: 'useYourSenses', icon: 'hand-left-outline' },
+    { id: 3, translationKey: 'haveEmergencyContact', icon: 'call-outline' },
+    { id: 4, translationKey: 'createCrisisPlan', icon: 'document-text-outline' },
+    { id: 5, translationKey: 'seekProfessionalHelp', icon: 'medkit-outline' },
+    { id: 6, translationKey: 'rememberThisWillPass', icon: 'sunny-outline' },
   ],
 };
 
@@ -321,22 +62,6 @@ const levelColors: Record<number, string[]> = {
   3: ['#d97706', '#1e4e6d'],
   4: ['#c026d3', '#dc2626'],
   5: ['#be185d', '#ea580c'],
-};
-
-const levelTitles: Record<number, string> = {
-  1: 'Calma',
-  2: 'Leve',
-  3: 'Moderada',
-  4: 'Alta',
-  5: 'Severa',
-};
-
-const levelDescriptions: Record<number, string> = {
-  1: 'Relajado y en paz. La respiracion es estable y los pensamientos son claros.',
-  2: 'Ligeramente tenso. Preocupaciones menores presentes pero manejables.',
-  3: 'Notablemente ansioso. El ritmo cardiaco puede aumentar, comienza la inquietud.',
-  4: 'Ansiedad fuerte. Dificultad para concentrarse, pensamientos acelerados.',
-  5: 'Ansiedad intensa o panico. Sentimientos abrumadores, sintomas fisicos presentes.',
 };
 
 const levelIcons: Record<number, keyof typeof Ionicons.glyphMap> = {
@@ -621,17 +346,27 @@ function TipCard({ tip, colors, isExpanded, onPress }: {
 
 export default function TipsScreen() {
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const level = Number(params.level) || 3;
-  const tips = tipsByLevel[level] || tipsByLevel[3];
+  const tipConfigs = tipConfigsByLevel[level] || tipConfigsByLevel[3];
   const colors = levelColors[level] || levelColors[3];
-  const levelTitle = levelTitles[level] || 'Moderate';
+  const levelTitle = t(`anxietyLevels.${level}.title`);
   const [showLevelSelection, setShowLevelSelection] = useState(false);
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const [isTipExpanded, setIsTipExpanded] = useState(false);
   const { setSessionTip, endSession, startSession, clearSession } = useSession();
 
+  const tips: Tip[] = tipConfigs.map(config => ({
+    id: config.id,
+    title: t(`tips.levels.${level}.tips.${config.translationKey}.title`),
+    content: t(`tips.levels.${level}.tips.${config.translationKey}.content`),
+    icon: config.icon,
+    category: t(`tips.categories.${t(`tips.levels.${level}.tips.${config.translationKey}.category`)}`),
+    steps: t(`tips.levels.${level}.tips.${config.translationKey}.steps`, { returnObjects: true }) as string[],
+  }));
+
   const [randomTip] = useState(() => {
-    const randomIndex = Math.floor(Math.random() * tips.length);
+    const randomIndex = Math.floor(Math.random() * tipConfigs.length);
     return tips[randomIndex];
   });
 
@@ -689,36 +424,33 @@ export default function TipsScreen() {
           </Pressable>
           <View style={styles.headerContent}>
             <Ionicons name="pulse" size={48} color="rgba(255,255,255,0.9)" />
-            <Text style={styles.title}>Selecciona un Nivel</Text>
-            <Text style={styles.subtitle}>Como te sientes ahora?</Text>
+            <Text style={styles.title}>{t('tips.levelSelection.title')}</Text>
+            <Text style={styles.subtitle}>{t('tips.levelSelection.subtitle')}</Text>
           </View>
         </LinearGradient>
 
         <Text style={styles.sectionTitle}>
-          Toca para ver detalles, luego selecciona:
+          {t('tips.sectionTitle')}
         </Text>
 
-        {Object.entries(levelTitles).map(([lvl, title]) => {
-          const levelNum = Number(lvl);
-          return (
-            <LevelSelectCard
-              key={lvl}
-              levelNum={levelNum}
-              title={title}
-              description={levelDescriptions[levelNum]}
-              icon={levelIcons[levelNum]}
-              colors={levelColors[levelNum]}
-              isExpanded={expandedLevel === levelNum}
-              onExpand={() => handleLevelExpand(levelNum)}
-              onSelect={() => handleLevelSelect(levelNum)}
-            />
-          );
-        })}
+        {[1, 2, 3, 4, 5].map((lvl) => (
+          <LevelSelectCard
+            key={lvl}
+            levelNum={lvl}
+            title={t(`anxietyLevels.${lvl}.title`)}
+            description={t(`anxietyLevels.${lvl}.description`)}
+            icon={levelIcons[lvl]}
+            colors={levelColors[lvl]}
+            isExpanded={expandedLevel === lvl}
+            onExpand={() => handleLevelExpand(lvl)}
+            onSelect={() => handleLevelSelect(lvl)}
+          />
+        ))}
 
         <Pressable style={styles.endSessionButton} onPress={handleEndSession}>
           <View style={styles.endSessionButtonContent}>
             <Ionicons name="close-circle-outline" size={24} color="#566573" />
-            <Text style={styles.endSessionButtonText}>Finalizar Sesion</Text>
+            <Text style={styles.endSessionButtonText}>{t('tips.finishSession')}</Text>
           </View>
         </Pressable>
       </ScrollView>
@@ -738,13 +470,13 @@ export default function TipsScreen() {
         </Pressable>
         <View style={styles.headerContent}>
           <Ionicons name="bulb" size={48} color="rgba(255,255,255,0.9)" />
-          <Text style={styles.title}>Consejo</Text>
-          <Text style={styles.subtitle}>Para Ansiedad {levelTitle} (Nivel {level})</Text>
+          <Text style={styles.title}>{t('tips.title')}</Text>
+          <Text style={styles.subtitle}>{t('tips.subtitle', { levelTitle, level })}</Text>
         </View>
       </LinearGradient>
 
       <Text style={styles.sectionTitle}>
-        Aqui tienes un consejo para ti:
+        {t('tips.sectionTitle')}
       </Text>
 
       <TipCard
@@ -754,7 +486,7 @@ export default function TipsScreen() {
         onPress={handleTipPress}
       />
 
-      <Text style={styles.actionTitle}>Que deseas hacer ahora?</Text>
+      <Text style={styles.actionTitle}>{t('tips.actionTitle')}</Text>
 
       <Pressable style={styles.newLevelButton} onPress={handleSelectNewLevel}>
         <LinearGradient
@@ -764,14 +496,14 @@ export default function TipsScreen() {
           style={styles.homeButtonGradient}
         >
           <Ionicons name="refresh" size={20} color="#fff" />
-          <Text style={styles.homeButtonText}>Seleccionar Nuevo Nivel</Text>
+          <Text style={styles.homeButtonText}>{t('tips.selectNewLevel')}</Text>
         </LinearGradient>
       </Pressable>
 
       <Pressable style={styles.endSessionButton} onPress={handleEndSession}>
         <View style={styles.endSessionButtonContent}>
           <Ionicons name="checkmark-circle-outline" size={24} color="#5a8c6a" />
-          <Text style={styles.endSessionButtonTextGreen}>Finalizar Sesion</Text>
+          <Text style={styles.endSessionButtonTextGreen}>{t('tips.finishSession')}</Text>
         </View>
       </Pressable>
     </ScrollView>

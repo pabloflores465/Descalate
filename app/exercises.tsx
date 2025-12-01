@@ -4,6 +4,13 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from '@/context/SessionContext';
+import { useTranslation } from 'react-i18next';
+
+type ExerciseConfig = {
+  id: number;
+  translationKey: string;
+  icon: keyof typeof Ionicons.glyphMap;
+};
 
 type Exercise = {
   id: number;
@@ -11,137 +18,37 @@ type Exercise = {
   description: string;
   duration: string;
   icon: keyof typeof Ionicons.glyphMap;
+  translationKey: string;
+  level: number;
 };
 
-const exercisesByLevel: Record<number, Exercise[]> = {
+const exerciseConfigsByLevel: Record<number, ExerciseConfig[]> = {
   1: [
-    {
-      id: 1,
-      title: 'Respiracion Consciente',
-      description: 'Concentrate en tu respiracion por 5 minutos. Inhala profundamente por la nariz, manten por 4 segundos, luego exhala lentamente por la boca.',
-      duration: '5 min',
-      icon: 'leaf-outline',
-    },
-    {
-      id: 2,
-      title: 'Diario de Gratitud',
-      description: 'Escribe 3 cosas por las que estas agradecido hoy. Esto ayuda a mantener tu estado de calma.',
-      duration: '10 min',
-      icon: 'book-outline',
-    },
-    {
-      id: 3,
-      title: 'Estiramiento Suave',
-      description: 'Estiramientos suaves para mantener tu cuerpo relajado. Enfocate en cuello, hombros y espalda.',
-      duration: '10 min',
-      icon: 'body-outline',
-    },
+    { id: 1, translationKey: 'mindfulBreathing', icon: 'leaf-outline' },
+    { id: 2, translationKey: 'gratitudeJournal', icon: 'book-outline' },
+    { id: 3, translationKey: 'gentleStretching', icon: 'body-outline' },
   ],
   2: [
-    {
-      id: 1,
-      title: 'Respiracion Cuadrada',
-      description: 'Inhala por 4 tiempos, manten por 4 tiempos, exhala por 4 tiempos, manten por 4 tiempos. Repite 5 veces.',
-      duration: '5 min',
-      icon: 'square-outline',
-    },
-    {
-      id: 2,
-      title: 'Relajacion Muscular Progresiva',
-      description: 'Tensa y relaja cada grupo muscular comenzando desde los dedos de los pies hasta la cabeza.',
-      duration: '15 min',
-      icon: 'fitness-outline',
-    },
-    {
-      id: 3,
-      title: 'Caminata Consciente',
-      description: 'Da un paseo lento, prestando atencion a cada paso y a tu entorno.',
-      duration: '15 min',
-      icon: 'walk-outline',
-    },
+    { id: 1, translationKey: 'boxBreathing', icon: 'square-outline' },
+    { id: 2, translationKey: 'progressiveMuscleRelaxation', icon: 'fitness-outline' },
+    { id: 3, translationKey: 'mindfulWalking', icon: 'walk-outline' },
   ],
   3: [
-    {
-      id: 1,
-      title: 'Tecnica de Respiracion 4-7-8',
-      description: 'Inhala por 4 segundos, manten por 7 segundos, exhala por 8 segundos. Esto activa tu sistema nervioso parasimpatico.',
-      duration: '5 min',
-      icon: 'pulse-outline',
-    },
-    {
-      id: 2,
-      title: 'Meditacion de Escaneo Corporal',
-      description: 'Acuestate y escanea mentalmente tu cuerpo de la cabeza a los pies, notando y liberando la tension.',
-      duration: '15 min',
-      icon: 'body-outline',
-    },
-    {
-      id: 3,
-      title: 'Ejercicio de Anclaje (5-4-3-2-1)',
-      description: 'Nombra 5 cosas que ves, 4 que escuchas, 3 que puedes tocar, 2 que hueles y 1 que saboreas.',
-      duration: '5 min',
-      icon: 'earth-outline',
-    },
+    { id: 1, translationKey: 'breathing478', icon: 'pulse-outline' },
+    { id: 2, translationKey: 'bodyScan', icon: 'body-outline' },
+    { id: 3, translationKey: 'grounding54321', icon: 'earth-outline' },
   ],
   4: [
-    {
-      id: 1,
-      title: 'Respiracion Diafragmatica Profunda',
-      description: 'Coloca una mano en tu pecho y otra en tu abdomen. Respira profundo para que solo tu abdomen se eleve.',
-      duration: '10 min',
-      icon: 'contract-outline',
-    },
-    {
-      id: 2,
-      title: 'Visualizacion Guiada',
-      description: 'Cierra los ojos e imagina un lugar pacifico en detalle. Involucra todos tus sentidos en esta visualizacion.',
-      duration: '15 min',
-      icon: 'cloudy-outline',
-    },
-    {
-      id: 3,
-      title: 'Liberacion de Actividad Fisica',
-      description: 'Haz saltos, corre en el lugar o cualquier actividad fisica para liberar la tension y adrenalina acumuladas.',
-      duration: '10 min',
-      icon: 'barbell-outline',
-    },
-    {
-      id: 4,
-      title: 'Tecnica del Agua Fria',
-      description: 'Salpica agua fria en tu cara o sostén cubos de hielo. Esto activa tu reflejo de inmersion y reduce el ritmo cardiaco.',
-      duration: '2 min',
-      icon: 'water-outline',
-    },
+    { id: 1, translationKey: 'deepDiaphragmatic', icon: 'contract-outline' },
+    { id: 2, translationKey: 'guidedVisualization', icon: 'cloudy-outline' },
+    { id: 3, translationKey: 'physicalRelease', icon: 'barbell-outline' },
+    { id: 4, translationKey: 'coldWater', icon: 'water-outline' },
   ],
   5: [
-    {
-      id: 1,
-      title: 'Anclaje de Emergencia',
-      description: 'Presiona tus pies firmemente contra el suelo. Aprieta una pelota antiestrés o un cubo de hielo. Concentrate en las sensaciones fisicas.',
-      duration: '2 min',
-      icon: 'hand-left-outline',
-    },
-    {
-      id: 2,
-      title: 'Tecnica TIPP',
-      description: 'Temperatura (agua fria), ejercicio Intenso, respiracion Pausada y relajacion Progresiva.',
-      duration: '10 min',
-      icon: 'thermometer-outline',
-    },
-    {
-      id: 3,
-      title: 'Visualizacion del Lugar Seguro',
-      description: 'Cierra los ojos e imagina tu lugar mas seguro y reconfortante. Describelo en detalle para ti mismo.',
-      duration: '5 min',
-      icon: 'home-outline',
-    },
-    {
-      id: 4,
-      title: 'Abrazo de Mariposa',
-      description: 'Cruza los brazos sobre tu pecho, manos en los hombros. Alterna golpecitos en cada hombro mientras respiras lentamente.',
-      duration: '5 min',
-      icon: 'heart-outline',
-    },
+    { id: 1, translationKey: 'emergencyGrounding', icon: 'hand-left-outline' },
+    { id: 2, translationKey: 'tippTechnique', icon: 'thermometer-outline' },
+    { id: 3, translationKey: 'safePlace', icon: 'home-outline' },
+    { id: 4, translationKey: 'butterflyHug', icon: 'heart-outline' },
   ],
 };
 
@@ -151,14 +58,6 @@ const levelColors: Record<number, string[]> = {
   3: ['#d97706', '#1e4e6d'],
   4: ['#c026d3', '#dc2626'],
   5: ['#be185d', '#ea580c'],
-};
-
-const levelTitles: Record<number, string> = {
-  1: 'Calma',
-  2: 'Leve',
-  3: 'Moderada',
-  4: 'Alta',
-  5: 'Severa',
 };
 
 function ExerciseCard({
@@ -332,13 +231,24 @@ function ExerciseCard({
 
 export default function ExercisesScreen() {
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const level = Number(params.level) || 3;
-  const exercises = exercisesByLevel[level] || exercisesByLevel[3];
+  const exerciseConfigs = exerciseConfigsByLevel[level] || exerciseConfigsByLevel[3];
   const colors = levelColors[level] || levelColors[3];
-  const levelTitle = levelTitles[level] || 'Moderate';
+  const levelTitle = t(`anxietyLevels.${level}.title`);
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
   const [expandedExerciseId, setExpandedExerciseId] = useState<number | null>(null);
   const { setSelectedExercises } = useSession();
+
+  const exercises: Exercise[] = exerciseConfigs.map(config => ({
+    id: config.id,
+    title: t(`exercises.levels.${level}.exercises.${config.translationKey}.title`),
+    description: t(`exercises.levels.${level}.exercises.${config.translationKey}.description`),
+    duration: t('exercises.duration', { minutes: t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`) }),
+    icon: config.icon,
+    translationKey: config.translationKey,
+    level: level,
+  }));
 
   const handleSelectExercise = (exerciseId: number) => {
     setSelectedExerciseIds(prev => {
@@ -360,7 +270,13 @@ export default function ExercisesScreen() {
     }
     const selectedExercisesData = exercises
       .filter(ex => selectedExerciseIds.includes(ex.id))
-      .map(ex => ({ id: ex.id, title: ex.title, duration: ex.duration }));
+      .map(ex => ({
+        id: ex.id,
+        title: ex.title,
+        duration: ex.duration,
+        translationKey: ex.translationKey,
+        level: ex.level,
+      }));
     setSelectedExercises(selectedExercisesData);
     router.push({
       pathname: '/tips',
@@ -385,12 +301,12 @@ export default function ExercisesScreen() {
         </Pressable>
         <View style={styles.headerContent}>
           <Ionicons name="fitness" size={48} color="rgba(255,255,255,0.9)" />
-          <Text style={styles.title}>Ejercicios Recomendados</Text>
-          <Text style={styles.subtitle}>Para Ansiedad {levelTitle} (Nivel {level})</Text>
+          <Text style={styles.title}>{t('exercises.title')}</Text>
+          <Text style={styles.subtitle}>{t('exercises.subtitle', { levelTitle, level })}</Text>
         </View>
       </LinearGradient>
       <Text style={styles.sectionTitle}>
-        Selecciona un ejercicio para continuar:
+        {t('exercises.sectionTitle')}
       </Text>
     </>
   );
@@ -411,9 +327,7 @@ export default function ExercisesScreen() {
         style={styles.continueButtonGradient}
       >
         <Text style={styles.continueButtonText}>
-          {selectedExerciseIds.length > 0
-            ? `Continuar con ${selectedExerciseIds.length} ejercicio${selectedExerciseIds.length > 1 ? 's' : ''}`
-            : 'Selecciona al menos un ejercicio'}
+          {t('exercises.startSession')} ({selectedExerciseIds.length})
         </Text>
         <Ionicons name="arrow-forward" size={20} color="#fff" />
       </LinearGradient>

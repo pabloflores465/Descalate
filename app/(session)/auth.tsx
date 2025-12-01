@@ -22,6 +22,8 @@ import { eq } from 'drizzle-orm';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTutorial } from '@/context/TutorialContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
@@ -33,6 +35,7 @@ bcrypt.setRandomFallback((len: number) => {
 export default function AuthScreen() {
   const router = useRouter();
   const { resetTutorial } = useTutorial();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
   const { promptAsync, userInfo, request } = useGoogleAuth();
@@ -81,8 +84,8 @@ export default function AuthScreen() {
 
             if (existingUser.length === 0) {
               Alert.alert(
-                'Usuario no encontrado',
-                'No existe una cuenta con este correo. Por favor registrate primero.',
+                t('auth.errors.userNotFound'),
+                t('auth.errors.noAccountExists'),
                 [{ text: 'OK' }]
               );
               return;
@@ -122,7 +125,7 @@ export default function AuthScreen() {
           }
         } catch (error) {
           console.error('Error handling Google user:', error);
-          Alert.alert('Error', 'Fallo al autenticar con Google');
+          Alert.alert(t('common.error'), t('auth.errors.googleAuthFailed'));
         } finally {
           setIsGoogleLoading(false);
         }
@@ -157,7 +160,7 @@ export default function AuthScreen() {
         }
 
         setErrors(errorMessages);
-        Alert.alert('Error de validacion', Object.values(errorMessages).join('\n'));
+        Alert.alert(t('auth.errors.validationError'), Object.values(errorMessages).join('\n'));
         setIsLoading(false);
         return;
       }
@@ -169,7 +172,7 @@ export default function AuthScreen() {
         .limit(1);
 
       if (existingUser.length === 0) {
-        Alert.alert('Error', 'Correo o contraseña invalidos');
+        Alert.alert(t('common.error'), t('auth.errors.invalidCredentials'));
         setIsLoading(false);
         return;
       }
@@ -178,8 +181,8 @@ export default function AuthScreen() {
 
       if (!user.password) {
         Alert.alert(
-          'Error',
-          'Esta cuenta fue creada con Google. Por favor inicia sesion con Google.'
+          t('common.error'),
+          t('auth.errors.googleAccountExists')
         );
         setIsLoading(false);
         return;
@@ -188,7 +191,7 @@ export default function AuthScreen() {
       const isPasswordValid = bcrypt.compareSync(password, user.password);
 
       if (!isPasswordValid) {
-        Alert.alert('Error', 'Correo o contraseña invalidos');
+        Alert.alert(t('common.error'), t('auth.errors.invalidCredentials'));
         setIsLoading(false);
         return;
       }
@@ -197,9 +200,9 @@ export default function AuthScreen() {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
       console.log('Email saved:', validationResult.data.email);
       router.replace('/home');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error logging in:', error);
-      Alert.alert('Error', 'Fallo al iniciar sesion');
+      Alert.alert(t('common.error'), t('auth.errors.loginFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -236,7 +239,7 @@ export default function AuthScreen() {
         }
 
         setErrors(errorMessages);
-        Alert.alert('Error de validacion', Object.values(errorMessages).join('\n'));
+        Alert.alert(t('auth.errors.validationError'), Object.values(errorMessages).join('\n'));
         setIsLoading(false);
         return;
       }
@@ -255,13 +258,13 @@ export default function AuthScreen() {
       // Reset tutorial flag for new users so they see the tutorial
       await resetTutorial();
       router.replace('/(session)/onboarding');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error registering user:', error);
 
-      if (error.message?.includes('UNIQUE constraint failed')) {
-        Alert.alert('Error', 'Este correo ya esta registrado');
+      if (error instanceof Error && error.message?.includes('UNIQUE constraint failed')) {
+        Alert.alert(t('common.error'), t('auth.errors.emailAlreadyRegistered'));
       } else {
-        Alert.alert('Error', 'Fallo al crear la cuenta');
+        Alert.alert(t('common.error'), t('auth.errors.registrationFailed'));
       }
     } finally {
       setIsLoading(false);
@@ -292,14 +295,15 @@ export default function AuthScreen() {
           top: '50%',
           left: 0,
           right: 0,
-          transform: [{ translateY: -200 }],
-          height: 450,
+          transform: [{ translateY: -220 }],
+          height: 500,
           backgroundColor: Colors.surfaceElevated,
           padding: 30,
           justifyContent: 'center',
           overflow: 'visible',
         }}
       >
+        <LanguageSelector style={{ marginBottom: Spacing.lg, alignSelf: 'flex-end' }} />
         <View
           style={{
             flexDirection: 'row',
@@ -331,7 +335,7 @@ export default function AuthScreen() {
                 color: activeTab === 'login' ? Colors.white : Colors.text.secondary,
               }}
             >
-              Iniciar sesion
+              {t('auth.tabs.login')}
             </Text>
           </Pressable>
           <Pressable
@@ -356,7 +360,7 @@ export default function AuthScreen() {
                 color: activeTab === 'register' ? Colors.white : Colors.text.secondary,
               }}
             >
-              Registrarse
+              {t('auth.tabs.register')}
             </Text>
           </Pressable>
         </View>
@@ -370,13 +374,13 @@ export default function AuthScreen() {
             color: Colors.text.secondary,
           }}
         >
-          Email
+          {t('auth.fields.email')}
         </Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
-          placeholder="ejemplo@gmail.com"
+          placeholder={t('auth.fields.emailPlaceholder')}
           placeholderTextColor={Colors.text.placeholder}
           autoCapitalize="none"
           style={{
@@ -403,7 +407,7 @@ export default function AuthScreen() {
             color: Colors.text.secondary,
           }}
         >
-          Contraseña
+          {t('auth.fields.password')}
         </Text>
         <TextInput
           value={password}
@@ -470,11 +474,11 @@ export default function AuthScreen() {
           >
             {isLoading
               ? activeTab === 'login'
-                ? 'Iniciando sesion...'
-                : 'Registrando...'
+                ? t('auth.buttons.loggingIn')
+                : t('auth.buttons.registering')
               : activeTab === 'login'
-              ? 'Iniciar sesion'
-              : 'Registrarse'}
+              ? t('auth.buttons.login')
+              : t('auth.buttons.register')}
           </Text>
         </Pressable>
 
@@ -498,7 +502,7 @@ export default function AuthScreen() {
             <AntDesign name="google" size={20} color={Colors.white} style={{ marginRight: Spacing.sm }} />
           )}
           <Text style={{ color: Colors.white, textAlign: 'center', fontSize: FontSize.md, fontWeight: 'bold' }}>
-            {isGoogleLoading ? 'Cargando...' : 'Continuar con Google'}
+            {isGoogleLoading ? t('auth.buttons.googleLoading') : t('auth.buttons.googleContinue')}
           </Text>
         </Pressable>
       </View>
