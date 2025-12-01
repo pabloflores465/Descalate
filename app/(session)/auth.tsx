@@ -194,7 +194,6 @@ export default function AuthScreen() {
       console.log('User logged in successfully');
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
       console.log('Email saved:', validationResult.data.email);
-      Alert.alert('Exito', 'Sesion iniciada exitosamente');
       router.replace('/home');
     } catch (error: any) {
       console.error('Error logging in:', error);
@@ -251,8 +250,7 @@ export default function AuthScreen() {
 
       console.log('User registered successfully');
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
-      Alert.alert('Exito', 'Cuenta creada exitosamente');
-      router.replace('/home');
+      router.replace('/(session)/onboarding');
     } catch (error: any) {
       console.error('Error registering user:', error);
 

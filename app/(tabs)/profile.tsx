@@ -14,16 +14,19 @@ import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { db, resetDatabase } from '@/database/db';
 import { users, type User } from '@/database/schema';
+import { seedHistoricalSessions, clearSessions } from '@/database/seed';
 import { useFocusEffect } from '@react-navigation/native';
 import { eq } from 'drizzle-orm';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTutorial } from '@/context/TutorialContext';
 
 const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { resetTutorial } = useTutorial();
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +37,7 @@ export default function ProfileScreen() {
   const [gender, setGender] = useState('');
   const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
   const [hasNewImage, setHasNewImage] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   const loadEmailFromStorage = async () => {
     try {
@@ -65,11 +69,7 @@ export default function ProfileScreen() {
     try {
       setIsLoading(true);
 
-      const userResult = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+      const userResult = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
       if (userResult.length > 0) {
         const userData = userResult[0];
@@ -96,7 +96,7 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       setHasNewImage(false);
-      loadEmailFromStorage().then(email => {
+      loadEmailFromStorage().then((email) => {
         if (email) {
           loadUserData(email);
         } else {
@@ -111,7 +111,10 @@ export default function ProfileScreen() {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (!permissionResult.granted) {
-        Alert.alert('Permission required', 'Please allow access to your photos to change your profile picture');
+        Alert.alert(
+          'Permission required',
+          'Please allow access to your photos to change your profile picture'
+        );
         return;
       }
 
@@ -168,10 +171,7 @@ export default function ProfileScreen() {
         }
       }
 
-      await db
-        .update(users)
-        .set(updateData)
-        .where(eq(users.email, user.email));
+      await db.update(users).set(updateData).where(eq(users.email, user.email));
 
       setHasNewImage(false);
       Alert.alert('Success', 'Profile updated successfully');
@@ -228,6 +228,64 @@ export default function ProfileScreen() {
               console.error('Error resetting database:', error);
               Alert.alert('Error', 'Fallo al resetear la base de datos');
             }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const handleSeedData = () => {
+    Alert.alert(
+      'Generar datos de prueba',
+      'Esto creara sesiones historicas del ultimo ano, mes y semana para probar las graficas. ¿Continuar?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Generar',
+          onPress: async () => {
+            if (!user?.id) {
+              Alert.alert('Error', 'No se encontro el usuario');
+              return;
+            }
+            try {
+              setIsSeeding(true);
+              await clearSessions(user.id);
+              await seedHistoricalSessions(user.id);
+              Alert.alert(
+                'Exito',
+                'Datos historicos generados correctamente. Ve a la pestana de estadisticas para verlos.'
+              );
+            } catch (error) {
+              console.error('Error seeding data:', error);
+              Alert.alert('Error', 'Fallo al generar los datos de prueba');
+            } finally {
+              setIsSeeding(false);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const handleResetTutorial = () => {
+    Alert.alert(
+      'Reiniciar tutorial',
+      'Esto reiniciara el tutorial interactivo. La proxima vez que vayas a Inicio veras el tutorial de nuevo.',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Reiniciar',
+          onPress: async () => {
+            await resetTutorial();
+            Alert.alert('Exito', 'Tutorial reiniciado. Ve a Inicio para verlo.');
           },
         },
       ],
@@ -303,7 +361,12 @@ export default function ProfileScreen() {
                 onPress={() => setGender('Male')}
               >
                 <Ionicons name="male" size={20} color={gender === 'Male' ? 'white' : '#5a8c6a'} />
-                <Text style={[styles.genderButtonText, gender === 'Male' && styles.genderButtonTextActive]}>
+                <Text
+                  style={[
+                    styles.genderButtonText,
+                    gender === 'Male' && styles.genderButtonTextActive,
+                  ]}
+                >
                   Male
                 </Text>
               </Pressable>
@@ -312,8 +375,17 @@ export default function ProfileScreen() {
                 style={[styles.genderButton, gender === 'Female' && styles.genderButtonActive]}
                 onPress={() => setGender('Female')}
               >
-                <Ionicons name="female" size={20} color={gender === 'Female' ? 'white' : '#5a8c6a'} />
-                <Text style={[styles.genderButtonText, gender === 'Female' && styles.genderButtonTextActive]}>
+                <Ionicons
+                  name="female"
+                  size={20}
+                  color={gender === 'Female' ? 'white' : '#5a8c6a'}
+                />
+                <Text
+                  style={[
+                    styles.genderButtonText,
+                    gender === 'Female' && styles.genderButtonTextActive,
+                  ]}
+                >
                   Female
                 </Text>
               </Pressable>
@@ -322,8 +394,17 @@ export default function ProfileScreen() {
                 style={[styles.genderButton, gender === 'Other' && styles.genderButtonActive]}
                 onPress={() => setGender('Other')}
               >
-                <Ionicons name="transgender" size={20} color={gender === 'Other' ? 'white' : '#5a8c6a'} />
-                <Text style={[styles.genderButtonText, gender === 'Other' && styles.genderButtonTextActive]}>
+                <Ionicons
+                  name="transgender"
+                  size={20}
+                  color={gender === 'Other' ? 'white' : '#5a8c6a'}
+                />
+                <Text
+                  style={[
+                    styles.genderButtonText,
+                    gender === 'Other' && styles.genderButtonTextActive,
+                  ]}
+                >
                   Other
                 </Text>
               </Pressable>
@@ -342,11 +423,25 @@ export default function ProfileScreen() {
             {isSaving ? (
               <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
             ) : (
-              <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginRight: 10 }} />
+              <Ionicons
+                name="checkmark-circle"
+                size={20}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
             )}
-            <Text style={styles.saveButtonText}>
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </Text>
+            <Text style={styles.saveButtonText}>{isSaving ? 'Saving...' : 'Save Changes'}</Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.tutorialButton,
+              { backgroundColor: pressed ? '#6366f1' : '#818cf8' },
+            ]}
+            onPress={handleResetTutorial}
+          >
+            <Ionicons name="school" size={20} color="white" style={{ marginRight: 10 }} />
+            <Text style={styles.tutorialText}>Reiniciar Tutorial</Text>
           </Pressable>
 
           <Pressable
@@ -360,16 +455,39 @@ export default function ProfileScreen() {
             <Text style={styles.logoutText}>Log Out</Text>
           </Pressable>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.resetButton,
-              { backgroundColor: pressed ? '#c0392b' : '#e67e22' },
-            ]}
-            onPress={handleResetDatabase}
-          >
-            <Ionicons name="warning" size={20} color="white" style={{ marginRight: 10 }} />
-            <Text style={styles.resetText}>Reset Database (Temporary)</Text>
-          </Pressable>
+          {__DEV__ && (
+            <>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.resetButton,
+                  { backgroundColor: pressed ? '#c0392b' : '#e67e22' },
+                ]}
+                onPress={handleResetDatabase}
+              >
+                <Ionicons name="warning" size={20} color="white" style={{ marginRight: 10 }} />
+                <Text style={styles.resetText}>Reset Database</Text>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.seedButton,
+                  isSeeding && styles.seedButtonDisabled,
+                  { backgroundColor: pressed && !isSeeding ? '#2563eb' : '#3b82f6' },
+                ]}
+                onPress={handleSeedData}
+                disabled={isSeeding}
+              >
+                {isSeeding ? (
+                  <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+                ) : (
+                  <Ionicons name="flask" size={20} color="white" style={{ marginRight: 10 }} />
+                )}
+                <Text style={styles.seedText}>
+                  {isSeeding ? 'Generando...' : 'Generar Datos de Prueba'}
+                </Text>
+              </Pressable>
+            </>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -528,6 +646,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  tutorialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#818cf8',
+    borderRadius: 50,
+    paddingVertical: 15,
+    marginTop: 12,
+    gap: 10,
+  },
+  tutorialText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -535,7 +668,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e74c3c',
     borderRadius: 50,
     paddingVertical: 15,
-    marginTop: 20,
+    marginTop: 12,
     gap: 10,
   },
   logoutText: {
@@ -550,10 +683,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#e67e22',
     borderRadius: 50,
     paddingVertical: 15,
-    marginTop: 10,
+    marginTop: 12,
     gap: 10,
   },
   resetText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  seedButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#3b82f6',
+    borderRadius: 50,
+    paddingVertical: 15,
+    marginTop: 12,
+    gap: 10,
+  },
+  seedButtonDisabled: {
+    opacity: 0.6,
+  },
+  seedText: {
     color: 'white',
     fontSize: 14,
     fontWeight: 'bold',

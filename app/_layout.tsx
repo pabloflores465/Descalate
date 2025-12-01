@@ -1,12 +1,14 @@
 import { Stack } from 'expo-router';
 import { AuthProvider } from '@/context/AuthContext';
 import { SessionProvider } from '@/context/SessionContext';
+import { TutorialProvider } from '@/context/TutorialContext';
 
 export default function RootLayout() {
   return (
     <AuthProvider>
       <SessionProvider>
-        <Stack
+        <TutorialProvider>
+          <Stack
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: 'transparent' },
@@ -28,6 +30,7 @@ export default function RootLayout() {
             }}
           />
         </Stack>
+        </TutorialProvider>
       </SessionProvider>
     </AuthProvider>
   );

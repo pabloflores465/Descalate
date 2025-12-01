@@ -1,11 +1,17 @@
-import { View, Text, StyleSheet, Pressable, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
+import { useTutorial } from '@/context/TutorialContext';
+import { CopilotProvider, CopilotStep, walkthroughable, useCopilot } from 'react-native-copilot';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const WalkthroughableView = walkthroughable(View);
 
 type AnxietyLevel = {
   level: number;
@@ -57,159 +63,130 @@ function AnxietyCard({
   level,
   isExpanded,
   onPress,
-  onContinue
+  onContinue,
 }: {
   level: AnxietyLevel;
   isExpanded: boolean;
   onPress: () => void;
   onContinue: () => void;
 }) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const descriptionOpacityAnim = useRef(new Animated.Value(0)).current;
-  const descriptionTranslateAnim = useRef(new Animated.Value(20)).current;
+  const contentOpacity = useRef(new Animated.Value(0)).current;
+  const iconScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    scaleAnim.stopAnimation();
-    descriptionOpacityAnim.stopAnimation();
-    descriptionTranslateAnim.stopAnimation();
-
     if (isExpanded) {
       Animated.parallel([
-        Animated.spring(scaleAnim, {
-          toValue: 1.05,
+        Animated.timing(contentOpacity, {
+          toValue: 1,
+          duration: 300,
+          delay: 150,
+          useNativeDriver: true,
+        }),
+        Animated.spring(iconScale, {
+          toValue: 1.4,
           friction: 8,
           tension: 40,
           useNativeDriver: true,
         }),
-        Animated.sequence([
-          Animated.delay(100),
-          Animated.parallel([
-            Animated.timing(descriptionOpacityAnim, {
-              toValue: 1,
-              duration: 300,
-              useNativeDriver: true,
-            }),
-            Animated.timing(descriptionTranslateAnim, {
-              toValue: 0,
-              duration: 300,
-              useNativeDriver: true,
-            }),
-          ]),
-        ]),
       ]).start();
     } else {
-      descriptionOpacityAnim.setValue(0);
-      descriptionTranslateAnim.setValue(20);
-
-      Animated.spring(scaleAnim, {
+      contentOpacity.setValue(0);
+      Animated.spring(iconScale, {
         toValue: 1,
         friction: 8,
         tension: 40,
         useNativeDriver: true,
       }).start();
     }
-  }, [isExpanded]);
+  }, [isExpanded, contentOpacity, iconScale]);
 
   return (
-    <View
-      style={[
-        styles.cardWrapper,
-        isExpanded && styles.cardWrapperExpanded,
-      ]}
-    >
-      <Pressable onPress={onPress} style={{ flex: 1 }}>
-        <View
-          style={[
-            styles.card,
-            isExpanded && styles.cardExpanded,
-            {
-              overflow: 'hidden',
-              backgroundColor: level.colors[0],
-            },
-          ]}
+    <View style={[styles.cardWrapper, isExpanded && styles.cardWrapperExpanded]}>
+      <Pressable onPress={onPress}>
+        <LinearGradient
+          colors={level.colors as [string, string, ...string[]]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.card, isExpanded && styles.cardExpanded]}
         >
-          <LinearGradient
-            colors={level.colors as [string, string, ...string[]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[
-              styles.gradientBackground,
-              isExpanded && styles.gradientExpanded,
-            ]}
-          >
-            <View style={styles.cardHeader}>
-              <View style={isExpanded ? styles.iconContainerExpanded : styles.iconContainer}>
-                <Ionicons
-                  name={level.icon}
-                  size={isExpanded ? 72 : 36}
-                  color="rgba(255, 255, 255, 0.95)"
-                />
-              </View>
-              <View
-                style={[
-                  styles.levelBadge,
-                  isExpanded && styles.levelBadgeExpanded,
-                ]}
-              >
-                <Text style={[styles.levelNumber, isExpanded && styles.levelNumberExpanded]}>
-                  {level.level}
-                </Text>
-              </View>
+          <View style={styles.cardHeader}>
+            <Animated.View style={{ transform: [{ scale: iconScale }] }}>
+              <Ionicons
+                name={level.icon}
+                size={32}
+                color="rgba(255, 255, 255, 0.95)"
+              />
+            </Animated.View>
+            <View style={[styles.levelBadge, isExpanded && styles.levelBadgeExpanded]}>
+              <Text style={[styles.levelNumber, isExpanded && styles.levelNumberExpanded]}>
+                {level.level}
+              </Text>
             </View>
+          </View>
 
-            <Text style={[styles.cardTitle, isExpanded && styles.cardTitleExpanded]}>
-              {level.title}
-            </Text>
+          <Text style={[styles.cardTitle, isExpanded && styles.cardTitleExpanded]}>
+            {level.title}
+          </Text>
 
-            {isExpanded && (
-              <Animated.View
-                style={[
-                  styles.descriptionContainer,
-                  {
-                    opacity: descriptionOpacityAnim,
-                    transform: [{
-                      translateY: descriptionTranslateAnim,
-                    }],
-                  },
-                ]}
-              >
+          {isExpanded && (
+            <Animated.View style={{ opacity: contentOpacity }}>
+              <View style={styles.descriptionContainer}>
                 <Text style={styles.cardDescription}>{level.description}</Text>
-              </Animated.View>
-            )}
+              </View>
 
-            {isExpanded && (
-              <Animated.View
-                style={[
-                  styles.continueButtonContainer,
-                  {
-                    opacity: descriptionOpacityAnim,
-                    transform: [{
-                      translateY: descriptionTranslateAnim,
-                    }],
-                  },
-                ]}
-              >
-                <Pressable
-                  onPress={onContinue}
-                  style={styles.continueButton}
-                >
-                  <Text style={styles.continueButtonText}>Continuar</Text>
-                  <Ionicons name="arrow-forward" size={18} color="#fff" />
-                </Pressable>
-              </Animated.View>
-            )}
-          </LinearGradient>
-        </View>
+              <Pressable onPress={onContinue} style={styles.continueButton}>
+                <Text style={styles.continueButtonText}>Continuar</Text>
+                <Ionicons name="arrow-forward" size={18} color="#fff" />
+              </Pressable>
+            </Animated.View>
+          )}
+        </LinearGradient>
       </Pressable>
     </View>
   );
 }
 
-export default function HomeScreen() {
+function HomeContent() {
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const { startSession } = useSession();
+  const { shouldShowTutorial, completeTutorial, isLoading: tutorialLoading } = useTutorial();
+  const { start, copilotEvents } = useCopilot();
+  const [tutorialStarted, setTutorialStarted] = useState(false);
+
+  // Reset tutorialStarted when shouldShowTutorial changes to true
+  useEffect(() => {
+    if (shouldShowTutorial) {
+      setTutorialStarted(false);
+    }
+  }, [shouldShowTutorial]);
+
+  useEffect(() => {
+    if (!tutorialLoading && shouldShowTutorial && !tutorialStarted) {
+      const timer = setTimeout(() => {
+        start();
+        setTutorialStarted(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldShowTutorial, tutorialStarted, tutorialLoading, start]);
+
+  useEffect(() => {
+    const handleStop = () => {
+      completeTutorial();
+    };
+    copilotEvents.on('stop', handleStop);
+    return () => {
+      copilotEvents.off('stop', handleStop);
+    };
+  }, [completeTutorial, copilotEvents]);
 
   const handleCardPress = (level: number) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     if (expandedLevel === level) {
       setExpandedLevel(null);
     } else {
@@ -228,24 +205,62 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Ionicons name="pulse" size={48} color="#5a8c6a" />
-        <Text style={styles.title}>Niveles de Ansiedad</Text>
-        <Text style={styles.subtitle}>Toca cada tarjeta para saber mas</Text>
-      </View>
+      <CopilotStep
+        text="Bienvenido a Descalate. Aqui veras los niveles de ansiedad disponibles."
+        order={1}
+        name="header"
+      >
+        <WalkthroughableView style={styles.header}>
+          <Ionicons name="pulse" size={48} color="#5a8c6a" />
+          <Text style={styles.title}>Niveles de Ansiedad</Text>
+          <Text style={styles.subtitle}>Toca cada tarjeta para saber mas</Text>
+        </WalkthroughableView>
+      </CopilotStep>
 
-      <View style={styles.cardsContainer}>
-        {anxietyLevels.slice().reverse().map((level) => (
-          <AnxietyCard
-            key={level.level}
-            level={level}
-            isExpanded={expandedLevel === level.level}
-            onPress={() => handleCardPress(level.level)}
-            onContinue={() => handleContinue(level.level)}
-          />
-        ))}
-      </View>
+      <ScrollView
+        style={styles.cardsContainer}
+        contentContainerStyle={styles.cardsContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <CopilotStep
+          text="Cada tarjeta representa un nivel de ansiedad del 1 al 5. Toca una para ver mas detalles y comenzar una sesion de ejercicios."
+          order={2}
+          name="cards"
+        >
+          <WalkthroughableView style={styles.cardsInner}>
+            {anxietyLevels.slice().reverse().map((level) => (
+              <AnxietyCard
+                key={level.level}
+                level={level}
+                isExpanded={expandedLevel === level.level}
+                onPress={() => handleCardPress(level.level)}
+                onContinue={() => handleContinue(level.level)}
+              />
+            ))}
+          </WalkthroughableView>
+        </CopilotStep>
+      </ScrollView>
     </View>
+  );
+}
+
+export default function HomeScreen() {
+  return (
+    <CopilotProvider
+      stepNumberComponent={() => null}
+      tooltipStyle={styles.tooltip}
+      backdropColor="rgba(0, 0, 0, 0.7)"
+      animationDuration={300}
+      labels={{
+        skip: 'Saltar',
+        previous: 'Anterior',
+        next: 'Siguiente',
+        finish: 'Terminar',
+      }}
+      arrowColor="#fff"
+    >
+      <HomeContent />
+    </CopilotProvider>
   );
 }
 
@@ -282,134 +297,93 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     flex: 1,
+  },
+  cardsContentContainer: {
     padding: 20,
+    paddingBottom: 40,
+  },
+  cardsInner: {
     gap: 12,
   },
   cardWrapper: {
-    flex: 1,
-    minHeight: 90,
-    maxHeight: 110,
+    minHeight: 95,
   },
   cardWrapperExpanded: {
-    position: 'absolute',
-    top: 0,
-    left: 20,
-    right: 20,
-    bottom: 0,
-    zIndex: 1000,
-    minHeight: 'auto',
-    maxHeight: 'none',
+    zIndex: 10,
   },
   card: {
-    flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 8,
-    justifyContent: 'center',
+    padding: 16,
     borderRadius: 20,
   },
   cardExpanded: {
-    borderRadius: 32,
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 24,
-    elevation: 16,
-  },
-  gradientBackground: {
-    flex: 1,
     padding: 20,
-    justifyContent: 'center',
-    borderRadius: 20,
-  },
-  gradientExpanded: {
-    padding: 40,
-    borderRadius: 32,
-    justifyContent: 'flex-start',
+    borderRadius: 24,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  iconContainer: {
-  },
-  iconContainerExpanded: {
-    marginBottom: 8,
+    marginBottom: 4,
   },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.4)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   levelBadgeExpanded: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   levelNumber: {
     color: '#fff',
     fontWeight: '900',
-    fontSize: 18,
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    fontSize: 16,
   },
   levelNumberExpanded: {
-    fontSize: 26,
+    color: '#fff',
+    fontWeight: '900',
+    fontSize: 22,
   },
   cardTitle: {
     color: '#fff',
     fontWeight: '800',
-    letterSpacing: 0.5,
-    fontSize: 24,
-    textShadowColor: 'rgba(0, 0, 0, 0.15)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    fontSize: 20,
   },
   cardTitleExpanded: {
-    fontSize: 48,
-    marginTop: 24,
-    marginBottom: 28,
-    letterSpacing: -0.5,
+    color: '#fff',
+    fontWeight: '800',
+    fontSize: 38,
+    marginBottom: 16,
   },
   descriptionContainer: {
-    marginTop: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     padding: 16,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    marginTop: 8,
+    marginBottom: 16,
   },
   cardDescription: {
     color: '#fff',
-    fontSize: 17,
-    lineHeight: 26,
+    fontSize: 16,
+    lineHeight: 24,
     fontWeight: '500',
-    letterSpacing: 0.3,
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  continueButtonContainer: {
-    marginTop: 24,
-    alignItems: 'center',
   },
   continueButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     paddingVertical: 14,
     paddingHorizontal: 32,
@@ -417,15 +391,16 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.4)',
     gap: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   continueButtonText: {
     color: '#fff',
     fontSize: 17,
     fontWeight: '700',
-    letterSpacing: 0.5,
+  },
+  tooltip: {
+    backgroundColor: '#5a8c6a',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
 });

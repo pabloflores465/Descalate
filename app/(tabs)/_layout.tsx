@@ -12,19 +12,12 @@ type TabIconProps = {
 };
 
 function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconProps) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
   const translateYAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(focused ? 1 : 0)).current;
 
   useEffect(() => {
     if (focused) {
       Animated.parallel([
-        Animated.spring(scaleAnim, {
-          toValue: 1.2,
-          friction: 5,
-          tension: 200,
-          useNativeDriver: true,
-        }),
         Animated.spring(translateYAnim, {
           toValue: -4,
           friction: 5,
@@ -39,12 +32,6 @@ function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconPro
       ]).start();
     } else {
       Animated.parallel([
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          friction: 5,
-          tension: 200,
-          useNativeDriver: true,
-        }),
         Animated.spring(translateYAnim, {
           toValue: 0,
           friction: 5,
@@ -67,19 +54,19 @@ function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconPro
           styles.iconBackground,
           {
             opacity: opacityAnim,
-            transform: [{ scale: scaleAnim }],
           },
         ]}
       />
       <Animated.View
         style={{
-          transform: [
-            { scale: scaleAnim },
-            { translateY: translateYAnim },
-          ],
+          transform: [{ translateY: translateYAnim }],
         }}
       >
-        <Ionicons name={focused ? name : nameOutline} size={size} color={color} />
+        <Ionicons
+          name={focused ? name : nameOutline}
+          size={focused ? 28 : size}
+          color={color}
+        />
       </Animated.View>
     </View>
   );
@@ -92,22 +79,20 @@ type TabButtonProps = {
 };
 
 function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
-  const pressAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
-    Animated.spring(pressAnim, {
-      toValue: 0.85,
-      friction: 5,
-      tension: 300,
+    Animated.timing(opacityAnim, {
+      toValue: 0.7,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
 
   const handlePressOut = () => {
-    Animated.spring(pressAnim, {
+    Animated.timing(opacityAnim, {
       toValue: 1,
-      friction: 5,
-      tension: 300,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
@@ -120,7 +105,7 @@ function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
       onPressOut={handlePressOut}
       style={styles.tabButton}
     >
-      <Animated.View style={{ transform: [{ scale: pressAnim }] }}>
+      <Animated.View style={{ opacity: opacityAnim }}>
         {children}
       </Animated.View>
     </Pressable>

@@ -27,6 +27,26 @@ export default function Layout() {
           title: 'Register',
         }}
       />
+      <Stack.Screen
+        name="onboarding"
+        options={{
+          title: 'Onboarding',
+          animation: 'fade',
+        }}
+      />
+      <Stack.Screen
+        name="complete-profile"
+        options={{
+          title: 'Complete Profile',
+        }}
+      />
+      <Stack.Screen
+        name="tutorial"
+        options={{
+          title: 'Tutorial',
+          animation: 'fade',
+        }}
+      />
     </Stack>
   );
 }

@@ -86,7 +86,7 @@ export default function ChartsScreen() {
       const db = await SQLite.openDatabaseAsync('descalate.db');
 
       const sessionRows = await db.getAllAsync<Session>(
-        `SELECT * FROM sessions ORDER BY created_at DESC LIMIT 100`
+        `SELECT * FROM sessions ORDER BY created_at DESC`
       );
 
       if (!sessionRows || sessionRows.length === 0) {
@@ -372,6 +372,7 @@ export default function ChartsScreen() {
                 xAxisThickness={1}
                 noOfSections={5}
                 maxValue={5}
+                yAxisOffset={0}
                 curved
                 areaChart
                 startFillColor="rgba(90, 103, 216, 0.3)"
@@ -414,6 +415,7 @@ export default function ChartsScreen() {
                   xAxisThickness={1}
                   noOfSections={5}
                   maxValue={5}
+                  yAxisOffset={0}
                   curved
                   areaChart
                   startFillColor="rgba(90, 140, 106, 0.3)"
@@ -457,6 +459,7 @@ export default function ChartsScreen() {
                   xAxisThickness={1}
                   noOfSections={5}
                   maxValue={5}
+                  yAxisOffset={0}
                   curved
                   areaChart
                   startFillColor="rgba(192, 38, 211, 0.2)"
