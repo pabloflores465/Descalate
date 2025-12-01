@@ -8,7 +8,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import Svg, { Polygon } from 'react-native-svg';
+import Svg, { Polygon, Text as SvgText, Defs, Filter, FeDropShadow } from 'react-native-svg';
 import { useState, useEffect } from 'react';
 import { db, expoDb } from '@/database/db';
 import { users, registerUserSchema, loginUserSchema, googleUserSchema } from '@/database/schema';
@@ -281,13 +281,87 @@ export default function AuthScreen() {
 
   return (
     <ImageBackground
-      source={require('../../assets/images/descalate3.jpeg')}
+      source={require('../../assets/images/scale.jpeg')}
       style={{ flex: 1 }}
       resizeMode="cover"
     >
       <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
+        <Defs>
+          <Filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <FeDropShadow dx={3} dy={3} stdDeviation={4} floodColor="rgba(0,0,0,0.5)" />
+          </Filter>
+        </Defs>
         <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill={Colors.surfaceElevated} />
         <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill={Colors.surfaceElevated} />
+        {/* Shadow for DE */}
+        <SvgText
+          x={34}
+          y={184}
+          fontSize={120}
+          fontWeight="900"
+          fill="rgba(0,0,0,0.4)"
+          textAnchor="start"
+          fontFamily="System"
+        >
+          DE
+        </SvgText>
+        <SvgText
+          x={30}
+          y={180}
+          fontSize={120}
+          fontWeight="900"
+          fill="#FFFFFF"
+          textAnchor="start"
+          fontFamily="System"
+        >
+          DE
+        </SvgText>
+        {/* Shadow for SCA */}
+        <SvgText
+          x={width * 0.62 + 3}
+          y={height - 100}
+          fontSize={65}
+          fontWeight="900"
+          fill="rgba(0,0,0,0.4)"
+          textAnchor="middle"
+          fontFamily="System"
+        >
+          SCA
+        </SvgText>
+        <SvgText
+          x={width * 0.62}
+          y={height - 103}
+          fontSize={65}
+          fontWeight="900"
+          fill="#FFFFFF"
+          textAnchor="middle"
+          fontFamily="System"
+        >
+          SCA
+        </SvgText>
+        {/* Shadow for LATE */}
+        <SvgText
+          x={width * 0.62 + 3}
+          y={height - 32}
+          fontSize={65}
+          fontWeight="900"
+          fill="rgba(0,0,0,0.4)"
+          textAnchor="middle"
+          fontFamily="System"
+        >
+          LATE
+        </SvgText>
+        <SvgText
+          x={width * 0.62}
+          y={height - 35}
+          fontSize={65}
+          fontWeight="900"
+          fill="#FFFFFF"
+          textAnchor="middle"
+          fontFamily="System"
+        >
+          LATE
+        </SvgText>
       </Svg>
       <View
         style={{

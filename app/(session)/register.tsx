@@ -175,15 +175,21 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={require('../../assets/images/descalate3.jpeg')}
+      source={require('../../assets/images/scale.jpeg')}
       style={{ flex: 1 }}
       resizeMode="cover"
     >
       <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
         {/* Right Superior Triangle */}
-        <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill={Colors.surfaceElevated} />
+        <Polygon
+          points={`${width},${height / 2} 0,${height / 2} ${width},0`}
+          fill={Colors.surfaceElevated}
+        />
         {/* Left Inferior Triangle */}
-        <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill={Colors.surfaceElevated} />
+        <Polygon
+          points={`0,${height} 0,${height / 2} ${width},${height / 2}`}
+          fill={Colors.surfaceElevated}
+        />
       </Svg>
       <View
         style={{
@@ -229,7 +235,9 @@ export default function HomeScreen() {
           }}
         />
         {errors.email && (
-          <Text style={{ color: Colors.status.error, marginTop: 5, marginHorizontal: Spacing.xl }}>{errors.email}</Text>
+          <Text style={{ color: Colors.status.error, marginTop: 5, marginHorizontal: Spacing.xl }}>
+            {errors.email}
+          </Text>
         )}
 
         <Text
@@ -276,7 +284,11 @@ export default function HomeScreen() {
           disabled={isLoading || isGoogleLoading}
           style={({ pressed }) => ({
             backgroundColor:
-              isLoading || isGoogleLoading ? Colors.text.disabled : pressed ? Colors.primaryDark : Colors.primary,
+              isLoading || isGoogleLoading
+                ? Colors.text.disabled
+                : pressed
+                  ? Colors.primaryDark
+                  : Colors.primary,
             borderRadius: BorderRadius.round,
             paddingVertical: Spacing.lg,
             paddingHorizontal: Spacing.massive,
@@ -289,7 +301,11 @@ export default function HomeScreen() {
           })}
         >
           {isLoading ? (
-            <ActivityIndicator color={Colors.white} size="small" style={{ marginRight: Spacing.sm }} />
+            <ActivityIndicator
+              color={Colors.white}
+              size="small"
+              style={{ marginRight: Spacing.sm }}
+            />
           ) : (
             <AntDesign
               name="login"
@@ -314,7 +330,8 @@ export default function HomeScreen() {
           onPress={handleGoogleRegister}
           disabled={!request || isLoading || isGoogleLoading}
           style={{
-            backgroundColor: !request || isLoading || isGoogleLoading ? Colors.text.disabled : Colors.google,
+            backgroundColor:
+              !request || isLoading || isGoogleLoading ? Colors.text.disabled : Colors.google,
             borderRadius: BorderRadius.round,
             padding: 15,
             marginTop: Spacing.sm,
@@ -325,11 +342,27 @@ export default function HomeScreen() {
           }}
         >
           {isGoogleLoading ? (
-            <ActivityIndicator color={Colors.white} size="small" style={{ marginRight: Spacing.sm }} />
+            <ActivityIndicator
+              color={Colors.white}
+              size="small"
+              style={{ marginRight: Spacing.sm }}
+            />
           ) : (
-            <AntDesign name="google" size={20} color={Colors.white} style={{ marginRight: Spacing.sm }} />
+            <AntDesign
+              name="google"
+              size={20}
+              color={Colors.white}
+              style={{ marginRight: Spacing.sm }}
+            />
           )}
-          <Text style={{ color: Colors.white, textAlign: 'center', fontSize: FontSize.md, fontWeight: 'bold' }}>
+          <Text
+            style={{
+              color: Colors.white,
+              textAlign: 'center',
+              fontSize: FontSize.md,
+              fontWeight: 'bold',
+            }}
+          >
             {isGoogleLoading ? 'Cargando...' : 'Continuar con Google'}
           </Text>
         </Pressable>
