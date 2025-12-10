@@ -21,16 +21,18 @@ import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTutorial } from '@/context/TutorialContext';
+import { useAuth } from '@/context/AuthContext';
+import { useSession } from '@/context/SessionContext';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
-
-const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { resetTutorial } = useTutorial();
+  const { currentUserEmail, setCurrentUserEmail } = useAuth();
+  const { clearSession } = useSession();
   const { t } = useTranslation();
-  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -41,27 +43,6 @@ export default function ProfileScreen() {
   const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
   const [hasNewImage, setHasNewImage] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
-
-  const loadEmailFromStorage = async () => {
-    try {
-      const email = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
-      console.log('Profile: Loaded email from AsyncStorage:', email);
-      setCurrentUserEmail(email);
-      return email;
-    } catch (error) {
-      console.error('Error loading email from storage:', error);
-      return null;
-    }
-  };
-
-  const clearEmailFromStorage = async () => {
-    try {
-      await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
-      setCurrentUserEmail(null);
-    } catch (error) {
-      console.error('Error clearing email:', error);
-    }
-  };
 
   const loadUserData = async (email: string | null) => {
     if (!email) {
@@ -99,14 +80,12 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       setHasNewImage(false);
-      loadEmailFromStorage().then((email) => {
-        if (email) {
-          loadUserData(email);
-        } else {
-          setIsLoading(false);
-        }
-      });
-    }, [])
+      if (currentUserEmail) {
+        loadUserData(currentUserEmail);
+      } else {
+        setIsLoading(false);
+      }
+    }, [currentUserEmail])
   );
 
   const pickImage = async () => {
@@ -200,7 +179,16 @@ export default function ProfileScreen() {
           text: t('profile.alerts.logOut.confirm'),
           style: 'destructive',
           onPress: async () => {
-            await clearEmailFromStorage();
+            // Clear session data first
+            clearSession();
+            // Clear auth context (this also clears AsyncStorage)
+            await setCurrentUserEmail(null);
+            // Clear user-specific flags
+            await AsyncStorage.multiRemove([
+              STORAGE_KEYS.TUTORIAL_COMPLETE,
+              STORAGE_KEYS.ONBOARDING_COMPLETE,
+              STORAGE_KEYS.PROFILE_COMPLETE,
+            ]);
             router.replace('/(session)/auth');
           },
         },
@@ -223,15 +211,17 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
+              // Clear session data first
+              clearSession();
               await resetDatabase();
-              // Clear all AsyncStorage keys
+              // Clear auth context (this also clears AsyncStorage)
+              await setCurrentUserEmail(null);
+              // Clear all session flags
               await AsyncStorage.multiRemove([
-                AUTH_STORAGE_KEY,
-                '@descalate_tutorial_complete',
-                '@descalate_onboarding_complete',
-                '@descalate_profile_complete',
+                STORAGE_KEYS.TUTORIAL_COMPLETE,
+                STORAGE_KEYS.ONBOARDING_COMPLETE,
+                STORAGE_KEYS.PROFILE_COMPLETE,
               ]);
-              setCurrentUserEmail(null);
               router.replace('/(session)/auth');
               Alert.alert(t('common.success'), t('profile.alerts.success.databaseReset'));
             } catch (error) {

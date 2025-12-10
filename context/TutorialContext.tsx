@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const TUTORIAL_COMPLETE_KEY = '@descalate_tutorial_complete';
+import logger from '@/services/logger';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 type TutorialContextType = {
   shouldShowTutorial: boolean;
@@ -25,10 +25,10 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
 
   const checkTutorialStatus = async () => {
     try {
-      const completed = await AsyncStorage.getItem(TUTORIAL_COMPLETE_KEY);
+      const completed = await AsyncStorage.getItem(STORAGE_KEYS.TUTORIAL_COMPLETE);
       setShouldShowTutorial(completed !== 'true');
     } catch (error) {
-      console.error('Error checking tutorial status:', error);
+      logger.error('Error checking tutorial status', error);
     } finally {
       setIsLoading(false);
     }
@@ -36,19 +36,19 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
 
   const completeTutorial = async () => {
     try {
-      await AsyncStorage.setItem(TUTORIAL_COMPLETE_KEY, 'true');
+      await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
       setShouldShowTutorial(false);
     } catch (error) {
-      console.error('Error completing tutorial:', error);
+      logger.error('Error completing tutorial', error);
     }
   };
 
   const resetTutorial = async () => {
     try {
-      await AsyncStorage.removeItem(TUTORIAL_COMPLETE_KEY);
+      await AsyncStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETE);
       setShouldShowTutorial(true);
     } catch (error) {
-      console.error('Error resetting tutorial:', error);
+      logger.error('Error resetting tutorial', error);
     }
   };
 

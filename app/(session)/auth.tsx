@@ -20,12 +20,10 @@ import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/context/AuthContext';
 import { useTutorial } from '@/context/TutorialContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
-
-const AUTH_STORAGE_KEY = '@descalate_current_user_email';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -34,11 +32,12 @@ bcrypt.setRandomFallback((len: number) => {
 
 export default function AuthScreen() {
   const router = useRouter();
+  const { setCurrentUserEmail } = useAuth();
   const { resetTutorial } = useTutorial();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
-  const { promptAsync, userInfo, request } = useGoogleAuth();
+  const { promptAsync, userInfo, request, signOut } = useGoogleAuth();
 
   useEffect(() => {
     async function setUpDatabase() {
@@ -88,11 +87,13 @@ export default function AuthScreen() {
                 t('auth.errors.noAccountExists'),
                 [{ text: 'OK' }]
               );
+              // Clear Google userInfo so user can try again
+              signOut();
               return;
             }
 
             console.log('Google user logged in successfully');
-            await AsyncStorage.setItem(AUTH_STORAGE_KEY, userInfo.email);
+            await setCurrentUserEmail(userInfo.email);
             router.replace('/home');
           } else {
             const validationResult = googleUserSchema.safeParse({
@@ -104,6 +105,7 @@ export default function AuthScreen() {
 
             if (!validationResult.success) {
               console.error('Validation error:', validationResult.error);
+              signOut();
               return;
             }
 
@@ -120,19 +122,20 @@ export default function AuthScreen() {
               });
 
             console.log('Google user saved successfully');
-            await AsyncStorage.setItem(AUTH_STORAGE_KEY, userInfo.email);
+            await setCurrentUserEmail(userInfo.email);
             router.replace('/home');
           }
         } catch (error) {
           console.error('Error handling Google user:', error);
           Alert.alert(t('common.error'), t('auth.errors.googleAuthFailed'));
+          signOut();
         } finally {
           setIsGoogleLoading(false);
         }
       };
       handleGoogleUser();
     }
-  }, [userInfo, router, activeTab]);
+  }, [userInfo, router, activeTab, setCurrentUserEmail, signOut]);
 
   const { width, height } = Dimensions.get('screen');
 
@@ -197,7 +200,7 @@ export default function AuthScreen() {
       }
 
       console.log('User logged in successfully');
-      await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
+      await setCurrentUserEmail(validationResult.data.email);
       console.log('Email saved:', validationResult.data.email);
       router.replace('/home');
     } catch (error: unknown) {
@@ -254,7 +257,7 @@ export default function AuthScreen() {
       });
 
       console.log('User registered successfully');
-      await AsyncStorage.setItem(AUTH_STORAGE_KEY, validationResult.data.email);
+      await setCurrentUserEmail(validationResult.data.email);
       // Reset tutorial flag for new users so they see the tutorial
       await resetTutorial();
       router.replace('/(session)/onboarding');

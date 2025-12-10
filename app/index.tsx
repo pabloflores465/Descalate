@@ -3,9 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const ONBOARDING_KEY = '@descalate_onboarding_complete';
-const PROFILE_COMPLETE_KEY = '@descalate_profile_complete';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 export default function Index() {
   const { currentUserEmail, isLoading: authLoading } = useAuth();
@@ -25,8 +23,8 @@ export default function Index() {
 
     try {
       const [onboarding, profile] = await Promise.all([
-        AsyncStorage.getItem(ONBOARDING_KEY),
-        AsyncStorage.getItem(PROFILE_COMPLETE_KEY),
+        AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETE),
+        AsyncStorage.getItem(STORAGE_KEYS.PROFILE_COMPLETE),
       ]);
 
       setOnboardingComplete(onboarding === 'true');

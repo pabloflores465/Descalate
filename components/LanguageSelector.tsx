@@ -3,8 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const LANGUAGE_STORAGE_KEY = '@descalate_language';
+import logger from '@/services/logger';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 type Language = {
   code: string;
@@ -30,10 +30,10 @@ export default function LanguageSelector({ style }: LanguageSelectorProps) {
   const changeLanguage = async (languageCode: string) => {
     try {
       await i18n.changeLanguage(languageCode);
-      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
+      await AsyncStorage.setItem(STORAGE_KEYS.LANGUAGE, languageCode);
       setModalVisible(false);
     } catch (error) {
-      console.error('Error changing language:', error);
+      logger.error('Error changing language', error);
     }
   };
 

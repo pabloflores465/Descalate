@@ -5,14 +5,15 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/context/AuthContext';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 import LanguageSelector from '@/components/LanguageSelector';
-
-const ONBOARDING_KEY = '@descalate_onboarding_complete';
 
 type Slide = {
   key: string;
   titleKey: string;
   textKey: string;
+  encouragementKey: string;
   icon: keyof typeof Ionicons.glyphMap;
   colors: [string, string];
 };
@@ -22,6 +23,7 @@ const slidesConfig: Slide[] = [
     key: '1',
     titleKey: 'onboarding.slides.welcome.title',
     textKey: 'onboarding.slides.welcome.text',
+    encouragementKey: 'onboarding.slides.welcome.encouragement',
     icon: 'heart-outline',
     colors: ['#5a8c6a', '#3d6b4f'],
   },
@@ -29,6 +31,7 @@ const slidesConfig: Slide[] = [
     key: '2',
     titleKey: 'onboarding.slides.understand.title',
     textKey: 'onboarding.slides.understand.text',
+    encouragementKey: 'onboarding.slides.understand.encouragement',
     icon: 'eye-outline',
     colors: ['#5a67d8', '#4c51bf'],
   },
@@ -36,6 +39,7 @@ const slidesConfig: Slide[] = [
     key: '3',
     titleKey: 'onboarding.slides.tools.title',
     textKey: 'onboarding.slides.tools.text',
+    encouragementKey: 'onboarding.slides.tools.encouragement',
     icon: 'medical-outline',
     colors: ['#2d9a6e', '#228b5b'],
   },
@@ -43,6 +47,7 @@ const slidesConfig: Slide[] = [
     key: '4',
     titleKey: 'onboarding.slides.progress.title',
     textKey: 'onboarding.slides.progress.text',
+    encouragementKey: 'onboarding.slides.progress.encouragement',
     icon: 'trending-up-outline',
     colors: ['#c026d3', '#a21caf'],
   },
@@ -51,17 +56,23 @@ const slidesConfig: Slide[] = [
 export default function OnboardingScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { currentUserEmail } = useAuth();
 
   const handleDone = async () => {
-    await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
+    // Global key cleared on logout to ensure new users see onboarding
+    await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
     router.replace('/(session)/complete-profile');
   };
 
   const renderItem = ({ item }: { item: Slide }) => {
     return (
       <LinearGradient colors={item.colors} style={styles.slide}>
+        <View style={styles.encouragementCard}>
+          <Ionicons name="sparkles" size={16} color="rgba(255,255,255,0.9)" />
+          <Text style={styles.encouragementText}>{t(item.encouragementKey)}</Text>
+        </View>
         <View style={styles.iconContainer}>
-          <Ionicons name={item.icon} size={120} color="rgba(255,255,255,0.9)" />
+          <Ionicons name={item.icon} size={100} color="rgba(255,255,255,0.9)" />
         </View>
         <Text style={styles.title}>{t(item.titleKey)}</Text>
         <Text style={styles.text}>{t(item.textKey)}</Text>
@@ -127,6 +138,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 40,
+  },
+  encouragementCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    marginBottom: 30,
+    gap: 8,
+  },
+  encouragementText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
   },
   iconContainer: {
     width: 200,

@@ -10,8 +10,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-
-const TUTORIAL_COMPLETE_KEY = '@descalate_tutorial_complete';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 type TutorialStep = {
   id: number;
@@ -115,12 +114,12 @@ export default function TutorialScreen() {
   };
 
   const handleComplete = async () => {
-    await AsyncStorage.setItem(TUTORIAL_COMPLETE_KEY, 'true');
+    await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
     router.replace('/(tabs)/home');
   };
 
   const handleSkip = async () => {
-    await AsyncStorage.setItem(TUTORIAL_COMPLETE_KEY, 'true');
+    await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
     router.replace('/(tabs)/home');
   };
 

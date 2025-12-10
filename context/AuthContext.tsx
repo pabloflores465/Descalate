@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const AUTH_STORAGE_KEY = '@descalate_current_user_email';
+import logger from '@/services/logger';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 type AuthContextType = {
   currentUserEmail: string | null;
@@ -21,13 +21,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadStoredEmail = async () => {
     try {
-      const storedEmail = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
-      console.log('AuthContext: Loaded stored email:', storedEmail);
+      const storedEmail = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_EMAIL);
+      logger.debug('AuthContext: Loaded stored email', { email: storedEmail });
       if (storedEmail) {
         setCurrentUserEmailState(storedEmail);
       }
     } catch (error) {
-      console.error('Error loading stored email:', error);
+      logger.error('Error loading stored email', error);
     } finally {
       setIsLoading(false);
     }
@@ -35,16 +35,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setCurrentUserEmail = async (email: string | null) => {
     try {
-      console.log('AuthContext: Setting email to:', email);
+      logger.debug('AuthContext: Setting email', { email });
       if (email) {
-        await AsyncStorage.setItem(AUTH_STORAGE_KEY, email);
+        await AsyncStorage.setItem(STORAGE_KEYS.AUTH_EMAIL, email);
       } else {
-        await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+        await AsyncStorage.removeItem(STORAGE_KEYS.AUTH_EMAIL);
       }
       setCurrentUserEmailState(email);
-      console.log('AuthContext: Email state updated');
+      logger.debug('AuthContext: Email state updated');
     } catch (error) {
-      console.error('Error storing email:', error);
+      logger.error('Error storing email', error);
     }
   };
 

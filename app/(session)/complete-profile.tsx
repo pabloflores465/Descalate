@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { db } from '@/database/db';
 import { users } from '@/database/schema';
@@ -19,30 +19,20 @@ import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native';
 import { File } from 'expo-file-system';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/context/AuthContext';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 import LanguageSelector from '@/components/LanguageSelector';
-
-const AUTH_STORAGE_KEY = '@descalate_current_user_email';
-const PROFILE_COMPLETE_KEY = '@descalate_profile_complete';
 
 export default function CompleteProfileScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { currentUserEmail } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [currentEmail, setCurrentEmail] = useState<string | null>(null);
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadEmail();
-  }, []);
-
-  const loadEmail = async () => {
-    const email = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
-    setCurrentEmail(email);
-  };
 
   const pickImage = async () => {
     try {
@@ -77,7 +67,7 @@ export default function CompleteProfileScreen() {
       return;
     }
 
-    if (!currentEmail) {
+    if (!currentUserEmail) {
       Alert.alert(t('common.error'), t('completeProfile.errors.sessionNotFound'));
       return;
     }
@@ -104,9 +94,10 @@ export default function CompleteProfileScreen() {
         updateData.profile_image = `data:image/jpeg;base64,${base64}`;
       }
 
-      await db.update(users).set(updateData).where(eq(users.email, currentEmail));
+      await db.update(users).set(updateData).where(eq(users.email, currentUserEmail));
 
-      await AsyncStorage.setItem(PROFILE_COMPLETE_KEY, 'true');
+      // Global key cleared on logout to ensure new users complete profile
+      await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETE, 'true');
 
       router.replace('/(tabs)/home');
     } catch (error) {
@@ -118,7 +109,8 @@ export default function CompleteProfileScreen() {
   };
 
   const handleSkip = async () => {
-    await AsyncStorage.setItem(PROFILE_COMPLETE_KEY, 'true');
+    // Global key cleared on logout to ensure new users complete profile
+    await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETE, 'true');
     router.replace('/(tabs)/home');
   };
 

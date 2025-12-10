@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { useAuth } from './AuthContext';
+import logger from '@/services/logger';
 
 type SelectedExercise = {
   id: number;
@@ -73,7 +74,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       );
 
       if (!user) {
-        console.error('User not found');
+        logger.error('User not found for session save');
         return;
       }
 
@@ -108,9 +109,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         ]
       );
 
-      console.log('Session saved successfully');
+      logger.info('Session saved successfully');
     } catch (error) {
-      console.error('Error saving session:', error);
+      logger.error('Error saving session', error);
     }
   }, [sessionData, currentUserEmail]);
 

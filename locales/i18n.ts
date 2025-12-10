@@ -4,8 +4,7 @@ import * as Localization from 'expo-localization';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import en from './en.json';
 import es from './es.json';
-
-const LANGUAGE_STORAGE_KEY = '@descalate_language';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 const resources = {
   en: { translation: en },
@@ -33,12 +32,12 @@ i18n.use(initReactI18next).init({
 // Load saved language preference
 export const initializeLanguage = async (): Promise<void> => {
   try {
-    const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+    const savedLanguage = await AsyncStorage.getItem(STORAGE_KEYS.LANGUAGE);
     if (savedLanguage && ['en', 'es'].includes(savedLanguage)) {
       await i18n.changeLanguage(savedLanguage);
     }
   } catch (error) {
-    console.error('Error loading saved language:', error);
+    // Silently fail - will use default language
   }
 };
 
