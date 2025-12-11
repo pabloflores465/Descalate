@@ -12,6 +12,7 @@
     "finish": "Finalizar"
   },
   "auth": {
+    "welcome": "Bienvenido a Desescalate",
     "tabs": {
       "login": "Iniciar sesión",
       "register": "Registrarse"
@@ -45,19 +46,23 @@
     "slides": {
       "welcome": {
         "title": "Bienvenido a Descalate",
-        "text": "Tu compañero personal para manejar la ansiedad y encontrar la calma interior cuando más lo necesitas."
+        "text": "Tu companero personal para manejar la ansiedad y encontrar la calma interior cuando mas lo necesitas.",
+        "encouragement": "Estas a unos pasos de sentirte mejor"
       },
       "understand": {
         "title": "Entiende tu Ansiedad",
-        "text": "Aprende a identificar y comprender tus niveles de ansiedad. El primer paso para manejarla es reconocerla."
+        "text": "Aprende a identificar y comprender tus niveles de ansiedad. El primer paso para manejarla es reconocerla.",
+        "encouragement": "Aqui encontraras apoyo y comprension"
       },
       "tools": {
         "title": "Herramientas a tu Alcance",
-        "text": "Accede a ejercicios de respiración, meditación y técnicas probadas científicamente para reducir la ansiedad."
+        "text": "Accede a ejercicios de respiracion, meditacion y tecnicas probadas cientificamente para reducir la ansiedad.",
+        "encouragement": "Tienes todo lo que necesitas para lograrlo"
       },
       "progress": {
         "title": "Tu Progreso Importa",
-        "text": "Cada sesión cuenta. Observa cómo mejoras con el tiempo y celebra tus logros en el camino hacia el bienestar."
+        "text": "Cada sesion cuenta. Observa como mejoras con el tiempo y celebra tus logros en el camino hacia el bienestar.",
+        "encouragement": "Juntos vamos a lograrlo"
       }
     }
   },
@@ -103,24 +108,91 @@
   "anxietyLevels": {
     "1": {
       "title": "Calma",
-      "description": "Relajado y en paz. La respiración es estable y los pensamientos son claros."
+      "description": "Me siento tranquilo y en control."
     },
     "2": {
-      "title": "Leve",
-      "description": "Ligeramente tenso. Preocupaciones menores presentes pero manejables."
+      "title": "Tension leve",
+      "description": "Estoy inquieto, pero funcional."
     },
     "3": {
-      "title": "Moderada",
-      "description": "Notablemente ansioso. El ritmo cardíaco puede aumentar, comienza la inquietud."
+      "title": "Preocupacion activa",
+      "description": "Pensamientos repetitivos o anticipacion."
     },
     "4": {
-      "title": "Alta",
-      "description": "Ansiedad fuerte. Dificultad para concentrarse, pensamientos acelerados."
+      "title": "Angustia",
+      "description": "Presion en el pecho, dificultad para respirar profundo."
     },
     "5": {
-      "title": "Severa",
-      "description": "Ansiedad intensa o pánico. Sentimientos abrumadores, síntomas físicos presentes."
+      "title": "Crisis",
+      "description": "Respiracion muy corta, panico, sensacion de peligro."
     }
+  },
+  "levelMessages": {
+    "1": [
+      "Estas muy bien. Tomemos un momento para relajarnos y agradecer.",
+      "Que bonito lugar interno tienes ahora. Vamos a ampliarlo un poco mas.",
+      "Estas en calma. Aprovechemos este espacio para profundizarla.",
+      "Te encuentras equilibrado. Demos un paso hacia un bienestar aun mayor.",
+      "Todo esta en armonia. Podemos llevar esta paz un nivel mas profundo."
+    ],
+    "2": [
+      "Que bien que estas aqui. Una pequena pausa sera suficiente para volver a tu centro.",
+      "Estas haciendo lo correcto. Con unos segundos, tu cuerpo se soltara.",
+      "Buena decision. Esta leve tension se libera facil si le damos atencion.",
+      "Te escuchaste y viniste. Eso ya te acerca a tu equilibrio natural.",
+      "Lo estas manejando bien. Solo aflojemos un poco la carga."
+    ],
+    "3": [
+      "Bien hecho al detenerte. Vamos a bajar el ritmo juntos.",
+      "Que bueno que llegaste. Esta preocupacion es manejable con un momento de calma.",
+      "Estas a tiempo. Vamos a organizar lo que sientes para que te sea mas ligero.",
+      "Tomaste una buena decision. Tu mente puede encontrar claridad poco a poco.",
+      "Estas haciendo lo mejor para ti. Vamos a recuperar enfoque y espacio interno."
+    ],
+    "4": [
+      "Se que esto se siente intenso, pero vas a estar bien. Vamos paso a paso.",
+      "Aunque no lo parezca ahora, muy pronto vamos a bajar este nivel juntos.",
+      "Es incomodo, lo se, pero esta sensacion va a calmarse. Estoy contigo.",
+      "Quiza no lo ves ahora, pero tu cuerpo puede recuperar equilibrio. Vamos a ayudarte.",
+      "No tienes que resolver nada en este momento. Respiremos y esto va a mejorar."
+    ],
+    "5": [
+      "Se que es abrumador, pero vas a estar bien. Estoy contigo en este momento.",
+      "Aunque no lo sientas ahora, vamos a bajar este nivel hasta regresar a tu verdadero yo.",
+      "No te preocupes, esto va a pasar. Vamos a recuperar una respiracion a la vez.",
+      "Es muy incomodo, lo se, pero pronto te sentiras mejor. Solo quedate conmigo aqui.",
+      "Quiza parece imposible ahora, pero tu cuerpo puede calmarse. Vamos a empezar muy despacio."
+    ]
+  },
+  "deescalationFeedback": {
+    "sameLevel": [
+      "Aunque el numero no cambio, tu cuerpo ya empezo a moverse hacia la calma. Vamos a continuar.",
+      "Esto es totalmente normal. A veces el progreso es interno antes de verse afuera. Sigamos un paso mas.",
+      "Tu sistema ya esta respondiendo, solo necesita un poco mas de tiempo. Estas en el camino correcto.",
+      "Bien hecho. Lo estas haciendo. Continuemos con el siguiente ejercicio para profundizar el cambio.",
+      "Todo avance empieza asi: lento, pero firme. Ya activaste el proceso; sigamos para que tu cuerpo termine de regularse."
+    ],
+    "increased": [
+      "Esta bien sentirse asi. La ansiedad tiene oleadas y esto es completamente normal. Estoy aqui contigo.",
+      "Tu cuerpo esta pasando por un momento dificil, pero eso no significa que hayas fallado. Vamos a ayudarte.",
+      "A veces la ansiedad sube antes de bajar. Es parte del proceso. Sigamos juntos, un paso a la vez.",
+      "No te preocupes por el numero. Lo importante es que estas aqui, cuidandote. Eso ya es un gran paso.",
+      "Esto es temporal. Tu cuerpo sabe como volver a la calma y vamos a guiarte. Respira, estoy contigo.",
+      "Que valiente eres por seguir adelante. La ansiedad no define tu fortaleza. Continuemos juntos.",
+      "Este momento pasara. Ahora enfoquemonos en lo que puedes hacer: respirar y seguir adelante conmigo."
+    ],
+    "improved": [
+      "Excelente! Lograste bajar la intensidad. Este es un paso importante hacia tu bienestar.",
+      "Muy bien. Tu cuerpo respondio y ya estas en un nivel mas tranquilo.",
+      "Lo lograste. Estas recuperando control y eso merece reconocimiento.",
+      "Felicidades! Esto demuestra que puedes regular tu mente y tu cuerpo. Vamos a seguir con lo que corresponde a este nuevo nivel.",
+      "Bien hecho. Esta bajada muestra que tu sistema se esta equilibrando.",
+      "Gran trabajo. Cada nivel hacia abajo es una victoria real. Sigamos construyendo desde aqui.",
+      "Tu esfuerzo esta dando frutos. Ahora estas en un nivel mas seguro y manejable.",
+      "Esta mejora no es casualidad: tu la generaste. Sigamos avanzando desde aqui.",
+      "Lo estas haciendo muy bien. Vamos a aprovechar este nuevo nivel para fortalecer tu calma.",
+      "Excelente avance. Tu cuerpo y tu mente te estan escuchando. Continuemos con los ejercicios de este nivel."
+    ]
   },
   "tutorial": {
     "steps": {
@@ -157,115 +229,245 @@
     "stepIndicator": "{{current}}/{{total}}"
   },
   "exercises": {
-    "title": "Selecciona Ejercicios",
+    "title": "Ejercicios",
     "subtitle": "Para Ansiedad {{levelTitle}} (Nivel {{level}})",
-    "sectionTitle": "Toca para ver detalles, luego selecciona:",
-    "actionTitle": "¿Qué deseas hacer ahora?",
-    "startSession": "Comenzar Sesión",
+    "selectExercise": "Elige un ejercicio para comenzar:",
+    "actionTitle": "Que deseas hacer ahora?",
+    "startSession": "Comenzar Sesion",
     "duration": "{{minutes}} min",
+    "continueButton": "Continuar al siguiente ejercicio",
+    "timer": {
+      "ready": "Listo para comenzar",
+      "breathing": "Respira...",
+      "completed": "Completado!",
+      "continue": "Continuar",
+      "remaining": "restante",
+      "tapToAdvance": "Toca para avanzar"
+    },
+    "breathing": {
+      "phases": {
+        "inhale": "Inhala",
+        "hold": "Manten",
+        "exhale": "Exhala",
+        "holdAfterExhale": "Manten"
+      }
+    },
+    "steps": {
+      "feet": "Siente tus pies",
+      "legs": "Nota tus piernas",
+      "torso": "Escanea tu torso",
+      "arms": "Relaja tus brazos",
+      "head": "Libera tu cabeza",
+      "think": "Piensa en algo bueno",
+      "feel": "Siente la gratitud",
+      "expand": "Dejala expandirse",
+      "imaginePlace": "Imagina un lugar tranquilo",
+      "seeColors": "Mira los colores",
+      "hearSounds": "Escucha los sonidos",
+      "feelSensations": "Siente las sensaciones",
+      "shouldersTense": "Tensa los hombros",
+      "shouldersRelease": "Suelta los hombros",
+      "handsTense": "Tensa las manos",
+      "handsRelease": "Suelta las manos",
+      "leftSide": "Inclina a la izquierda",
+      "release": "Suelta",
+      "rightSide": "Inclina a la derecha",
+      "releaseRight": "Suelta",
+      "seeSomething": "Nota algo que ves",
+      "touchSomething": "Toca algo",
+      "see5": "5 cosas que ves",
+      "touch4": "4 cosas que tocas",
+      "hear3": "3 cosas que oyes",
+      "smell2": "2 cosas que hueles",
+      "taste1": "1 cosa que saboreas",
+      "identify": "Identifica la emocion",
+      "name": "Nombrala en voz alta",
+      "accept": "Aceptala",
+      "feelPressure": "Siente la presion",
+      "noticeTemperature": "Nota la temperatura",
+      "breathe": "Respira lento",
+      "handOnChest": "Mano en el pecho",
+      "handOnAbdomen": "Mano en el abdomen",
+      "feelMovement": "Siente el movimiento",
+      "breatheSlowly": "Respira lento",
+      "touchSurface": "Toca una superficie",
+      "feelTemperature": "Siente su temperatura",
+      "describeTexture": "Describe la textura",
+      "feetOnFloor": "Pies en el piso",
+      "backOnChair": "Espalda en la silla",
+      "handsOnLegs": "Manos en las piernas",
+      "sayIAmHere": "Di: Estoy aqui",
+      "sayThisWillPass": "Di: Esto pasara",
+      "repeat": "Repite"
+    },
     "levels": {
       "1": {
         "exercises": {
-          "mindfulBreathing": {
-            "title": "Respiración Consciente",
-            "description": "Concientiza tu respiración natural sin cambiarla. Observa cómo el aire entra y sale.",
-            "duration": 5
+          "cardiacCoherence": {
+            "title": "Coherencia cardiaca 5-5",
+            "description": "Inhala durante 5 segundos, exhala durante 5 segundos. Repite por 10 ciclos. Esta tecnica activa la variabilidad del ritmo cardiaco y promueve la relajacion profunda.",
+            "science": "Basado en estudios de HeartMath y respiracion resonante de Benson y Dispenza.",
+            "duration": 2
           },
-          "gratitudeJournal": {
-            "title": "Diario de Gratitud",
-            "description": "Escribe tres cosas por las que estás agradecido hoy. Reflexiona sobre los aspectos positivos de tu vida.",
-            "duration": 10
+          "diaphragmaticBreathing336": {
+            "title": "Respiracion diafragmatica suave (3-3-6)",
+            "description": "Inhala 3 segundos, sosten 3 segundos, exhala 6 segundos. La exhalacion prolongada reduce la actividad de la amigdala.",
+            "science": "Basado en investigaciones de Andrew Huberman sobre exhalacion prolongada.",
+            "duration": 2
           },
-          "gentleStretching": {
-            "title": "Estiramiento Suave",
-            "description": "Estiramientos lentos y suaves para relajar tu cuerpo y mantener la calma.",
-            "duration": 10
+          "bodyScanQuick": {
+            "title": "Escaneo corporal rapido",
+            "description": "Recorre mentalmente tu cuerpo desde los pies hasta la cabeza con respiracion suave. Nota las sensaciones sin juzgarlas.",
+            "science": "Tecnica de Jon Kabat-Zinn del programa MBSR (Reduccion de Estres Basada en Mindfulness).",
+            "duration": 3
+          },
+          "microMeditationAppreciation": {
+            "title": "Micro-meditacion de apreciacion",
+            "description": "Piensa en algo que hoy salio bien durante 20-40 segundos. Deja que el sentimiento de gratitud se expanda en tu cuerpo.",
+            "science": "Basado en la respuesta de relajacion de Benson y estudios sobre gratitud.",
+            "duration": 1
+          },
+          "calmVisualization": {
+            "title": "Visualizacion breve de calma",
+            "description": "Imagina un espacio seguro y tranquilo mientras respiras lentamente. Visualiza los detalles: colores, sonidos, sensaciones.",
+            "science": "Tecnica de Joe Dispenza para mantener fisiologia estable.",
+            "duration": 2
           }
         }
       },
       "2": {
         "exercises": {
-          "boxBreathing": {
-            "title": "Respiración Cuadrada",
-            "description": "Inhala 4 segundos, mantén 4, exhala 4, mantén 4. Repite el ciclo para calmar tu sistema nervioso.",
-            "duration": 5
+          "tensionRelease": {
+            "title": "Tension-liberacion muscular (2 zonas)",
+            "description": "Tensa los hombros durante 5 segundos y suelta. Luego tensa las manos 5 segundos y suelta. Siente como la tension se libera.",
+            "science": "Tecnica de Jacobson de relajacion muscular progresiva para reduccion simpatica.",
+            "duration": 2
           },
-          "progressiveMuscleRelaxation": {
-            "title": "Relajación Muscular Progresiva",
-            "description": "Tensa y relaja cada grupo muscular sistemáticamente para liberar tensión física.",
-            "duration": 15
+          "breathing46": {
+            "title": "Respiracion 4-6",
+            "description": "Inhala durante 4 segundos, exhala durante 6 segundos. Repite por 1-2 minutos. La exhalacion prolongada activa el sistema parasimpatico.",
+            "science": "Basado en investigaciones de Huberman sobre reduccion del estres.",
+            "duration": 2
           },
-          "mindfulWalking": {
-            "title": "Caminata Consciente",
-            "description": "Camina lentamente prestando atención a cada paso y a las sensaciones de tu cuerpo.",
-            "duration": 15
+          "neckStretch": {
+            "title": "Estiramiento de trapecios y cuello consciente",
+            "description": "Inclina la cabeza hacia un lado, exhala mientras aflojas la tension. Repite del otro lado. Hazlo con atencion plena.",
+            "science": "Estudios de liberacion somatica combinados con mindfulness.",
+            "duration": 3
+          },
+          "breathCounting": {
+            "title": "Contar respiraciones",
+            "description": "Cuenta del 1 al 10 con cada exhalacion. Hazlo lentamente. Si pierdes la cuenta, vuelve a empezar sin juzgarte.",
+            "science": "Tecnica de Jon Kabat-Zinn para anclar la atencion al presente.",
+            "duration": 3
+          },
+          "sensoryGrounding2": {
+            "title": "Aterrizaje sensorial simple (2 sentidos)",
+            "description": "Nota algo que ves y algo que tocas. Describelos mentalmente con detalle. Esto te ancla al momento presente.",
+            "science": "El grounding reduce la actividad del sistema nervioso simpatico.",
+            "duration": 2
           }
         }
       },
       "3": {
         "exercises": {
-          "breathing478": {
-            "title": "Técnica de Respiración 4-7-8",
-            "description": "Inhala 4 segundos, mantén 7, exhala 8. Esta técnica activa tu sistema nervioso parasimpático.",
-            "duration": 5
-          },
-          "bodyScan": {
-            "title": "Meditación de Escaneo Corporal",
-            "description": "Recorre mentalmente tu cuerpo desde los pies hasta la cabeza, notando y liberando tensiones.",
-            "duration": 15
-          },
           "grounding54321": {
-            "title": "Ejercicio de Anclaje (5-4-3-2-1)",
-            "description": "Identifica 5 cosas que ves, 4 que tocas, 3 que oyes, 2 que hueles y 1 que saboreas.",
-            "duration": 5
+            "title": "Grounding completo 5-4-3-2-1",
+            "description": "Identifica 5 cosas que ves, 4 que tocas, 3 que oyes, 2 que hueles, 1 que saboreas. Toma tu tiempo con cada una.",
+            "science": "Tecnica MBSR combinada con reguladores somaticos.",
+            "duration": 4
+          },
+          "physiologicalSigh": {
+            "title": "Respiracion fisiologica (Doble Inhalacion)",
+            "description": "Inhala profundo, agrega una mini-inhalacion adicional, luego exhala largo y lento. Repite varias veces.",
+            "science": "Tecnica de Huberman para reduccion inmediata de angustia.",
+            "duration": 3
+          },
+          "emotionalLabeling": {
+            "title": "Etiquetado emocional",
+            "description": "Nombra lo que sientes: 'Esto es preocupacion. No es peligro.' Nombrar las emociones reduce su intensidad.",
+            "science": "Estudios de UCLA (Lieberman) muestran que nombrar reduce actividad de la amigdala.",
+            "duration": 3
+          },
+          "feetAttention": {
+            "title": "Atencion en los pies",
+            "description": "Siente tus pies apoyados en el suelo. Nota la presion, la temperatura, el contacto. Respira lentamente.",
+            "science": "Tecnica de grounding somatico para reconexion con el cuerpo.",
+            "duration": 3
+          },
+          "extendedExhale2x": {
+            "title": "Exhalacion extendida 2x",
+            "description": "Inhala 3 segundos, exhala 6 segundos. La exhalacion doble activa el tono vagal y calma el sistema nervioso.",
+            "science": "Basado en estudios de tono vagal y regulacion autonoma.",
+            "duration": 3
           }
         }
       },
       "4": {
         "exercises": {
-          "deepDiaphragmatic": {
-            "title": "Respiración Diafragmática Profunda",
-            "description": "Respiración profunda desde el diafragma para activar la respuesta de relajación del cuerpo.",
-            "duration": 10
+          "physiologicalSighRepeated": {
+            "title": "Respiracion fisiologica repetida",
+            "description": "Inhala, agrega una mini-inhalacion, exhala largo. Repite por 10 ciclos. Es el mecanismo mas rapido conocido para reducir estres agudo.",
+            "science": "Tecnica de Andrew Huberman validada para estres agudo.",
+            "duration": 4
           },
-          "guidedVisualization": {
-            "title": "Visualización Guiada",
-            "description": "Imagina un lugar seguro y tranquilo con todos tus sentidos para reducir la ansiedad.",
-            "duration": 15
+          "breathing478": {
+            "title": "Respiracion 4-7-8",
+            "description": "Inhala 4 segundos, sosten 7 segundos, exhala 8 segundos. Esta tecnica activa profundamente el sistema parasimpatico.",
+            "science": "Tecnica de Andrew Weil para activacion vagal y reduccion de ansiedad.",
+            "duration": 5
           },
-          "physicalRelease": {
-            "title": "Liberación de Actividad Física",
-            "description": "Movimientos físicos intensos para liberar energía ansiosa acumulada en el cuerpo.",
-            "duration": 10
+          "somaticHold": {
+            "title": "Autocontencion somatica (manos en el pecho)",
+            "description": "Coloca una mano en el pecho y otra en el abdomen. Siente el movimiento de tu respiracion. Esto activa la autoregulacion.",
+            "science": "Tecnica de autoconsuelo somatico para regulacion parasimpatica.",
+            "duration": 4
           },
-          "coldWater": {
-            "title": "Técnica del Agua Fría",
-            "description": "Aplica agua fría en tu cara o muñecas para activar el reflejo de inmersión y calmar tu sistema.",
-            "duration": 2
+          "tactileGrounding": {
+            "title": "Aterrizaje tactil",
+            "description": "Toca una superficie firme. Siente su temperatura y textura. Describela mentalmente. Esto reduce la disociacion y angustia.",
+            "science": "Grounding tactil para reducir disociacion y angustia.",
+            "duration": 3
+          },
+          "countdown54321Breath": {
+            "title": "Cuenta regresiva 5-4-3-2-1 con respiraciones largas",
+            "description": "Con cada numero, inhala 3 segundos y exhala 6. Esto interrumpe el loop cognitivo y activa la corteza prefrontal.",
+            "science": "Interrupcion del loop cognitivo y activacion de corteza prefrontal.",
+            "duration": 5
           }
         }
       },
       "5": {
         "exercises": {
-          "emergencyGrounding": {
-            "title": "Anclaje de Emergencia",
-            "description": "Técnicas rápidas de anclaje: sostener hielo, apretar algo, nombrar objetos a tu alrededor.",
+          "triangularBreathing": {
+            "title": "Respiracion triangular 3-3-3",
+            "description": "Inhala 3 segundos, sosten 3 segundos, exhala 3 segundos. Tecnica usada por Navy SEALs para control bajo estres extremo.",
+            "science": "Tecnica de Navy SEALs para control del sistema nervioso bajo estres extremo.",
+            "duration": 3
+          },
+          "boxBreathing4444": {
+            "title": "Respiracion caja 4-4-4-4",
+            "description": "Inhala 4, sosten 4, exhala 4, sosten 4. Usar cuando la crisis baja un poco. Regula el ritmo cardiaco.",
+            "science": "Estimulacion vagal para regulacion del ritmo cardiaco.",
+            "duration": 4
+          },
+          "physicalGrounding3Points": {
+            "title": "Aterrizaje fisico (3 puntos de contacto)",
+            "description": "Encuentra tres puntos de contacto: pies en el piso, espalda en la silla, manos en las piernas. Siente cada uno.",
+            "science": "Grounding somatico para reducir despersonalizacion.",
+            "duration": 3
+          },
+          "verbalAnchoring": {
+            "title": "Anclaje verbal",
+            "description": "Repite internamente: 'Estoy aqui. Esto va a pasar.' Orienta tu mente al tiempo y espacio presente.",
+            "science": "Intervencion breve en crisis para orientacion temporal y espacial.",
             "duration": 2
           },
-          "tippTechnique": {
-            "title": "Técnica TIPP",
-            "description": "Temperatura, Intensidad de ejercicio, Respiración Pausada, Relajación muscular Progresiva.",
-            "duration": 10
-          },
-          "safePlace": {
-            "title": "Visualización del Lugar Seguro",
-            "description": "Crea y visualiza un lugar mentalmente seguro donde puedas refugiarte durante el pánico.",
-            "duration": 5
-          },
-          "butterflyHug": {
-            "title": "Abrazo de Mariposa",
-            "description": "Cruza los brazos sobre el pecho y alterna palmaditas suaves mientras respiras profundamente.",
-            "duration": 5
+          "doubleExtendedExhale": {
+            "title": "Doble exhalacion prolongada",
+            "description": "Exhala suave, exhala un poco mas, inhala normal. Usar cuando la hiperventilacion es intensa. Alivia tension toracica.",
+            "science": "Reduccion de dioxido de carbono y alivio toracico inmediato.",
+            "duration": 3
           }
         }
       }
@@ -274,13 +476,25 @@
   "tips": {
     "title": "Consejo",
     "subtitle": "Para Ansiedad {{levelTitle}} (Nivel {{level}})",
-    "sectionTitle": "Aquí tienes un consejo para ti:",
-    "actionTitle": "¿Qué deseas hacer ahora?",
+    "sectionTitle": "Aqui tienes un consejo para ti:",
+    "howToApply": "Como aplicarlo:",
+    "actionTitle": "Que deseas hacer ahora?",
     "selectNewLevel": "Seleccionar Nuevo Nivel",
-    "finishSession": "Finalizar Sesión",
+    "finishSession": "Finalizar Sesion",
     "levelSelection": {
       "title": "Selecciona un Nivel",
-      "subtitle": "¿Cómo te sientes ahora?"
+      "subtitle": "Como te sientes ahora?"
+    },
+    "feedback": {
+      "congratsTitle": "Felicidades!",
+      "supportTitle": "Lo estas haciendo muy bien",
+      "encourageTitle": "Estoy aqui contigo",
+      "continue": "Continuar"
+    },
+    "celebration": {
+      "title": "Excelente trabajo!",
+      "message": "Completaste una sesion completa. Recuerda que cada paso cuenta en tu camino hacia el bienestar.",
+      "continue": "Continuar"
     },
     "categories": {
       "lifestyle": "Estilo de vida",
@@ -297,8 +511,9 @@
       "grounding": "Anclaje",
       "support": "Apoyo",
       "growth": "Crecimiento",
-      "expression": "Expresión",
-      "professional": "Profesional",
+      "expression": "Expresion",
+      "breathing": "Respiracion",
+      "resilience": "Resiliencia",
       "sensory": "Sensorial",
       "planning": "Planificación",
       "hope": "Esperanza"
@@ -485,15 +700,15 @@
               "Revisa lo escrito con perspectiva"
             ]
           },
-          "considerProfessionalHelp": {
-            "title": "Considera Ayuda Profesional",
-            "category": "professional",
-            "content": "Un profesional puede darte herramientas especializadas.",
+          "breathingChangesChemistry": {
+            "title": "La Respiracion Cambia tu Quimica",
+            "category": "breathing",
+            "content": "Exhalar mas largo que inhalar reduce senales de estres al cerebro. Es la herramienta mas rapida que tienes.",
             "steps": [
-              "Investiga opciones de terapia en tu área",
-              "Considera la terapia cognitivo-conductual (TCC)",
-              "Habla con tu médico sobre tus síntomas",
-              "No veas buscar ayuda como una debilidad"
+              "Inhala por 3 segundos",
+              "Exhala por 6 segundos",
+              "Repite este patron por 1-2 minutos",
+              "Nota como tu cuerpo se relaja gradualmente"
             ]
           }
         }
@@ -544,15 +759,15 @@
               "Revisa y actualiza el plan regularmente"
             ]
           },
-          "seekProfessionalHelp": {
-            "title": "Busca Ayuda Profesional",
-            "category": "professional",
-            "content": "La ansiedad severa requiere atención profesional.",
+          "youAreNotBroken": {
+            "title": "No Estas Roto, Estas Regulando",
+            "category": "resilience",
+            "content": "El estres no es senal de debilidad sino de activacion. Cada vez que vuelves a la calma, fortaleces una habilidad natural.",
             "steps": [
-              "Contacta a un profesional de salud mental",
-              "Si estás en crisis, llama a una línea de ayuda",
-              "Considera opciones de tratamiento",
-              "Recuerda que buscar ayuda es valiente"
+              "Reconoce que tu cuerpo esta respondiendo normalmente",
+              "Esta activacion es temporal y pasara",
+              "Has superado momentos dificiles antes",
+              "Cada respiracion te acerca a la calma"
             ]
           },
           "rememberThisWillPass": {
@@ -675,5 +890,151 @@
     "home": "Inicio",
     "charts": "Estadísticas",
     "profile": "Perfil"
+  },
+  "lessons": {
+    "title": "Leccion del dia",
+    "subtitle": "Aprende sobre tu cuerpo y mente",
+    "items": {
+      "1": {
+        "title": "Tu sistema nervioso es tu regulador interno",
+        "content": "Tu cuerpo tiene dos modos principales: uno para activarte y uno para relajarte. Cambias entre ellos todos los dias sin darte cuenta. Cuando entiendes esto, sabes que lo que sientes no es peligroso, es solo un cambio natural de tu cuerpo."
+      },
+      "2": {
+        "title": "El sistema simpatico no es peligroso",
+        "content": "Cuando te estresas, tu cuerpo entra en 'modo alerta': respiras mas rapido y tu corazon late fuerte. No significa que algo malo este pasando. Es solo tu cuerpo encendiendo energia para ayudarte. Despues puedes volver a la calma."
+      },
+      "3": {
+        "title": "El sistema parasimpatico es tu freno natural",
+        "content": "Tu cuerpo tambien tiene un 'modo calma' que se activa cuando exhalas lento, te relajas o te enfocas en algo tranquilo. Este sistema baja la velocidad de tu mente y tu respiracion. Puedes activarlo cuando quieras."
+      },
+      "4": {
+        "title": "La adrenalina sube antes que tus pensamientos",
+        "content": "Cuando algo te estresa, tu cuerpo libera adrenalina muy rapido. Eso hace que sientas energia, calor o nervios. No es dano; es una reaccion temporal. Al respirar mas lento, la adrenalina baja sola en pocos minutos."
+      },
+      "5": {
+        "title": "El cortisol te ayuda a enfocarte",
+        "content": "El cortisol es una hormona que te ayuda a pensar con claridad y resolver cosas. Cuando estas estresado por mucho tiempo, puede subir demasiado. Pero con descanso, respiracion y pausas, vuelve a niveles normales."
+      },
+      "6": {
+        "title": "El estres tiene un ciclo y siempre baja",
+        "content": "El estres no se queda igual para siempre. Sube, llega a un punto maximo y luego comienza a bajar. Los ejercicios que haces aqui solo ayudan a que ese descenso sea mas rapido, suave y menos incomodo."
+      },
+      "7": {
+        "title": "La amigdala solo detecta emociones, no piensa",
+        "content": "La amigdala es una parte del cerebro que reacciona rapido cuando siente algo intenso. No analiza ni decide, solo avisa. Tu sigues teniendo control para calmarte, especialmente cuando respiras despacio o te enfocas en algo real y presente."
+      },
+      "8": {
+        "title": "La rumiacion no significa que estes mal",
+        "content": "Cuando tu mente repite los mismos pensamientos una y otra vez, no es porque estes fallando. Es tu cerebro intentando resolver algo sin descanso. Regular tu respiracion ayuda a que esos pensamientos bajen de intensidad."
+      },
+      "9": {
+        "title": "La angustia es una reaccion del cuerpo",
+        "content": "Sensaciones como pecho apretado, nudo en el estomago o respiracion corta son respuestas fisicas normales al estres. Aunque se sienten fuertes, no significan que algo te vaya a pasar. Tu cuerpo puede volver a la calma."
+      },
+      "10": {
+        "title": "Tu cuerpo esta hecho para volver a la calma",
+        "content": "Incluso cuando te sientes muy activado, tu sistema esta disenado para regularse solo. Nada se queda igual para siempre. Cuando haces ejercicios de respiracion o grounding, ayudas a tu cuerpo a volver mas rapido a su estado natural de equilibrio."
+      },
+      "11": {
+        "title": "La respiracion cambia tu quimica",
+        "content": "Exhalar mas largo que inhalar reduce senales de estres al cerebro. Es la herramienta mas rapida que tienes para cambiar como te sientes."
+      },
+      "12": {
+        "title": "La doble inhalacion baja angustia",
+        "content": "Inhala, agrega una mini-inhalacion, exhala largo. Esto reduce CO2 y disminuye el malestar en menos de un minuto."
+      },
+      "13": {
+        "title": "El diafragma tiene memoria emocional",
+        "content": "Cuando se tensa, tu respiracion se acorta; cuando se relaja, tu mente se despeja. Regular el cuerpo regula los pensamientos."
+      },
+      "14": {
+        "title": "La respiracion lenta mejora decisiones",
+        "content": "Mas oxigeno + menos adrenalina = mas claridad mental. No necesitas pensar mejor; necesitas respirar mejor primero."
+      },
+      "15": {
+        "title": "El estres no se combate pensando",
+        "content": "Se regula primero por el cuerpo, luego por la mente. Respirar bien cambia como te sientes y como interpretas las cosas."
+      },
+      "16": {
+        "title": "La calma es entrenable",
+        "content": "Cada vez que practicas respiracion consciente, refuerzas conexiones neuronales que te permiten recuperarte mas rapido la proxima vez."
+      },
+      "17": {
+        "title": "La mente estresada predice peligro",
+        "content": "No esta diciendo la verdad, solo esta anticipando. Pensamiento alternativo: 'Esto es mi cuerpo activado, no un peligro real.'"
+      },
+      "18": {
+        "title": "Preocupacion no es preparacion",
+        "content": "La preocupacion desgasta, no resuelve. Pensamiento alternativo: 'Puedo atender esto cuando mi cuerpo este mas calmado.'"
+      },
+      "19": {
+        "title": "La urgencia emocional es enganosa",
+        "content": "Tu cuerpo te dice 'haz algo ya', pero casi nunca es necesario actuar. 'Puedo esperar unos minutos antes de decidir.'"
+      },
+      "20": {
+        "title": "El pensamiento catastrofico es normal en estres",
+        "content": "Pero no es una prediccion, es un reflejo. 'No necesito creer todo lo que pienso cuando estoy activado.'"
+      },
+      "21": {
+        "title": "La autocritica aumenta el estres",
+        "content": "Tu sistema nervioso escucha tu tono interno. Pensamiento alternativo: 'Hice lo mejor posible en este momento.'"
+      },
+      "22": {
+        "title": "No eres tus emociones",
+        "content": "Son estados temporales. 'Esto es una sensacion, no una realidad permanente.'"
+      },
+      "23": {
+        "title": "La ansiedad exagera los riesgos",
+        "content": "Es parte del diseno humano. 'Mi mente esta exagerando porque mi cuerpo esta activado.'"
+      },
+      "24": {
+        "title": "Sentir miedo no significa que estes fallando",
+        "content": "Significa que tu sistema esta tratando de ayudarte. 'Esto es incomodidad, no incapacidad.'"
+      },
+      "25": {
+        "title": "La calma no requiere resolver nada",
+        "content": "Solo disminuir activacion. 'Puedo volver a mi centro sin resolverlo todo ahora.'"
+      },
+      "26": {
+        "title": "Calmarte fortalece tu cerebro",
+        "content": "La repeticion de ejercicios fortalece la corteza prefrontal, encargada del autocontrol emocional."
+      },
+      "27": {
+        "title": "Tu cuerpo aprende mas rapido que tu mente",
+        "content": "Puedes sentirte mejor aunque aun tengas pensamientos acelerados. Primero cambia la fisiologia, luego cambia la interpretacion."
+      },
+      "28": {
+        "title": "Los sintomas bajan en capas",
+        "content": "A veces baja primero la respiracion, luego el pecho, luego los pensamientos. Es normal un progreso gradual."
+      },
+      "29": {
+        "title": "La regulacion mejora con practica",
+        "content": "Cada sesion aqui entrena tu sistema nervioso para recuperarse mas rapido en el futuro, incluso sin la app."
+      },
+      "30": {
+        "title": "No estas roto; estas regulando",
+        "content": "El estres no es senal de debilidad sino de activacion. Cada vez que vuelves a la calma, estas fortaleciendo una habilidad natural."
+      }
+    }
+  },
+  "donation": {
+    "title": "Apoya a Descalate",
+    "subtitle": "Tu donacion nos ayuda a seguir desarrollando herramientas para manejar la ansiedad",
+    "selectAmount": "Selecciona una cantidad",
+    "custom": "Otra",
+    "thankYouMessage": "Cada contribucion, sin importar el monto, nos ayuda a mejorar la app y llegar a mas personas que necesitan apoyo.",
+    "donateButton": "Donar",
+    "maybeLater": "Quizas luego",
+    "success": {
+      "title": "Gracias!",
+      "message": "Tu generosidad nos ayuda a seguir mejorando Descalate. Apreciamos mucho tu apoyo!"
+    },
+    "errors": {
+      "title": "Error",
+      "invalidAmount": "Por favor selecciona o ingresa una cantidad valida",
+      "productNotFound": "No se pudo encontrar el producto de donacion",
+      "purchaseFailed": "No se pudo completar la compra: {{error}}",
+      "notAvailable": "Las donaciones solo estan disponibles en la version de produccion de la app"
+    }
   }
 }

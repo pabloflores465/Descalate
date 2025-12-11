@@ -179,7 +179,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <AttachStep index={0} style={{ width: '100%' }}>
         <View style={styles.header}>
-          <Ionicons name="pulse" size={48} color="#5a8c6a" />
+          <Ionicons name="pulse" size={48} color="#2d9a6e" />
           <Text style={styles.title}>{t('home.title')}</Text>
           <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
         </View>

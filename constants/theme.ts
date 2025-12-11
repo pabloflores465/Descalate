@@ -5,10 +5,10 @@
 
 import { Platform } from 'react-native';
 
-// Primary colors
-const primary = '#5a8c6a';
-const primaryDark = '#4a7c59';
-const primaryLight = '#7dae8e';
+// Primary colors - using Level 2 green for consistency
+const primary = '#2d9a6e';
+const primaryDark = '#247a58';
+const primaryLight = '#4ab587';
 
 // Secondary colors
 const secondary = '#4285F4';
@@ -47,7 +47,7 @@ const info = '#4A90E2';
 // UI accent colors
 const blue = '#4A90E2';
 const purple = '#9B59B6';
-const green = '#2ECC71';
+const green = '#2d9a6e';
 const orange = '#F39C12';
 const red = '#E74C3C';
 

@@ -81,7 +81,7 @@ export default function LanguageSelector({ style }: LanguageSelectorProps) {
                   {language.name}
                 </Text>
                 {language.code === i18n.language && (
-                  <Ionicons name="checkmark" size={20} color="#5a8c6a" />
+                  <Ionicons name="checkmark" size={20} color="#2d9a6e" />
                 )}
               </Pressable>
             ))}
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   flag: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#5a8c6a',
+    color: '#2d9a6e',
   },
   languageName: {
     fontSize: 14,
@@ -155,12 +155,12 @@ const styles = StyleSheet.create({
   languageOptionActive: {
     backgroundColor: '#e8f5e9',
     borderWidth: 1,
-    borderColor: '#5a8c6a',
+    borderColor: '#2d9a6e',
   },
   optionFlag: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#5a8c6a',
+    color: '#2d9a6e',
   },
   optionName: {
     flex: 1,
@@ -170,6 +170,6 @@ const styles = StyleSheet.create({
   },
   optionNameActive: {
     fontWeight: '700',
-    color: '#5a8c6a',
+    color: '#2d9a6e',
   },
 });

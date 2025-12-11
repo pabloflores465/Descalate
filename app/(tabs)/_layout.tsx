@@ -125,7 +125,7 @@ function TabLayoutContent() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#5a8c6a',
+        tabBarActiveTintColor: '#2d9a6e',
         tabBarInactiveTintColor: '#95A5A6',
         tabBarShowLabel: false,
         tabBarStyle: styles.tabBar,
@@ -223,7 +223,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipText}>{t('tutorial.steps.anxietyLevels.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={previous} style={styles.tooltipButton}>
-            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+            <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
           <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
@@ -246,7 +246,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipText}>{t('tutorial.steps.howItWorks.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={previous} style={styles.tooltipButton}>
-            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+            <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
           <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
@@ -269,7 +269,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipText}>{t('tutorial.steps.statistics.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={previous} style={styles.tooltipButton}>
-            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+            <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
           <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
@@ -292,7 +292,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipText}>{t('tutorial.steps.profile.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={previous} style={styles.tooltipButton}>
-            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+            <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
           <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
@@ -315,7 +315,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipText}>{t('tutorial.steps.ready.description')}</Text>
         <View style={styles.tooltipButtons}>
           <Pressable onPress={previous} style={styles.tooltipButton}>
-            <Ionicons name="arrow-back" size={18} color="#5a8c6a" />
+            <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
           <Pressable onPress={stop} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.begin')}</Text>
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   stepIndicatorText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#5a8c6a',
+    color: '#2d9a6e',
   },
   tooltipTitle: {
     fontSize: 18,
@@ -438,13 +438,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: '#5a8c6a',
+    backgroundColor: '#2d9a6e',
     gap: 6,
   },
   tooltipButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#5a8c6a',
+    color: '#2d9a6e',
   },
   tooltipButtonTextPrimary: {
     fontSize: 14,

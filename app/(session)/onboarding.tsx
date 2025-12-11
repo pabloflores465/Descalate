@@ -25,7 +25,7 @@ const slidesConfig: Slide[] = [
     textKey: 'onboarding.slides.welcome.text',
     encouragementKey: 'onboarding.slides.welcome.encouragement',
     icon: 'heart-outline',
-    colors: ['#5a8c6a', '#3d6b4f'],
+    colors: ['#2d9a6e', '#247a58'],
   },
   {
     key: '2',

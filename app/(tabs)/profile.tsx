@@ -296,7 +296,7 @@ export default function ProfileScreen() {
   if (isLoading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color="#5a8c6a" />
+        <ActivityIndicator size="large" color="#2d9a6e" />
       </View>
     );
   }
@@ -361,7 +361,7 @@ export default function ProfileScreen() {
                 style={[styles.genderButton, gender === 'Male' && styles.genderButtonActive]}
                 onPress={() => setGender('Male')}
               >
-                <Ionicons name="male" size={20} color={gender === 'Male' ? 'white' : '#5a8c6a'} />
+                <Ionicons name="male" size={20} color={gender === 'Male' ? 'white' : '#2d9a6e'} />
                 <Text
                   style={[
                     styles.genderButtonText,
@@ -379,7 +379,7 @@ export default function ProfileScreen() {
                 <Ionicons
                   name="female"
                   size={20}
-                  color={gender === 'Female' ? 'white' : '#5a8c6a'}
+                  color={gender === 'Female' ? 'white' : '#2d9a6e'}
                 />
                 <Text
                   style={[
@@ -398,7 +398,7 @@ export default function ProfileScreen() {
                 <Ionicons
                   name="transgender"
                   size={20}
-                  color={gender === 'Other' ? 'white' : '#5a8c6a'}
+                  color={gender === 'Other' ? 'white' : '#2d9a6e'}
                 />
                 <Text
                   style={[
@@ -532,12 +532,12 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 55,
-    backgroundColor: '#5a8c6a',
+    backgroundColor: '#2d9a6e',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
     borderColor: '#F0EDE5',
-    shadowColor: '#5a8c6a',
+    shadowColor: '#2d9a6e',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#5a8c6a',
+    backgroundColor: '#2d9a6e',
     borderRadius: 20,
     width: 36,
     height: 36,
@@ -622,8 +622,8 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
   },
   genderButtonActive: {
-    backgroundColor: '#5a8c6a',
-    borderColor: '#5a8c6a',
+    backgroundColor: '#2d9a6e',
+    borderColor: '#2d9a6e',
   },
   genderButtonText: {
     fontSize: 16,
@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   saveButton: {
-    backgroundColor: '#5a8c6a',
+    backgroundColor: '#2d9a6e',
     borderRadius: 50,
     paddingVertical: 16,
     paddingHorizontal: 60,

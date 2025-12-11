@@ -188,7 +188,7 @@ export default function ChartsScreen() {
         last7Days.push({
           value: Math.round(avgLevel * 10) / 10,
           label: `${date.getDate()}/${date.getMonth() + 1}`,
-          frontColor: avgLevel > 0 ? levelColors[Math.round(avgLevel)] || '#5a8c6a' : '#E0E0E0',
+          frontColor: avgLevel > 0 ? levelColors[Math.round(avgLevel)] || '#2d9a6e' : '#E0E0E0',
         });
       }
       setWeeklyData(last7Days);
@@ -280,7 +280,7 @@ export default function ChartsScreen() {
       }
     >
       <View style={styles.header}>
-        <Ionicons name="stats-chart" size={48} color="#5a8c6a" />
+        <Ionicons name="stats-chart" size={48} color="#2d9a6e" />
         <Text style={styles.title}>{t('charts.title')}</Text>
         <Text style={styles.subtitle}>{t('charts.subtitle')}</Text>
       </View>
@@ -298,7 +298,7 @@ export default function ChartsScreen() {
           <View style={styles.statsGrid}>
             <View style={[styles.statCard, styles.statCardPrimary]}>
               <LinearGradient
-                colors={['#5a8c6a', '#4a7c5a']}
+                colors={['#2d9a6e', '#4a7c5a']}
                 style={styles.statGradient}
               >
                 <Ionicons name="layers-outline" size={28} color="#fff" />
@@ -360,7 +360,7 @@ export default function ChartsScreen() {
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>{t('charts.cards.weeklyTrend')}</Text>
-              <Ionicons name="calendar-outline" size={24} color="#5a8c6a" />
+              <Ionicons name="calendar-outline" size={24} color="#2d9a6e" />
             </View>
             <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.weekly')}</Text>
             <View style={styles.chartWrapper}>
@@ -399,7 +399,7 @@ export default function ChartsScreen() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.monthlyTrend')}</Text>
-                <Ionicons name="trending-up" size={24} color="#5a8c6a" />
+                <Ionicons name="trending-up" size={24} color="#2d9a6e" />
               </View>
               <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.monthly')}</Text>
               <View style={styles.chartWrapper}>
@@ -409,10 +409,10 @@ export default function ChartsScreen() {
                   height={180}
                   spacing={50}
                   initialSpacing={20}
-                  color="#5a8c6a"
+                  color="#2d9a6e"
                   thickness={3}
                   hideDataPoints={false}
-                  dataPointsColor="#5a8c6a"
+                  dataPointsColor="#2d9a6e"
                   dataPointsRadius={6}
                   textColor="#7F8C8D"
                   textFontSize={11}
@@ -443,7 +443,7 @@ export default function ChartsScreen() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.yearlyTrend')}</Text>
-                <Ionicons name="analytics" size={24} color="#5a8c6a" />
+                <Ionicons name="analytics" size={24} color="#2d9a6e" />
               </View>
               <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.yearly')}</Text>
               <View style={styles.chartWrapper}>
@@ -487,7 +487,7 @@ export default function ChartsScreen() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.levelDistribution')}</Text>
-                <Ionicons name="pie-chart" size={24} color="#5a8c6a" />
+                <Ionicons name="pie-chart" size={24} color="#2d9a6e" />
               </View>
               <View style={styles.pieChartContainer}>
                 <PieChart
@@ -519,7 +519,7 @@ export default function ChartsScreen() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.favoriteExercises')}</Text>
-                <Ionicons name="barbell" size={24} color="#5a8c6a" />
+                <Ionicons name="barbell" size={24} color="#2d9a6e" />
               </View>
               {topExercises.map((exercise, index) => {
                 let displayName = exercise.name;
@@ -561,12 +561,12 @@ export default function ChartsScreen() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.tipCategories')}</Text>
-                <Ionicons name="bulb" size={24} color="#5a8c6a" />
+                <Ionicons name="bulb" size={24} color="#2d9a6e" />
               </View>
               {topCategories.map((category, index) => (
                 <View key={index} style={styles.listItem}>
                   <View style={[styles.listRank, { backgroundColor: '#f0f4f8' }]}>
-                    <Ionicons name="bookmark" size={16} color="#5a8c6a" />
+                    <Ionicons name="bookmark" size={16} color="#2d9a6e" />
                   </View>
                   <Text style={styles.listItemText}>{t(`tips.categories.${category.name.toLowerCase()}`)}</Text>
                   <View style={styles.listCount}>
@@ -580,7 +580,7 @@ export default function ChartsScreen() {
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>{t('charts.cards.recentSessions')}</Text>
-              <Ionicons name="time" size={24} color="#5a8c6a" />
+              <Ionicons name="time" size={24} color="#2d9a6e" />
             </View>
             {sessions.slice(0, 5).map((session, index) => {
               const date = new Date(session.created_at);
@@ -612,7 +612,7 @@ export default function ChartsScreen() {
 
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
-              <Ionicons name="information-circle" size={24} color="#5a8c6a" />
+              <Ionicons name="information-circle" size={24} color="#2d9a6e" />
               <Text style={styles.infoTitle}>{t('charts.infoBox.title')}</Text>
             </View>
             <Text style={styles.infoText}>
@@ -845,7 +845,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#5a8c6a',
+    backgroundColor: '#2d9a6e',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -868,7 +868,7 @@ const styles = StyleSheet.create({
   },
   listCountText: {
     fontSize: 13,
-    color: '#5a8c6a',
+    color: '#2d9a6e',
     fontWeight: '600',
   },
   sessionItem: {
@@ -906,7 +906,7 @@ const styles = StyleSheet.create({
   },
   sessionDuration: {
     fontSize: 13,
-    color: '#5a8c6a',
+    color: '#2d9a6e',
     fontWeight: '600',
   },
   infoCard: {
@@ -914,7 +914,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 20,
     borderLeftWidth: 4,
-    borderLeftColor: '#5a8c6a',
+    borderLeftColor: '#2d9a6e',
   },
   infoHeader: {
     flexDirection: 'row',

@@ -12,6 +12,7 @@
     "finish": "Finish"
   },
   "auth": {
+    "welcome": "Welcome to Desescalate",
     "tabs": {
       "login": "Log In",
       "register": "Sign Up"
@@ -45,19 +46,23 @@
     "slides": {
       "welcome": {
         "title": "Welcome to Descalate",
-        "text": "Your personal companion for managing anxiety and finding inner calm when you need it most."
+        "text": "Your personal companion for managing anxiety and finding inner calm when you need it most.",
+        "encouragement": "You're just a few steps away from feeling better"
       },
       "understand": {
         "title": "Understand Your Anxiety",
-        "text": "Learn to identify and understand your anxiety levels. The first step to managing it is recognizing it."
+        "text": "Learn to identify and understand your anxiety levels. The first step to managing it is recognizing it.",
+        "encouragement": "Here you'll find support and understanding"
       },
       "tools": {
         "title": "Tools at Your Fingertips",
-        "text": "Access breathing exercises, meditation, and scientifically proven techniques to reduce anxiety."
+        "text": "Access breathing exercises, meditation, and scientifically proven techniques to reduce anxiety.",
+        "encouragement": "You have everything you need to succeed"
       },
       "progress": {
         "title": "Your Progress Matters",
-        "text": "Every session counts. Watch how you improve over time and celebrate your achievements on the path to wellbeing."
+        "text": "Every session counts. Watch how you improve over time and celebrate your achievements on the path to wellbeing.",
+        "encouragement": "Together we'll make it happen"
       }
     }
   },
@@ -103,24 +108,91 @@
   "anxietyLevels": {
     "1": {
       "title": "Calm",
-      "description": "Relaxed and at peace. Breathing is steady and thoughts are clear."
+      "description": "I feel calm and in control."
     },
     "2": {
-      "title": "Mild",
-      "description": "Slightly tense. Minor worries present but manageable."
+      "title": "Mild tension",
+      "description": "I'm restless, but functional."
     },
     "3": {
-      "title": "Moderate",
-      "description": "Noticeably anxious. Heart rate may increase, restlessness begins."
+      "title": "Active worry",
+      "description": "Repetitive thoughts or anticipation."
     },
     "4": {
-      "title": "High",
-      "description": "Strong anxiety. Difficulty concentrating, racing thoughts."
+      "title": "Distress",
+      "description": "Chest pressure, difficulty breathing deeply."
     },
     "5": {
-      "title": "Severe",
-      "description": "Intense anxiety or panic. Overwhelming feelings, physical symptoms present."
+      "title": "Crisis",
+      "description": "Very short breathing, panic, sense of danger."
     }
+  },
+  "levelMessages": {
+    "1": [
+      "You're doing great. Let's take a moment to relax and be grateful.",
+      "What a beautiful inner place you have now. Let's expand it a little more.",
+      "You're calm. Let's use this space to deepen it.",
+      "You're balanced. Let's take a step toward even greater wellbeing.",
+      "Everything is in harmony. We can take this peace to a deeper level."
+    ],
+    "2": [
+      "Good that you're here. A small pause will be enough to return to your center.",
+      "You're doing the right thing. In a few seconds, your body will relax.",
+      "Good decision. This slight tension releases easily when we give it attention.",
+      "You listened to yourself and came. That already brings you closer to your natural balance.",
+      "You're handling it well. Let's just ease the load a little."
+    ],
+    "3": [
+      "Well done for stopping. Let's slow down the pace together.",
+      "Good that you came. This worry is manageable with a moment of calm.",
+      "You're on time. Let's organize what you feel so it becomes lighter.",
+      "You made a good decision. Your mind can find clarity little by little.",
+      "You're doing what's best for you. Let's regain focus and inner space."
+    ],
+    "4": [
+      "I know this feels intense, but you're going to be okay. Let's go step by step.",
+      "Even if it doesn't seem like it now, we're going to lower this level together soon.",
+      "It's uncomfortable, I know, but this sensation will calm down. I'm with you.",
+      "You may not see it now, but your body can recover balance. Let's help you.",
+      "You don't have to solve anything right now. Let's breathe and this will get better."
+    ],
+    "5": [
+      "I know it's overwhelming, but you're going to be okay. I'm with you right now.",
+      "Even if you don't feel it now, we're going to lower this level until you return to your true self.",
+      "Don't worry, this will pass. Let's recover one breath at a time.",
+      "It's very uncomfortable, I know, but soon you'll feel better. Just stay with me here.",
+      "It may seem impossible now, but your body can calm down. Let's start very slowly."
+    ]
+  },
+  "deescalationFeedback": {
+    "sameLevel": [
+      "Even though the number didn't change, your body has already started moving toward calm. Let's continue.",
+      "This is completely normal. Sometimes progress is internal before showing outside. Let's take one more step.",
+      "Your system is already responding, it just needs a little more time. You're on the right path.",
+      "Well done. You're doing it. Let's continue with the next exercise to deepen the change.",
+      "All progress starts like this: slow but steady. You've already activated the process; let's continue so your body finishes regulating."
+    ],
+    "increased": [
+      "It's okay to feel this way. Anxiety comes in waves and this is completely normal. I'm here with you.",
+      "Your body is going through a difficult moment, but that doesn't mean you've failed. Let's help you through this.",
+      "Sometimes anxiety rises before it falls. It's part of the process. Let's continue together, one step at a time.",
+      "Don't worry about the number. What matters is that you're here, taking care of yourself. That's already a big step.",
+      "This is temporary. Your body knows how to return to calm and we'll guide you. Breathe, I'm with you.",
+      "How brave you are for continuing. Anxiety doesn't define your strength. Let's keep going together.",
+      "This moment will pass. Now let's focus on what you can do: breathe and move forward with me."
+    ],
+    "improved": [
+      "Excellent! You managed to lower the intensity. This is an important step toward your wellbeing.",
+      "Very good. Your body responded and you're now at a calmer level.",
+      "You did it. You're regaining control and that deserves recognition.",
+      "Congratulations! This shows you can regulate your mind and body. Let's continue with what corresponds to this new level.",
+      "Well done. This decrease shows your system is balancing.",
+      "Great job. Each level down is a real victory. Let's keep building from here.",
+      "Your effort is paying off. Now you're at a safer and more manageable level.",
+      "This improvement is no coincidence: you generated it. Let's keep moving forward from here.",
+      "You're doing very well. Let's take advantage of this new level to strengthen your calm.",
+      "Excellent progress. Your body and mind are listening to you. Let's continue with the exercises for this level."
+    ]
   },
   "tutorial": {
     "steps": {
@@ -157,115 +229,245 @@
     "stepIndicator": "{{current}}/{{total}}"
   },
   "exercises": {
-    "title": "Select Exercises",
+    "title": "Exercises",
     "subtitle": "For {{levelTitle}} Anxiety (Level {{level}})",
-    "sectionTitle": "Tap to see details, then select:",
+    "selectExercise": "Choose an exercise to begin:",
     "actionTitle": "What would you like to do now?",
     "startSession": "Start Session",
     "duration": "{{minutes}} min",
+    "continueButton": "Continue to next exercise",
+    "timer": {
+      "ready": "Ready to start",
+      "breathing": "Breathe...",
+      "completed": "Completed!",
+      "continue": "Continue",
+      "remaining": "remaining",
+      "tapToAdvance": "Tap to advance"
+    },
+    "breathing": {
+      "phases": {
+        "inhale": "Inhale",
+        "hold": "Hold",
+        "exhale": "Exhale",
+        "holdAfterExhale": "Hold"
+      }
+    },
+    "steps": {
+      "feet": "Feel your feet",
+      "legs": "Notice your legs",
+      "torso": "Scan your torso",
+      "arms": "Relax your arms",
+      "head": "Release your head",
+      "think": "Think of something good",
+      "feel": "Feel the gratitude",
+      "expand": "Let it expand",
+      "imaginePlace": "Imagine a peaceful place",
+      "seeColors": "See the colors",
+      "hearSounds": "Hear the sounds",
+      "feelSensations": "Feel the sensations",
+      "shouldersTense": "Tense shoulders",
+      "shouldersRelease": "Release shoulders",
+      "handsTense": "Tense hands",
+      "handsRelease": "Release hands",
+      "leftSide": "Tilt left",
+      "release": "Release",
+      "rightSide": "Tilt right",
+      "releaseRight": "Release",
+      "seeSomething": "Notice something you see",
+      "touchSomething": "Touch something",
+      "see5": "5 things you see",
+      "touch4": "4 things you touch",
+      "hear3": "3 things you hear",
+      "smell2": "2 things you smell",
+      "taste1": "1 thing you taste",
+      "identify": "Identify the emotion",
+      "name": "Name it aloud",
+      "accept": "Accept it",
+      "feelPressure": "Feel the pressure",
+      "noticeTemperature": "Notice temperature",
+      "breathe": "Breathe slowly",
+      "handOnChest": "Hand on chest",
+      "handOnAbdomen": "Hand on abdomen",
+      "feelMovement": "Feel the movement",
+      "breatheSlowly": "Breathe slowly",
+      "touchSurface": "Touch a surface",
+      "feelTemperature": "Feel its temperature",
+      "describeTexture": "Describe the texture",
+      "feetOnFloor": "Feet on the floor",
+      "backOnChair": "Back on the chair",
+      "handsOnLegs": "Hands on your legs",
+      "sayIAmHere": "Say: I am here",
+      "sayThisWillPass": "Say: This will pass",
+      "repeat": "Repeat"
+    },
     "levels": {
       "1": {
         "exercises": {
-          "mindfulBreathing": {
-            "title": "Mindful Breathing",
-            "description": "Become aware of your natural breathing without changing it. Observe how air flows in and out.",
-            "duration": 5
+          "cardiacCoherence": {
+            "title": "Cardiac Coherence 5-5",
+            "description": "Inhale for 5 seconds, exhale for 5 seconds. Repeat for 10 cycles. This technique activates heart rate variability and promotes deep relaxation.",
+            "science": "Based on HeartMath studies and resonant breathing by Benson and Dispenza.",
+            "duration": 2
           },
-          "gratitudeJournal": {
-            "title": "Gratitude Journal",
-            "description": "Write three things you're grateful for today. Reflect on the positive aspects of your life.",
-            "duration": 10
+          "diaphragmaticBreathing336": {
+            "title": "Gentle Diaphragmatic Breathing (3-3-6)",
+            "description": "Inhale 3 seconds, hold 3 seconds, exhale 6 seconds. Extended exhalation reduces amygdala activity.",
+            "science": "Based on Andrew Huberman's research on extended exhalation.",
+            "duration": 2
           },
-          "gentleStretching": {
-            "title": "Gentle Stretching",
-            "description": "Slow and gentle stretches to relax your body and maintain calm.",
-            "duration": 10
+          "bodyScanQuick": {
+            "title": "Quick Body Scan",
+            "description": "Mentally scan your body from feet to head with gentle breathing. Notice sensations without judging them.",
+            "science": "Jon Kabat-Zinn technique from the MBSR (Mindfulness-Based Stress Reduction) program.",
+            "duration": 3
+          },
+          "microMeditationAppreciation": {
+            "title": "Micro-meditation of Appreciation",
+            "description": "Think of something that went well today for 20-40 seconds. Let the feeling of gratitude expand in your body.",
+            "science": "Based on Benson's relaxation response and gratitude studies.",
+            "duration": 1
+          },
+          "calmVisualization": {
+            "title": "Brief Calm Visualization",
+            "description": "Imagine a safe and peaceful space while breathing slowly. Visualize the details: colors, sounds, sensations.",
+            "science": "Joe Dispenza technique for maintaining stable physiology.",
+            "duration": 2
           }
         }
       },
       "2": {
         "exercises": {
-          "boxBreathing": {
-            "title": "Box Breathing",
-            "description": "Inhale 4 seconds, hold 4, exhale 4, hold 4. Repeat the cycle to calm your nervous system.",
-            "duration": 5
+          "tensionRelease": {
+            "title": "Muscle Tension-Release (2 zones)",
+            "description": "Tense your shoulders for 5 seconds and release. Then tense your hands for 5 seconds and release. Feel how the tension dissolves.",
+            "science": "Jacobson's progressive muscle relaxation technique for sympathetic reduction.",
+            "duration": 2
           },
-          "progressiveMuscleRelaxation": {
-            "title": "Progressive Muscle Relaxation",
-            "description": "Systematically tense and relax each muscle group to release physical tension.",
-            "duration": 15
+          "breathing46": {
+            "title": "4-6 Breathing",
+            "description": "Inhale for 4 seconds, exhale for 6 seconds. Repeat for 1-2 minutes. Extended exhalation activates the parasympathetic system.",
+            "science": "Based on Huberman's research on stress reduction.",
+            "duration": 2
           },
-          "mindfulWalking": {
-            "title": "Mindful Walking",
-            "description": "Walk slowly paying attention to each step and the sensations in your body.",
-            "duration": 15
+          "neckStretch": {
+            "title": "Mindful Trapezius and Neck Stretch",
+            "description": "Tilt your head to one side, exhale while releasing tension. Repeat on the other side. Do it with full attention.",
+            "science": "Somatic release studies combined with mindfulness.",
+            "duration": 3
+          },
+          "breathCounting": {
+            "title": "Counting Breaths",
+            "description": "Count from 1 to 10 with each exhalation. Do it slowly. If you lose count, start again without judging yourself.",
+            "science": "Jon Kabat-Zinn technique to anchor attention to the present.",
+            "duration": 3
+          },
+          "sensoryGrounding2": {
+            "title": "Simple Sensory Grounding (2 senses)",
+            "description": "Notice something you see and something you touch. Describe them mentally in detail. This anchors you to the present moment.",
+            "science": "Grounding reduces sympathetic nervous system activity.",
+            "duration": 2
           }
         }
       },
       "3": {
         "exercises": {
-          "breathing478": {
-            "title": "4-7-8 Breathing Technique",
-            "description": "Inhale 4 seconds, hold 7, exhale 8. This technique activates your parasympathetic nervous system.",
-            "duration": 5
-          },
-          "bodyScan": {
-            "title": "Body Scan Meditation",
-            "description": "Mentally scan your body from feet to head, noticing and releasing tensions.",
-            "duration": 15
-          },
           "grounding54321": {
-            "title": "Grounding Exercise (5-4-3-2-1)",
-            "description": "Identify 5 things you see, 4 you touch, 3 you hear, 2 you smell, and 1 you taste.",
-            "duration": 5
+            "title": "Complete Grounding 5-4-3-2-1",
+            "description": "Identify 5 things you see, 4 you touch, 3 you hear, 2 you smell, 1 you taste. Take your time with each one.",
+            "science": "MBSR technique combined with somatic regulators.",
+            "duration": 4
+          },
+          "physiologicalSigh": {
+            "title": "Physiological Sigh (Double Inhale)",
+            "description": "Inhale deeply, add an additional mini-inhale, then exhale long and slow. Repeat several times.",
+            "science": "Huberman technique for immediate distress reduction.",
+            "duration": 3
+          },
+          "emotionalLabeling": {
+            "title": "Emotional Labeling",
+            "description": "Name what you feel: 'This is worry. It's not danger.' Naming emotions reduces their intensity.",
+            "science": "UCLA studies (Lieberman) show that naming reduces amygdala activity.",
+            "duration": 3
+          },
+          "feetAttention": {
+            "title": "Attention on Feet",
+            "description": "Feel your feet supported on the ground. Notice the pressure, temperature, contact. Breathe slowly.",
+            "science": "Somatic grounding technique for body reconnection.",
+            "duration": 3
+          },
+          "extendedExhale2x": {
+            "title": "Extended Exhale 2x",
+            "description": "Inhale 3 seconds, exhale 6 seconds. The double exhale activates vagal tone and calms the nervous system.",
+            "science": "Based on vagal tone and autonomic regulation studies.",
+            "duration": 3
           }
         }
       },
       "4": {
         "exercises": {
-          "deepDiaphragmatic": {
-            "title": "Deep Diaphragmatic Breathing",
-            "description": "Deep breathing from the diaphragm to activate the body's relaxation response.",
-            "duration": 10
+          "physiologicalSighRepeated": {
+            "title": "Repeated Physiological Sigh",
+            "description": "Inhale, add a mini-inhale, exhale long. Repeat for 10 cycles. It's the fastest known mechanism to reduce acute stress.",
+            "science": "Andrew Huberman technique validated for acute stress.",
+            "duration": 4
           },
-          "guidedVisualization": {
-            "title": "Guided Visualization",
-            "description": "Imagine a safe and peaceful place with all your senses to reduce anxiety.",
-            "duration": 15
+          "breathing478": {
+            "title": "4-7-8 Breathing",
+            "description": "Inhale 4 seconds, hold 7 seconds, exhale 8 seconds. This technique deeply activates the parasympathetic system.",
+            "science": "Andrew Weil technique for vagal activation and anxiety reduction.",
+            "duration": 5
           },
-          "physicalRelease": {
-            "title": "Physical Activity Release",
-            "description": "Intense physical movements to release anxious energy accumulated in the body.",
-            "duration": 10
+          "somaticHold": {
+            "title": "Somatic Self-Containment (hands on chest)",
+            "description": "Place one hand on your chest and another on your abdomen. Feel the movement of your breathing. This activates self-regulation.",
+            "science": "Somatic self-soothing technique for parasympathetic regulation.",
+            "duration": 4
           },
-          "coldWater": {
-            "title": "Cold Water Technique",
-            "description": "Apply cold water to your face or wrists to activate the dive reflex and calm your system.",
-            "duration": 2
+          "tactileGrounding": {
+            "title": "Tactile Grounding",
+            "description": "Touch a firm surface. Feel its temperature and texture. Describe it mentally. This reduces dissociation and distress.",
+            "science": "Tactile grounding to reduce dissociation and distress.",
+            "duration": 3
+          },
+          "countdown54321Breath": {
+            "title": "5-4-3-2-1 Countdown with Long Breaths",
+            "description": "With each number, inhale 3 seconds and exhale 6. This interrupts the cognitive loop and activates the prefrontal cortex.",
+            "science": "Cognitive loop interruption and prefrontal cortex activation.",
+            "duration": 5
           }
         }
       },
       "5": {
         "exercises": {
-          "emergencyGrounding": {
-            "title": "Emergency Grounding",
-            "description": "Quick grounding techniques: hold ice, squeeze something, name objects around you.",
+          "triangularBreathing": {
+            "title": "Triangular Breathing 3-3-3",
+            "description": "Inhale 3 seconds, hold 3 seconds, exhale 3 seconds. Technique used by Navy SEALs for control under extreme stress.",
+            "science": "Navy SEALs technique for nervous system control under extreme stress.",
+            "duration": 3
+          },
+          "boxBreathing4444": {
+            "title": "Box Breathing 4-4-4-4",
+            "description": "Inhale 4, hold 4, exhale 4, hold 4. Use when the crisis subsides a bit. Regulates heart rate.",
+            "science": "Vagal stimulation for heart rate regulation.",
+            "duration": 4
+          },
+          "physicalGrounding3Points": {
+            "title": "Physical Grounding (3 contact points)",
+            "description": "Find three contact points: feet on the floor, back on the chair, hands on your legs. Feel each one.",
+            "science": "Somatic grounding to reduce depersonalization.",
+            "duration": 3
+          },
+          "verbalAnchoring": {
+            "title": "Verbal Anchoring",
+            "description": "Repeat internally: 'I am here. This will pass.' Orient your mind to the present time and space.",
+            "science": "Brief crisis intervention for temporal and spatial orientation.",
             "duration": 2
           },
-          "tippTechnique": {
-            "title": "TIPP Technique",
-            "description": "Temperature, Intense exercise, Paced breathing, Progressive muscle relaxation.",
-            "duration": 10
-          },
-          "safePlace": {
-            "title": "Safe Place Visualization",
-            "description": "Create and visualize a mentally safe place where you can take refuge during panic.",
-            "duration": 5
-          },
-          "butterflyHug": {
-            "title": "Butterfly Hug",
-            "description": "Cross your arms over your chest and alternate gentle taps while breathing deeply.",
-            "duration": 5
+          "doubleExtendedExhale": {
+            "title": "Double Extended Exhale",
+            "description": "Exhale gently, exhale a little more, inhale normally. Use when hyperventilation is intense. Relieves chest tension.",
+            "science": "Carbon dioxide reduction and immediate chest relief.",
+            "duration": 3
           }
         }
       }
@@ -275,12 +477,24 @@
     "title": "Tip",
     "subtitle": "For {{levelTitle}} Anxiety (Level {{level}})",
     "sectionTitle": "Here's a tip for you:",
+    "howToApply": "How to apply it:",
     "actionTitle": "What would you like to do now?",
     "selectNewLevel": "Select New Level",
     "finishSession": "Finish Session",
     "levelSelection": {
       "title": "Select a Level",
       "subtitle": "How are you feeling now?"
+    },
+    "feedback": {
+      "congratsTitle": "Congratulations!",
+      "supportTitle": "You're doing great",
+      "encourageTitle": "I'm here with you",
+      "continue": "Continue"
+    },
+    "celebration": {
+      "title": "Great job!",
+      "message": "You completed a full session. Remember that every step counts on your path to wellbeing.",
+      "continue": "Continue"
     },
     "categories": {
       "lifestyle": "Lifestyle",
@@ -298,7 +512,8 @@
       "support": "Support",
       "growth": "Growth",
       "expression": "Expression",
-      "professional": "Professional",
+      "breathing": "Breathing",
+      "resilience": "Resilience",
       "sensory": "Sensory",
       "planning": "Planning",
       "hope": "Hope"
@@ -485,15 +700,15 @@
               "Review what you wrote with perspective"
             ]
           },
-          "considerProfessionalHelp": {
-            "title": "Consider Professional Help",
-            "category": "professional",
-            "content": "A professional can give you specialized tools.",
+          "breathingChangesChemistry": {
+            "title": "Breathing Changes Your Chemistry",
+            "category": "breathing",
+            "content": "Exhaling longer than inhaling reduces stress signals to the brain. It's the fastest tool you have.",
             "steps": [
-              "Research therapy options in your area",
-              "Consider cognitive-behavioral therapy (CBT)",
-              "Talk to your doctor about your symptoms",
-              "Don't see seeking help as a weakness"
+              "Inhale for 3 seconds",
+              "Exhale for 6 seconds",
+              "Repeat this pattern for 1-2 minutes",
+              "Notice how your body gradually relaxes"
             ]
           }
         }
@@ -544,15 +759,15 @@
               "Review and update the plan regularly"
             ]
           },
-          "seekProfessionalHelp": {
-            "title": "Seek Professional Help",
-            "category": "professional",
-            "content": "Severe anxiety requires professional attention.",
+          "youAreNotBroken": {
+            "title": "You're Not Broken, You're Regulating",
+            "category": "resilience",
+            "content": "Stress is not a sign of weakness but of activation. Each time you return to calm, you strengthen a natural ability.",
             "steps": [
-              "Contact a mental health professional",
-              "If you're in crisis, call a helpline",
-              "Consider treatment options",
-              "Remember that seeking help is brave"
+              "Recognize that your body is responding normally",
+              "This activation is temporary and will pass",
+              "You have overcome difficult moments before",
+              "Each breath brings you closer to calm"
             ]
           },
           "rememberThisWillPass": {
@@ -675,5 +890,151 @@
     "home": "Home",
     "charts": "Statistics",
     "profile": "Profile"
+  },
+  "lessons": {
+    "title": "Lesson of the day",
+    "subtitle": "Learn about your body and mind",
+    "items": {
+      "1": {
+        "title": "Your nervous system is your internal regulator",
+        "content": "Your body has two main modes: one to activate you and one to relax you. You switch between them every day without realizing it. When you understand this, you know that what you feel is not dangerous, it's just a natural change in your body."
+      },
+      "2": {
+        "title": "The sympathetic system is not dangerous",
+        "content": "When you get stressed, your body enters 'alert mode': you breathe faster and your heart beats hard. It doesn't mean something bad is happening. It's just your body turning on energy to help you. Then you can return to calm."
+      },
+      "3": {
+        "title": "The parasympathetic system is your natural brake",
+        "content": "Your body also has a 'calm mode' that activates when you exhale slowly, relax, or focus on something calm. This system slows down your mind and breathing. You can activate it whenever you want."
+      },
+      "4": {
+        "title": "Adrenaline rises before your thoughts",
+        "content": "When something stresses you, your body releases adrenaline very quickly. That makes you feel energy, heat, or nerves. It's not harm; it's a temporary reaction. By breathing slower, adrenaline drops on its own in a few minutes."
+      },
+      "5": {
+        "title": "Cortisol helps you focus",
+        "content": "Cortisol is a hormone that helps you think clearly and solve things. When you're stressed for a long time, it can rise too much. But with rest, breathing, and breaks, it returns to normal levels."
+      },
+      "6": {
+        "title": "Stress has a cycle and always goes down",
+        "content": "Stress doesn't stay the same forever. It rises, reaches a peak, and then begins to fall. The exercises you do here just help that descent be faster, smoother, and less uncomfortable."
+      },
+      "7": {
+        "title": "The amygdala only detects emotions, it doesn't think",
+        "content": "The amygdala is a part of the brain that reacts quickly when it feels something intense. It doesn't analyze or decide, it just alerts. You still have control to calm yourself, especially when you breathe slowly or focus on something real and present."
+      },
+      "8": {
+        "title": "Rumination doesn't mean you're broken",
+        "content": "When your mind repeats the same thoughts over and over, it's not because you're failing. It's your brain trying to solve something without rest. Regulating your breathing helps those thoughts decrease in intensity."
+      },
+      "9": {
+        "title": "Distress is a body reaction",
+        "content": "Sensations like tight chest, knot in stomach, or short breathing are normal physical responses to stress. Although they feel strong, they don't mean something will happen to you. Your body can return to calm."
+      },
+      "10": {
+        "title": "Your body is made to return to calm",
+        "content": "Even when you feel very activated, your system is designed to regulate itself. Nothing stays the same forever. When you do breathing or grounding exercises, you help your body return faster to its natural state of balance."
+      },
+      "11": {
+        "title": "Breathing changes your chemistry",
+        "content": "Exhaling longer than inhaling reduces stress signals to the brain. It's the fastest tool you have to change how you feel."
+      },
+      "12": {
+        "title": "The double inhale lowers distress",
+        "content": "Inhale, add a mini-inhale, exhale long. This reduces CO2 and decreases discomfort in less than a minute."
+      },
+      "13": {
+        "title": "The diaphragm has emotional memory",
+        "content": "When it tenses, your breathing shortens; when it relaxes, your mind clears. Regulating the body regulates thoughts."
+      },
+      "14": {
+        "title": "Slow breathing improves decisions",
+        "content": "More oxygen + less adrenaline = more mental clarity. You don't need to think better; you need to breathe better first."
+      },
+      "15": {
+        "title": "Stress isn't fought by thinking",
+        "content": "It's regulated first by the body, then by the mind. Breathing well changes how you feel and how you interpret things."
+      },
+      "16": {
+        "title": "Calm is trainable",
+        "content": "Every time you practice conscious breathing, you reinforce neural connections that allow you to recover faster next time."
+      },
+      "17": {
+        "title": "The stressed mind predicts danger",
+        "content": "It's not telling the truth, it's just anticipating. Alternative thought: 'This is my body activated, not real danger.'"
+      },
+      "18": {
+        "title": "Worry is not preparation",
+        "content": "Worry wears you down, it doesn't solve. Alternative thought: 'I can deal with this when my body is calmer.'"
+      },
+      "19": {
+        "title": "Emotional urgency is deceptive",
+        "content": "Your body tells you 'do something now', but it's almost never necessary to act. 'I can wait a few minutes before deciding.'"
+      },
+      "20": {
+        "title": "Catastrophic thinking is normal under stress",
+        "content": "But it's not a prediction, it's a reflex. 'I don't need to believe everything I think when I'm activated.'"
+      },
+      "21": {
+        "title": "Self-criticism increases stress",
+        "content": "Your nervous system listens to your internal tone. Alternative thought: 'I did the best I could in this moment.'"
+      },
+      "22": {
+        "title": "You are not your emotions",
+        "content": "They are temporary states. 'This is a sensation, not a permanent reality.'"
+      },
+      "23": {
+        "title": "Anxiety exaggerates risks",
+        "content": "It's part of human design. 'My mind is exaggerating because my body is activated.'"
+      },
+      "24": {
+        "title": "Feeling fear doesn't mean you're failing",
+        "content": "It means your system is trying to help you. 'This is discomfort, not incapacity.'"
+      },
+      "25": {
+        "title": "Calm doesn't require solving anything",
+        "content": "Just reducing activation. 'I can return to my center without solving everything now.'"
+      },
+      "26": {
+        "title": "Calming yourself strengthens your brain",
+        "content": "Repeating exercises strengthens the prefrontal cortex, responsible for emotional self-control."
+      },
+      "27": {
+        "title": "Your body learns faster than your mind",
+        "content": "You can feel better even if you still have racing thoughts. First change the physiology, then change the interpretation."
+      },
+      "28": {
+        "title": "Symptoms decrease in layers",
+        "content": "Sometimes breathing drops first, then chest, then thoughts. Gradual progress is normal."
+      },
+      "29": {
+        "title": "Regulation improves with practice",
+        "content": "Each session here trains your nervous system to recover faster in the future, even without the app."
+      },
+      "30": {
+        "title": "You're not broken; you're regulating",
+        "content": "Stress is not a sign of weakness but of activation. Every time you return to calm, you're strengthening a natural ability."
+      }
+    }
+  },
+  "donation": {
+    "title": "Support Descalate",
+    "subtitle": "Your donation helps us continue developing tools to help manage anxiety",
+    "selectAmount": "Select an amount",
+    "custom": "Custom",
+    "thankYouMessage": "Every contribution, no matter the size, helps us improve the app and reach more people who need support.",
+    "donateButton": "Donate",
+    "maybeLater": "Maybe later",
+    "success": {
+      "title": "Thank you!",
+      "message": "Your generosity helps us continue improving Descalate. We truly appreciate your support!"
+    },
+    "errors": {
+      "title": "Error",
+      "invalidAmount": "Please select or enter a valid amount",
+      "productNotFound": "Could not find the donation product",
+      "purchaseFailed": "The purchase could not be completed: {{error}}",
+      "notAvailable": "Donations are only available in the production version of the app"
+    }
   }
 }

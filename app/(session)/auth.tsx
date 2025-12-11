@@ -3,18 +3,20 @@ import {
   Text,
   TextInput,
   Pressable,
-  Dimensions,
-  ImageBackground,
   Alert,
   ActivityIndicator,
+  StyleSheet,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
-import Svg, { Polygon, Text as SvgText, Defs, Filter, FeDropShadow } from 'react-native-svg';
 import { useState, useEffect } from 'react';
 import { db, expoDb } from '@/database/db';
 import { users, registerUserSchema, loginUserSchema, googleUserSchema } from '@/database/schema';
 import { runMigrations } from '@/database/migrations';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
@@ -136,8 +138,6 @@ export default function AuthScreen() {
       handleGoogleUser();
     }
   }, [userInfo, router, activeTab, setCurrentUserEmail, signOut]);
-
-  const { width, height } = Dimensions.get('screen');
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
@@ -283,306 +283,313 @@ export default function AuthScreen() {
   };
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/scale.jpeg')}
-      style={{ flex: 1 }}
-      resizeMode="cover"
-    >
-      <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
-        <Defs>
-          <Filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <FeDropShadow dx={3} dy={3} stdDeviation={4} floodColor="rgba(0,0,0,0.5)" />
-          </Filter>
-        </Defs>
-        <Polygon points={`${width},${height / 2} 0,${height / 2} ${width},0`} fill={Colors.surfaceElevated} />
-        <Polygon points={`0,${height} 0,${height / 2} ${width},${height / 2}`} fill={Colors.surfaceElevated} />
-        {/* Shadow for DE */}
-        <SvgText
-          x={34}
-          y={184}
-          fontSize={120}
-          fontWeight="900"
-          fill="rgba(0,0,0,0.4)"
-          textAnchor="start"
-          fontFamily="System"
-        >
-          DE
-        </SvgText>
-        <SvgText
-          x={30}
-          y={180}
-          fontSize={120}
-          fontWeight="900"
-          fill="#FFFFFF"
-          textAnchor="start"
-          fontFamily="System"
-        >
-          DE
-        </SvgText>
-        {/* Shadow for SCA */}
-        <SvgText
-          x={width * 0.62 + 3}
-          y={height - 100}
-          fontSize={65}
-          fontWeight="900"
-          fill="rgba(0,0,0,0.4)"
-          textAnchor="middle"
-          fontFamily="System"
-        >
-          SCA
-        </SvgText>
-        <SvgText
-          x={width * 0.62}
-          y={height - 103}
-          fontSize={65}
-          fontWeight="900"
-          fill="#FFFFFF"
-          textAnchor="middle"
-          fontFamily="System"
-        >
-          SCA
-        </SvgText>
-        {/* Shadow for LATE */}
-        <SvgText
-          x={width * 0.62 + 3}
-          y={height - 32}
-          fontSize={65}
-          fontWeight="900"
-          fill="rgba(0,0,0,0.4)"
-          textAnchor="middle"
-          fontFamily="System"
-        >
-          LATE
-        </SvgText>
-        <SvgText
-          x={width * 0.62}
-          y={height - 35}
-          fontSize={65}
-          fontWeight="900"
-          fill="#FFFFFF"
-          textAnchor="middle"
-          fontFamily="System"
-        >
-          LATE
-        </SvgText>
-      </Svg>
-      <View
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: 0,
-          right: 0,
-          transform: [{ translateY: -220 }],
-          height: 500,
-          backgroundColor: Colors.surfaceElevated,
-          padding: 30,
-          justifyContent: 'center',
-          overflow: 'visible',
-        }}
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
-        <LanguageSelector style={{ marginBottom: Spacing.lg, alignSelf: 'flex-end' }} />
-        <View
-          style={{
-            flexDirection: 'row',
-            marginBottom: Spacing.xl,
-            borderRadius: BorderRadius.round,
-            backgroundColor: Colors.input.background,
-            padding: 4,
-          }}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Pressable
-            onPress={() => {
-              setActiveTab('login');
-              setEmail('');
-              setPassword('');
-              setErrors({});
-            }}
-            style={{
-              flex: 1,
-              paddingVertical: Spacing.md,
-              borderRadius: BorderRadius.round,
-              backgroundColor: activeTab === 'login' ? Colors.primary : 'transparent',
-            }}
-          >
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: FontSize.md,
-                fontWeight: 'bold',
-                color: activeTab === 'login' ? Colors.white : Colors.text.secondary,
-              }}
+          <View style={styles.formContainer}>
+              <View style={styles.languageRow}>
+                <LanguageSelector />
+              </View>
+
+              <Text style={styles.welcomeText}>{t('auth.welcome')}</Text>
+
+              <View style={styles.tabContainer}>
+              <Pressable
+                onPress={() => {
+                  setActiveTab('login');
+                  setEmail('');
+                  setPassword('');
+                  setErrors({});
+                }}
+                style={[
+                  styles.tab,
+                  activeTab === 'login' && styles.tabActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    activeTab === 'login' && styles.tabTextActive,
+                  ]}
+                >
+                  {t('auth.tabs.login')}
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setActiveTab('register');
+                  setEmail('');
+                  setPassword('');
+                  setErrors({});
+                }}
+                style={[
+                  styles.tab,
+                  activeTab === 'register' && styles.tabActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    activeTab === 'register' && styles.tabTextActive,
+                  ]}
+                >
+                  {t('auth.tabs.register')}
+                </Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>{t('auth.fields.email')}</Text>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                placeholder={t('auth.fields.emailPlaceholder')}
+                placeholderTextColor="#9CA3AF"
+                autoCapitalize="none"
+                style={[
+                  styles.input,
+                  errors.email && styles.inputError,
+                ]}
+              />
+              {errors.email && (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              )}
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>{t('auth.fields.password')}</Text>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                placeholder="********"
+                placeholderTextColor="#9CA3AF"
+                secureTextEntry={true}
+                autoCapitalize="none"
+                autoComplete="password"
+                returnKeyType="done"
+                maxLength={50}
+                onSubmitEditing={handleSubmit}
+                style={[
+                  styles.input,
+                  errors.password && styles.inputError,
+                ]}
+              />
+              {errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
+            </View>
+
+            <Pressable
+              onPress={handleSubmit}
+              disabled={isLoading || isGoogleLoading}
+              style={({ pressed }) => [
+                styles.submitButton,
+                (isLoading || isGoogleLoading) && styles.buttonDisabled,
+                pressed && styles.buttonPressed,
+              ]}
             >
-              {t('auth.tabs.login')}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setActiveTab('register');
-              setEmail('');
-              setPassword('');
-              setErrors({});
-            }}
-            style={{
-              flex: 1,
-              paddingVertical: Spacing.md,
-              borderRadius: BorderRadius.round,
-              backgroundColor: activeTab === 'register' ? Colors.primary : 'transparent',
-            }}
-          >
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: FontSize.md,
-                fontWeight: 'bold',
-                color: activeTab === 'register' ? Colors.white : Colors.text.secondary,
-              }}
+              {isLoading ? (
+                <ActivityIndicator color="#fff" size="small" />
+              ) : (
+                <>
+                  <Ionicons name="log-in-outline" size={20} color="#fff" />
+                  <Text style={styles.submitButtonText}>
+                    {activeTab === 'login'
+                      ? t('auth.buttons.login')
+                      : t('auth.buttons.register')}
+                  </Text>
+                </>
+              )}
+            </Pressable>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>or</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <Pressable
+              onPress={handleGoogleAuth}
+              disabled={!request || isLoading || isGoogleLoading}
+              style={[
+                styles.googleButton,
+                (!request || isLoading || isGoogleLoading) && styles.buttonDisabled,
+              ]}
             >
-              {t('auth.tabs.register')}
-            </Text>
+              {isGoogleLoading ? (
+                <ActivityIndicator color="#374151" size="small" />
+              ) : (
+                <>
+                  <AntDesign name="google" size={20} color="#374151" />
+                  <Text style={styles.googleButtonText}>
+                    {t('auth.buttons.googleContinue')}
+                  </Text>
+                </>
+              )}
           </Pressable>
         </View>
-
-        <Text
-          style={{
-            marginTop: Spacing.sm,
-            marginBottom: 5,
-            marginHorizontal: Spacing.xl,
-            fontSize: FontSize.md,
-            color: Colors.text.secondary,
-          }}
-        >
-          {t('auth.fields.email')}
-        </Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          placeholder={t('auth.fields.emailPlaceholder')}
-          placeholderTextColor={Colors.text.placeholder}
-          autoCapitalize="none"
-          style={{
-            borderRadius: BorderRadius.round,
-            paddingVertical: 15,
-            paddingHorizontal: Spacing.xl,
-            backgroundColor: Colors.input.background,
-            fontSize: FontSize.md,
-            borderWidth: 1,
-            borderColor: errors.email ? Colors.input.borderError : Colors.input.border,
-            color: Colors.text.primary,
-          }}
-        />
-        {errors.email && (
-          <Text style={{ color: Colors.status.error, marginTop: 5, marginHorizontal: Spacing.xl }}>{errors.email}</Text>
-        )}
-
-        <Text
-          style={{
-            marginTop: Spacing.sm,
-            marginBottom: 5,
-            marginHorizontal: Spacing.xl,
-            fontSize: FontSize.md,
-            color: Colors.text.secondary,
-          }}
-        >
-          {t('auth.fields.password')}
-        </Text>
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="••••••••"
-          placeholderTextColor={Colors.text.placeholder}
-          secureTextEntry={true}
-          autoCapitalize="none"
-          autoComplete="password"
-          returnKeyType="done"
-          maxLength={50}
-          onSubmitEditing={handleSubmit}
-          style={{
-            borderRadius: BorderRadius.round,
-            paddingVertical: 15,
-            paddingHorizontal: Spacing.xl,
-            backgroundColor: Colors.input.background,
-            fontSize: FontSize.md,
-            borderWidth: 1,
-            borderColor: errors.password ? Colors.input.borderError : Colors.input.border,
-            color: Colors.text.primary,
-          }}
-        />
-        {errors.password && (
-          <Text style={{ color: Colors.status.error, marginTop: 5, marginHorizontal: Spacing.xl }}>
-            {errors.password}
-          </Text>
-        )}
-
-        <Pressable
-          onPress={handleSubmit}
-          disabled={isLoading || isGoogleLoading}
-          style={({ pressed }) => ({
-            backgroundColor:
-              isLoading || isGoogleLoading ? Colors.text.disabled : pressed ? Colors.primaryDark : Colors.primary,
-            borderRadius: BorderRadius.round,
-            paddingVertical: Spacing.lg,
-            paddingHorizontal: Spacing.massive,
-            marginTop: Spacing.xl,
-            marginBottom: Spacing.xl,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            opacity: isLoading || isGoogleLoading ? 0.6 : 1,
-          })}
-        >
-          {isLoading ? (
-            <ActivityIndicator color={Colors.white} size="small" style={{ marginRight: Spacing.sm }} />
-          ) : (
-            <AntDesign
-              name="login"
-              size={20}
-              color={Colors.white}
-              style={{ marginRight: Spacing.sm, fontWeight: 'bold' }}
-            />
-          )}
-          <Text
-            style={{
-              color: Colors.white,
-              fontSize: FontSize.lg,
-              fontWeight: 'bold',
-              textAlign: 'center',
-            }}
-          >
-            {isLoading
-              ? activeTab === 'login'
-                ? t('auth.buttons.loggingIn')
-                : t('auth.buttons.registering')
-              : activeTab === 'login'
-              ? t('auth.buttons.login')
-              : t('auth.buttons.register')}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={handleGoogleAuth}
-          disabled={!request || isLoading || isGoogleLoading}
-          style={{
-            backgroundColor: !request || isLoading || isGoogleLoading ? Colors.text.disabled : Colors.google,
-            borderRadius: BorderRadius.round,
-            padding: 15,
-            marginTop: Spacing.sm,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            opacity: !request || isLoading || isGoogleLoading ? 0.6 : 1,
-          }}
-        >
-          {isGoogleLoading ? (
-            <ActivityIndicator color={Colors.white} size="small" style={{ marginRight: Spacing.sm }} />
-          ) : (
-            <AntDesign name="google" size={20} color={Colors.white} style={{ marginRight: Spacing.sm }} />
-          )}
-          <Text style={{ color: Colors.white, textAlign: 'center', fontSize: FontSize.md, fontWeight: 'bold' }}>
-            {isGoogleLoading ? t('auth.buttons.googleLoading') : t('auth.buttons.googleContinue')}
-          </Text>
-        </Pressable>
-      </View>
-    </ImageBackground>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F3ED',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  formContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 40,
+  },
+  languageRow: {
+    alignItems: 'flex-end',
+    marginBottom: 16,
+  },
+  welcomeText: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#2d9a6e',
+    textAlign: 'center',
+    marginBottom: 28,
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(45, 154, 110, 0.1)',
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 24,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  tabActive: {
+    backgroundColor: '#2d9a6e',
+    shadowColor: '#2d9a6e',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  tabText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2d9a6e',
+  },
+  tabTextActive: {
+    color: '#FFFFFF',
+  },
+  inputGroup: {
+    marginBottom: 18,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1f2937',
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  input: {
+    backgroundColor: '#f8faf9',
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    fontSize: 16,
+    color: '#111827',
+    borderWidth: 1.5,
+    borderColor: 'rgba(45, 154, 110, 0.2)',
+  },
+  inputError: {
+    borderColor: '#EF4444',
+    backgroundColor: '#fef2f2',
+  },
+  errorText: {
+    color: '#dc2626',
+    fontSize: 13,
+    marginTop: 6,
+    marginLeft: 4,
+  },
+  submitButton: {
+    marginTop: 12,
+    borderRadius: 14,
+    backgroundColor: '#2d9a6e',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 18,
+    gap: 10,
+    shadowColor: '#2d9a6e',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '700',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(45, 154, 110, 0.2)',
+  },
+  dividerText: {
+    paddingHorizontal: 16,
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    paddingVertical: 16,
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    gap: 10,
+  },
+  googleButtonText: {
+    color: '#374151',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

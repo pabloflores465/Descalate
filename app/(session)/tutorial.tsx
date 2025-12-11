@@ -28,7 +28,7 @@ const tutorialSteps: TutorialStep[] = [
     instruction: 'En la pantalla de inicio veras 5 tarjetas de colores. Toca la que mejor represente como te sientes ahora mismo.',
     tip: 'Nivel 1 es calma total, nivel 5 es ansiedad intensa',
     icon: 'hand-left-outline',
-    colors: ['#5a8c6a', '#3d6b4f'],
+    colors: ['#2d9a6e', '#247a58'],
   },
   {
     id: 2,

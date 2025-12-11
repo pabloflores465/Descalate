@@ -46,7 +46,9 @@
         }
       ],
       "expo-sqlite",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-iap",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,
