@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useSession } from '@/context/SessionContext';
 import { useTranslation } from 'react-i18next';
+import DonationModal from '@/components/DonationModal';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -618,6 +619,7 @@ export default function TipsScreen() {
   const [feedbackData, setFeedbackData] = useState<FeedbackData | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showTip, setShowTip] = useState(false);
+  const [showDonation, setShowDonation] = useState(false);
   const { setSessionTip, endSession, startSession, clearSession } = useSession();
 
   const tips: Tip[] = tipConfigs.map(config => ({
@@ -691,6 +693,11 @@ export default function TipsScreen() {
   const handleTipContinue = async () => {
     await endSession('end_session');
     clearSession();
+    setShowDonation(true);
+  };
+
+  const handleDonationClose = () => {
+    setShowDonation(false);
     router.replace('/(tabs)/home');
   };
 
@@ -726,48 +733,55 @@ export default function TipsScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-      <LinearGradient
-        colors={colors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Pressable onPress={handleGoBack} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+    <>
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+        <LinearGradient
+          colors={colors}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
+          <Pressable onPress={handleGoBack} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </Pressable>
+          <View style={styles.headerContent}>
+            <Ionicons name="pulse" size={48} color="rgba(255,255,255,0.9)" />
+            <Text style={styles.title}>{t('tips.levelSelection.title')}</Text>
+            <Text style={styles.subtitle}>{t('tips.levelSelection.subtitle')}</Text>
+          </View>
+        </LinearGradient>
+
+        <Text style={styles.sectionTitle}>
+          {t('tips.sectionTitle')}
+        </Text>
+
+        {[1, 2, 3, 4, 5].map((lvl) => (
+          <LevelSelectCard
+            key={lvl}
+            levelNum={lvl}
+            title={t(`anxietyLevels.${lvl}.title`)}
+            description={t(`anxietyLevels.${lvl}.description`)}
+            icon={levelIcons[lvl]}
+            colors={levelColors[lvl]}
+            isExpanded={expandedLevel === lvl}
+            onExpand={() => handleLevelExpand(lvl)}
+            onSelect={() => handleLevelSelect(lvl)}
+          />
+        ))}
+
+        <Pressable style={styles.endSessionButton} onPress={handleEndSession}>
+          <View style={styles.endSessionButtonContent}>
+            <Ionicons name="close-circle-outline" size={24} color="#566573" />
+            <Text style={styles.endSessionButtonText}>{t('tips.finishSession')}</Text>
+          </View>
         </Pressable>
-        <View style={styles.headerContent}>
-          <Ionicons name="pulse" size={48} color="rgba(255,255,255,0.9)" />
-          <Text style={styles.title}>{t('tips.levelSelection.title')}</Text>
-          <Text style={styles.subtitle}>{t('tips.levelSelection.subtitle')}</Text>
-        </View>
-      </LinearGradient>
+      </ScrollView>
 
-      <Text style={styles.sectionTitle}>
-        {t('tips.sectionTitle')}
-      </Text>
-
-      {[1, 2, 3, 4, 5].map((lvl) => (
-        <LevelSelectCard
-          key={lvl}
-          levelNum={lvl}
-          title={t(`anxietyLevels.${lvl}.title`)}
-          description={t(`anxietyLevels.${lvl}.description`)}
-          icon={levelIcons[lvl]}
-          colors={levelColors[lvl]}
-          isExpanded={expandedLevel === lvl}
-          onExpand={() => handleLevelExpand(lvl)}
-          onSelect={() => handleLevelSelect(lvl)}
-        />
-      ))}
-
-      <Pressable style={styles.endSessionButton} onPress={handleEndSession}>
-        <View style={styles.endSessionButtonContent}>
-          <Ionicons name="close-circle-outline" size={24} color="#566573" />
-          <Text style={styles.endSessionButtonText}>{t('tips.finishSession')}</Text>
-        </View>
-      </Pressable>
-    </ScrollView>
+      <DonationModal
+        visible={showDonation}
+        onClose={handleDonationClose}
+      />
+    </>
   );
 }
 
