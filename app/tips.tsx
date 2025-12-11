@@ -711,15 +711,21 @@ export default function TipsScreen() {
 
   if (showTip) {
     return (
-      <UnifiedTipScreen
-        tip={randomTip}
-        colors={colors}
-        levelTitle={levelTitle}
-        level={level}
-        onGoBack={() => setShowTip(false)}
-        onSelectNewLevel={() => setShowTip(false)}
-        onEndSession={handleTipContinue}
-      />
+      <>
+        <UnifiedTipScreen
+          tip={randomTip}
+          colors={colors}
+          levelTitle={levelTitle}
+          level={level}
+          onGoBack={() => setShowTip(false)}
+          onSelectNewLevel={() => setShowTip(false)}
+          onEndSession={handleTipContinue}
+        />
+        <DonationModal
+          visible={showDonation}
+          onClose={handleDonationClose}
+        />
+      </>
     );
   }
 
