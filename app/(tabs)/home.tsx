@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
@@ -15,34 +15,34 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 type AnxietyLevelConfig = {
   level: number;
   colors: string[];
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: string;
 };
 
 const anxietyLevelConfigs: AnxietyLevelConfig[] = [
   {
     level: 1,
     colors: ['#5a67d8', '#6b46c1'],
-    icon: 'happy-outline',
+    icon: 'face-smile',
   },
   {
     level: 2,
     colors: ['#2d9a6e', '#2b7a9b'],
-    icon: 'fitness-outline',
+    icon: 'face-meh',
   },
   {
     level: 3,
     colors: ['#d97706', '#1e4e6d'],
-    icon: 'warning-outline',
+    icon: 'face-frown-open',
   },
   {
     level: 4,
     colors: ['#c026d3', '#dc2626'],
-    icon: 'alert-circle-outline',
+    icon: 'face-sad-tear',
   },
   {
     level: 5,
     colors: ['#be185d', '#ea580c'],
-    icon: 'flash-outline',
+    icon: 'face-tired',
   },
 ];
 
@@ -88,7 +88,7 @@ function AnxietyCard({
           style={styles.card}
         >
           <View style={styles.cardHeader}>
-            <Ionicons
+            <FontAwesome6
               name={levelConfig.icon}
               size={32}
               color="rgba(255, 255, 255, 0.95)"
