@@ -45,7 +45,7 @@
   "onboarding": {
     "slides": {
       "welcome": {
-        "title": "Bienvenido a Descalate",
+        "title": "Bienvenido a Desescalate",
         "text": "Tu companero personal para manejar la ansiedad y encontrar la calma interior cuando mas lo necesitas.",
         "encouragement": "Estas a unos pasos de sentirte mejor"
       },
@@ -197,7 +197,7 @@
   "tutorial": {
     "steps": {
       "welcome": {
-        "title": "Bienvenido a Descalate",
+        "title": "Bienvenido a Desescalate",
         "description": "Esta aplicación te ayudará a manejar tu ansiedad de manera efectiva. Te guiaremos a través de las funciones principales."
       },
       "anxietyLevels": {
@@ -1018,7 +1018,7 @@
     }
   },
   "donation": {
-    "title": "Apoya a Descalate",
+    "title": "Apoya a Desescalate",
     "subtitle": "Tu donacion nos ayuda a seguir desarrollando herramientas para manejar la ansiedad",
     "selectAmount": "Selecciona una cantidad",
     "custom": "Otra",
@@ -1027,7 +1027,7 @@
     "maybeLater": "Quizas luego",
     "success": {
       "title": "Gracias!",
-      "message": "Tu generosidad nos ayuda a seguir mejorando Descalate. Apreciamos mucho tu apoyo!"
+      "message": "Tu generosidad nos ayuda a seguir mejorando Desescalate. Apreciamos mucho tu apoyo!"
     },
     "errors": {
       "title": "Error",
