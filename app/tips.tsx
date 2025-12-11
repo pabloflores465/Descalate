@@ -188,8 +188,6 @@ function LevelSelectCard({
   onSelect: () => void;
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const iconScaleAnim = useRef(new Animated.Value(1)).current;
-  const badgeScaleAnim = useRef(new Animated.Value(1)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
   const contentTranslate = useRef(new Animated.Value(20)).current;
 
@@ -198,18 +196,6 @@ function LevelSelectCard({
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1.02,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(iconScaleAnim, {
-          toValue: 1.4,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(badgeScaleAnim, {
-          toValue: 1.2,
           friction: 8,
           tension: 40,
           useNativeDriver: true,
@@ -234,26 +220,12 @@ function LevelSelectCard({
     } else {
       contentOpacity.setValue(0);
       contentTranslate.setValue(20);
-      Animated.parallel([
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(iconScaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-        Animated.spring(badgeScaleAnim, {
-          toValue: 1,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 8,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
     }
   }, [isExpanded]);
 
@@ -273,14 +245,9 @@ function LevelSelectCard({
           style={[styles.levelSelectGradient, isExpanded && styles.levelSelectGradientExpanded]}
         >
           <View style={styles.levelSelectContent}>
-            <Animated.View
-              style={[
-                styles.levelIconContainer,
-                { transform: [{ scale: iconScaleAnim }] },
-              ]}
-            >
+            <View style={styles.levelIconContainer}>
               <FontAwesome6 name={icon} size={24} color="#fff" />
-            </Animated.View>
+            </View>
             <View style={styles.levelTextContainer}>
               <Text style={[styles.levelSelectTitle, isExpanded && styles.levelSelectTitleExpanded]}>
                 {title}
@@ -289,14 +256,9 @@ function LevelSelectCard({
                 <Text style={styles.levelSelectSubtitle}>Nivel {levelNum}</Text>
               )}
             </View>
-            <Animated.View
-              style={[
-                styles.levelBadge,
-                { transform: [{ scale: badgeScaleAnim }] },
-              ]}
-            >
+            <View style={styles.levelBadge}>
               <Text style={styles.levelBadgeText}>{levelNum}</Text>
-            </Animated.View>
+            </View>
           </View>
 
           {isExpanded && (
@@ -1061,6 +1023,7 @@ const styles = StyleSheet.create({
   levelSelectContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 14,
   },
   levelIconContainer: {
     width: 44,
@@ -1072,6 +1035,7 @@ const styles = StyleSheet.create({
   },
   levelTextContainer: {
     flex: 1,
+    marginLeft: 2,
   },
   levelBadge: {
     width: 36,
