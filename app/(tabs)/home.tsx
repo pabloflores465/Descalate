@@ -88,11 +88,13 @@ function AnxietyCard({
           style={styles.card}
         >
           <View style={styles.cardHeader}>
-            <FontAwesome6
-              name={levelConfig.icon}
-              size={32}
-              color="rgba(255, 255, 255, 0.95)"
-            />
+            <View style={styles.iconContainer}>
+              <FontAwesome6
+                name={levelConfig.icon}
+                size={28}
+                color="#fff"
+              />
+            </View>
             <View style={styles.levelBadge}>
               <Text style={styles.levelNumber}>
                 {levelConfig.level}
@@ -268,6 +270,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
+  },
+  iconContainer: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',

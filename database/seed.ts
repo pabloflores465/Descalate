@@ -11,7 +11,7 @@ const exercises = [
   'Escaneo corporal',
 ];
 
-const tipCategories = ['Mindfulness', 'Ejercicio', 'Nutricion', 'Sueno', 'Social'];
+const tipCategories = ['mindfulness', 'exercise', 'diet', 'lifestyle', 'social', 'resilience', 'support', 'grounding', 'breathing', 'selfCare'];
 
 function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;

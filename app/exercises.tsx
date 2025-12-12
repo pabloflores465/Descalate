@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Pressable, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, Animated, Dimensions, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -97,6 +97,7 @@ type Exercise = {
   icon: keyof typeof Ionicons.glyphMap;
   translationKey: string;
   level: number;
+  steps: string[];
 };
 
 const exerciseConfigsByLevel: Record<number, ExerciseConfig[]> = {
@@ -643,7 +644,7 @@ function TimerScreen({
   const { t } = useTranslation();
   const totalSeconds = exercise.durationMinutes * 60;
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
-  const [isRunning, setIsRunning] = useState(false);
+  const [isRunning, setIsRunning] = useState(true);
   const [isFinished, setIsFinished] = useState(false);
 
   // Get the exercise pattern
@@ -734,63 +735,84 @@ function TimerScreen({
       end={{ x: 1, y: 1 }}
       style={styles.timerContainer}
     >
-      <Pressable onPress={onBack} style={styles.timerBackButton}>
-        <Ionicons name="arrow-back" size={24} color="#fff" />
-      </Pressable>
+      <ScrollView
+        style={styles.timerScrollView}
+        contentContainerStyle={styles.timerScrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Pressable onPress={onBack} style={styles.timerBackButton}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </Pressable>
 
-      <View style={styles.timerContent}>
-        <View style={styles.timerIconContainer}>
-          <Ionicons name={exercise.icon} size={40} color="#fff" />
-        </View>
+        <View style={styles.timerContent}>
+          <View style={styles.timerIconContainer}>
+            <Ionicons name={exercise.icon} size={40} color="#fff" />
+          </View>
 
-        <Text style={styles.timerTitle}>{exercise.title}</Text>
+          <Text style={styles.timerTitle}>{exercise.title}</Text>
 
-        {/* Indicator with integrated timer */}
-        {renderIndicator()}
+          {/* Indicator with integrated timer */}
+          {renderIndicator()}
 
-        <View style={styles.timerDescriptionContainer}>
-          <Text style={styles.timerDescription}>{exercise.description}</Text>
-        </View>
+          <View style={styles.timerDescriptionContainer}>
+            <Text style={styles.timerDescription}>{exercise.description}</Text>
+          </View>
 
-        <View style={styles.timerButtons}>
-          {!isFinished ? (
-            <>
+          {/* Steps section */}
+          {exercise.steps && exercise.steps.length > 0 && (
+            <View style={styles.timerStepsContainer}>
+              <Text style={styles.timerStepsTitle}>{t('exercises.timer.howToDoIt')}</Text>
+              {exercise.steps.map((step, index) => (
+                <View key={index} style={styles.timerStepItem}>
+                  <View style={styles.timerStepNumber}>
+                    <Text style={styles.timerStepNumberText}>{index + 1}</Text>
+                  </View>
+                  <Text style={styles.timerStepText}>{step}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          <View style={styles.timerButtons}>
+            {!isFinished ? (
+              <>
+                <Pressable
+                  style={[styles.timerButton, styles.timerButtonSecondary]}
+                  onPress={handleReset}
+                >
+                  <Ionicons name="refresh" size={24} color="#fff" />
+                </Pressable>
+                <Pressable
+                  style={[styles.timerButton, styles.timerButtonPrimary]}
+                  onPress={handleStartPause}
+                >
+                  <Ionicons
+                    name={isRunning ? 'pause' : 'play'}
+                    size={32}
+                    color={colors[0]}
+                  />
+                </Pressable>
+                <Pressable
+                  style={[styles.timerButton, styles.timerButtonSecondary]}
+                  onPress={onFinish}
+                >
+                  <Ionicons name="checkmark" size={24} color="#fff" />
+                </Pressable>
+              </>
+            ) : (
               <Pressable
-                style={[styles.timerButton, styles.timerButtonSecondary]}
-                onPress={handleReset}
-              >
-                <Ionicons name="refresh" size={24} color="#fff" />
-              </Pressable>
-              <Pressable
-                style={[styles.timerButton, styles.timerButtonPrimary]}
-                onPress={handleStartPause}
-              >
-                <Ionicons
-                  name={isRunning ? 'pause' : 'play'}
-                  size={32}
-                  color={colors[0]}
-                />
-              </Pressable>
-              <Pressable
-                style={[styles.timerButton, styles.timerButtonSecondary]}
+                style={styles.continueButton}
                 onPress={onFinish}
               >
-                <Ionicons name="checkmark" size={24} color="#fff" />
+                <Text style={styles.continueButtonText}>
+                  {t('exercises.timer.continue')}
+                </Text>
+                <Ionicons name="arrow-forward" size={20} color={colors[0]} />
               </Pressable>
-            </>
-          ) : (
-            <Pressable
-              style={styles.continueButton}
-              onPress={onFinish}
-            >
-              <Text style={styles.continueButtonText}>
-                {t('exercises.timer.continue')}
-              </Text>
-              <Ionicons name="arrow-forward" size={20} color={colors[0]} />
-            </Pressable>
-          )}
+            )}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -805,16 +827,20 @@ export default function ExercisesScreen() {
   const [activeExercise, setActiveExercise] = useState<Exercise | null>(null);
   const { setSelectedExercises } = useSession();
 
-  const exercises: Exercise[] = exerciseConfigs.map(config => ({
-    id: config.id,
-    title: t(`exercises.levels.${level}.exercises.${config.translationKey}.title`),
-    description: t(`exercises.levels.${level}.exercises.${config.translationKey}.description`),
-    duration: t('exercises.duration', { minutes: t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`) }),
-    durationMinutes: Number(t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`)),
-    icon: config.icon,
-    translationKey: config.translationKey,
-    level: level,
-  }));
+  const exercises: Exercise[] = exerciseConfigs.map(config => {
+    const stepsArray = t(`exercises.levels.${level}.exercises.${config.translationKey}.steps`, { returnObjects: true });
+    return {
+      id: config.id,
+      title: t(`exercises.levels.${level}.exercises.${config.translationKey}.title`),
+      description: t(`exercises.levels.${level}.exercises.${config.translationKey}.description`),
+      duration: t('exercises.duration', { minutes: t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`) }),
+      durationMinutes: Number(t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`)),
+      icon: config.icon,
+      translationKey: config.translationKey,
+      level: level,
+      steps: Array.isArray(stepsArray) ? stepsArray : [],
+    };
+  });
 
   const handleExercisePress = (exercise: Exercise) => {
     setActiveExercise(exercise);
@@ -997,24 +1023,26 @@ const styles = StyleSheet.create({
   // Timer Screen Styles
   timerContainer: {
     flex: 1,
+  },
+  timerScrollView: {
+    flex: 1,
+  },
+  timerScrollContent: {
     paddingTop: 60,
+    paddingBottom: 40,
   },
   timerBackButton: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
+    marginLeft: 20,
+    marginBottom: 20,
   },
   timerContent: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 30,
   },
   timerIconContainer: {
@@ -1103,14 +1131,53 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 20,
     padding: 20,
-    marginBottom: 30,
-    maxHeight: 120,
+    marginBottom: 20,
   },
   timerDescription: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',
     lineHeight: 24,
+  },
+  timerStepsContainer: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 30,
+    width: '100%',
+  },
+  timerStepsTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
+  timerStepItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 14,
+  },
+  timerStepNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  timerStepNumberText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  timerStepText: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '500',
+    paddingTop: 2,
   },
   timerButtons: {
     flexDirection: 'row',

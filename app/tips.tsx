@@ -108,6 +108,7 @@ type Tip = {
   content: string;
   icon: keyof typeof Ionicons.glyphMap;
   category: string;
+  categoryKey: string;
   steps: string[];
 };
 
@@ -584,14 +585,18 @@ export default function TipsScreen() {
   const [showDonation, setShowDonation] = useState(false);
   const { setSessionTip, endSession, startSession, clearSession } = useSession();
 
-  const tips: Tip[] = tipConfigs.map(config => ({
-    id: config.id,
-    title: t(`tips.levels.${level}.tips.${config.translationKey}.title`),
-    content: t(`tips.levels.${level}.tips.${config.translationKey}.content`),
-    icon: config.icon,
-    category: t(`tips.categories.${t(`tips.levels.${level}.tips.${config.translationKey}.category`)}`),
-    steps: t(`tips.levels.${level}.tips.${config.translationKey}.steps`, { returnObjects: true }) as string[],
-  }));
+  const tips: Tip[] = tipConfigs.map(config => {
+    const categoryKey = t(`tips.levels.${level}.tips.${config.translationKey}.category`);
+    return {
+      id: config.id,
+      title: t(`tips.levels.${level}.tips.${config.translationKey}.title`),
+      content: t(`tips.levels.${level}.tips.${config.translationKey}.content`),
+      icon: config.icon,
+      category: t(`tips.categories.${categoryKey}`),
+      categoryKey: categoryKey,
+      steps: t(`tips.levels.${level}.tips.${config.translationKey}.steps`, { returnObjects: true }) as string[],
+    };
+  });
 
   const [randomTip] = useState(() => {
     const randomIndex = Math.floor(Math.random() * tipConfigs.length);
@@ -602,7 +607,7 @@ export default function TipsScreen() {
     setSessionTip({
       id: randomTip.id,
       title: randomTip.title,
-      category: randomTip.category,
+      category: randomTip.categoryKey,
     });
   }, [randomTip]);
 

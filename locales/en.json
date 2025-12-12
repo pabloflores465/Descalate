@@ -242,7 +242,8 @@
       "completed": "Completed!",
       "continue": "Continue",
       "remaining": "remaining",
-      "tapToAdvance": "Tap to advance"
+      "tapToAdvance": "Tap to advance",
+      "howToDoIt": "How to do it:"
     },
     "breathing": {
       "phases": {
@@ -305,33 +306,67 @@
         "exercises": {
           "cardiacCoherence": {
             "title": "Cardiac Coherence 5-5",
-            "description": "Inhale for 5 seconds, exhale for 5 seconds. Repeat for 10 cycles. This technique activates heart rate variability and promotes deep relaxation.",
+            "description": "This technique activates heart rate variability and promotes deep relaxation.",
             "science": "Based on HeartMath studies and resonant breathing by Benson and Dispenza.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Sit comfortably and close your eyes",
+              "Inhale slowly for 5 seconds",
+              "Exhale gently for 5 seconds",
+              "Repeat this cycle 10 times",
+              "Maintain a steady and relaxed rhythm"
+            ]
           },
           "diaphragmaticBreathing336": {
             "title": "Gentle Diaphragmatic Breathing (3-3-6)",
-            "description": "Inhale 3 seconds, hold 3 seconds, exhale 6 seconds. Extended exhalation reduces amygdala activity.",
+            "description": "Extended exhalation reduces amygdala activity and activates the parasympathetic system.",
             "science": "Based on Andrew Huberman's research on extended exhalation.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Place one hand on your abdomen",
+              "Inhale deeply for 3 seconds feeling it expand",
+              "Hold your breath for 3 seconds",
+              "Exhale slowly for 6 seconds",
+              "Repeat until you feel calm"
+            ]
           },
           "bodyScanQuick": {
             "title": "Quick Body Scan",
-            "description": "Mentally scan your body from feet to head with gentle breathing. Notice sensations without judging them.",
+            "description": "Mentally scan your body noticing sensations without judging them.",
             "science": "Jon Kabat-Zinn technique from the MBSR (Mindfulness-Based Stress Reduction) program.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Close your eyes and breathe deeply",
+              "Start with your feet, notice any tension",
+              "Slowly move up through legs, torso and arms",
+              "Reach your head and face",
+              "Release any tension you find"
+            ]
           },
           "microMeditationAppreciation": {
             "title": "Micro-meditation of Appreciation",
-            "description": "Think of something that went well today for 20-40 seconds. Let the feeling of gratitude expand in your body.",
+            "description": "Let the feeling of gratitude expand in your body.",
             "science": "Based on Benson's relaxation response and gratitude studies.",
-            "duration": 1
+            "duration": 1,
+            "steps": [
+              "Close your eyes and breathe softly",
+              "Think of something that went well today",
+              "Feel the gratitude in your chest",
+              "Let that sensation expand"
+            ]
           },
           "calmVisualization": {
             "title": "Brief Calm Visualization",
-            "description": "Imagine a safe and peaceful space while breathing slowly. Visualize the details: colors, sounds, sensations.",
+            "description": "Imagine a safe and peaceful space while breathing slowly.",
             "science": "Joe Dispenza technique for maintaining stable physiology.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Close your eyes and relax your body",
+              "Imagine a place where you feel safe",
+              "Visualize the colors and shapes of the place",
+              "Listen to the peaceful sounds",
+              "Feel the pleasant sensations"
+            ]
           }
         }
       },
@@ -339,33 +374,68 @@
         "exercises": {
           "tensionRelease": {
             "title": "Muscle Tension-Release (2 zones)",
-            "description": "Tense your shoulders for 5 seconds and release. Then tense your hands for 5 seconds and release. Feel how the tension dissolves.",
+            "description": "Feel how tension releases from your body with this technique.",
             "science": "Jacobson's progressive muscle relaxation technique for sympathetic reduction.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Tense your shoulders by raising them to your ears",
+              "Hold the tension for 5 seconds",
+              "Release and feel them relax",
+              "Now tense your hands into fists for 5 seconds",
+              "Release and notice the difference"
+            ]
           },
           "breathing46": {
             "title": "4-6 Breathing",
-            "description": "Inhale for 4 seconds, exhale for 6 seconds. Repeat for 1-2 minutes. Extended exhalation activates the parasympathetic system.",
+            "description": "Extended exhalation activates the parasympathetic system and reduces stress.",
             "science": "Based on Huberman's research on stress reduction.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Sit or lie down comfortably",
+              "Inhale slowly for 4 seconds",
+              "Exhale gently for 6 seconds",
+              "Repeat for 1-2 minutes",
+              "Maintain a steady rhythm"
+            ]
           },
           "neckStretch": {
             "title": "Mindful Trapezius and Neck Stretch",
-            "description": "Tilt your head to one side, exhale while releasing tension. Repeat on the other side. Do it with full attention.",
+            "description": "Release accumulated tension in neck and shoulders with full attention.",
             "science": "Somatic release studies combined with mindfulness.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Sit with your back straight",
+              "Gently tilt your head to the left",
+              "Exhale while releasing tension",
+              "Slowly return to center",
+              "Repeat on the right side"
+            ]
           },
           "breathCounting": {
             "title": "Counting Breaths",
-            "description": "Count from 1 to 10 with each exhalation. Do it slowly. If you lose count, start again without judging yourself.",
+            "description": "Anchor your attention to the present by counting your breaths.",
             "science": "Jon Kabat-Zinn technique to anchor attention to the present.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Close your eyes and breathe naturally",
+              "Count 1 on your first exhalation",
+              "Continue counting until you reach 10",
+              "If you lose count, start again",
+              "Do it without judging yourself"
+            ]
           },
           "sensoryGrounding2": {
             "title": "Simple Sensory Grounding (2 senses)",
-            "description": "Notice something you see and something you touch. Describe them mentally in detail. This anchors you to the present moment.",
+            "description": "Anchor yourself to the present moment using your senses.",
             "science": "Grounding reduces sympathetic nervous system activity.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Look around you calmly",
+              "Choose something you see and describe it mentally",
+              "Now touch something near you",
+              "Describe its texture and temperature",
+              "Notice how you feel more present"
+            ]
           }
         }
       },
@@ -373,33 +443,68 @@
         "exercises": {
           "grounding54321": {
             "title": "Complete Grounding 5-4-3-2-1",
-            "description": "Identify 5 things you see, 4 you touch, 3 you hear, 2 you smell, 1 you taste. Take your time with each one.",
+            "description": "Use your senses to anchor yourself to the present moment.",
             "science": "MBSR technique combined with somatic regulators.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Name 5 things you can see around you",
+              "Identify 4 things you can touch",
+              "Listen and name 3 sounds",
+              "Notice 2 things you can smell",
+              "Identify 1 thing you can taste"
+            ]
           },
           "physiologicalSigh": {
             "title": "Physiological Sigh (Double Inhale)",
-            "description": "Inhale deeply, add an additional mini-inhale, then exhale long and slow. Repeat several times.",
+            "description": "This technique reduces distress immediately.",
             "science": "Huberman technique for immediate distress reduction.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Inhale deeply through your nose",
+              "Add a second short inhale",
+              "Exhale long and slow through your mouth",
+              "Repeat several times",
+              "Notice how tension decreases"
+            ]
           },
           "emotionalLabeling": {
             "title": "Emotional Labeling",
-            "description": "Name what you feel: 'This is worry. It's not danger.' Naming emotions reduces their intensity.",
+            "description": "Naming emotions reduces their intensity.",
             "science": "UCLA studies (Lieberman) show that naming reduces amygdala activity.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Pause and observe how you feel",
+              "Identify the emotion you're experiencing",
+              "Name it out loud or mentally",
+              "Say: 'This is worry, not danger'",
+              "Accept the emotion without judging it"
+            ]
           },
           "feetAttention": {
             "title": "Attention on Feet",
-            "description": "Feel your feet supported on the ground. Notice the pressure, temperature, contact. Breathe slowly.",
+            "description": "Reconnect with your body through your feet.",
             "science": "Somatic grounding technique for body reconnection.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Feel your feet supported on the ground",
+              "Notice the pressure against the floor",
+              "Perceive the temperature of your feet",
+              "Feel the contact with your shoes or the ground",
+              "Breathe slowly while maintaining attention"
+            ]
           },
           "extendedExhale2x": {
             "title": "Extended Exhale 2x",
-            "description": "Inhale 3 seconds, exhale 6 seconds. The double exhale activates vagal tone and calms the nervous system.",
+            "description": "The double exhale activates vagal tone and calms the nervous system.",
             "science": "Based on vagal tone and autonomic regulation studies.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Sit comfortably and relax your shoulders",
+              "Inhale through your nose for 3 seconds",
+              "Exhale slowly for 6 seconds",
+              "Maintain a steady rhythm",
+              "Continue until you feel calm"
+            ]
           }
         }
       },
@@ -407,33 +512,68 @@
         "exercises": {
           "physiologicalSighRepeated": {
             "title": "Repeated Physiological Sigh",
-            "description": "Inhale, add a mini-inhale, exhale long. Repeat for 10 cycles. It's the fastest known mechanism to reduce acute stress.",
+            "description": "The fastest known mechanism to reduce acute stress.",
             "science": "Andrew Huberman technique validated for acute stress.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Inhale deeply through your nose",
+              "Add an additional mini-inhale",
+              "Exhale long and slow through your mouth",
+              "Repeat this pattern 10 times",
+              "Notice how distress decreases"
+            ]
           },
           "breathing478": {
             "title": "4-7-8 Breathing",
-            "description": "Inhale 4 seconds, hold 7 seconds, exhale 8 seconds. This technique deeply activates the parasympathetic system.",
+            "description": "This technique deeply activates the parasympathetic system.",
             "science": "Andrew Weil technique for vagal activation and anxiety reduction.",
-            "duration": 5
+            "duration": 5,
+            "steps": [
+              "Sit comfortably and close your eyes",
+              "Inhale through your nose for 4 seconds",
+              "Hold your breath for 7 seconds",
+              "Exhale completely for 8 seconds",
+              "Repeat the cycle several times"
+            ]
           },
           "somaticHold": {
             "title": "Somatic Self-Containment (hands on chest)",
-            "description": "Place one hand on your chest and another on your abdomen. Feel the movement of your breathing. This activates self-regulation.",
+            "description": "Activate self-regulation by feeling your breathing.",
             "science": "Somatic self-soothing technique for parasympathetic regulation.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Place one hand on your chest",
+              "Put the other hand on your abdomen",
+              "Feel the movement as you breathe",
+              "Notice how your abdomen rises and falls",
+              "Breathe slow and deep"
+            ]
           },
           "tactileGrounding": {
             "title": "Tactile Grounding",
-            "description": "Touch a firm surface. Feel its temperature and texture. Describe it mentally. This reduces dissociation and distress.",
+            "description": "Reduce dissociation and distress using touch.",
             "science": "Tactile grounding to reduce dissociation and distress.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Find a firm surface near you",
+              "Touch it with both hands",
+              "Feel its temperature (cold or warm)",
+              "Notice its texture (smooth, rough, soft)",
+              "Describe it mentally in detail"
+            ]
           },
           "countdown54321Breath": {
             "title": "5-4-3-2-1 Countdown with Long Breaths",
-            "description": "With each number, inhale 3 seconds and exhale 6. This interrupts the cognitive loop and activates the prefrontal cortex.",
+            "description": "Interrupts the cognitive loop and activates the prefrontal cortex.",
             "science": "Cognitive loop interruption and prefrontal cortex activation.",
-            "duration": 5
+            "duration": 5,
+            "steps": [
+              "Think of number 5, inhale 3s and exhale 6s",
+              "Think of number 4, inhale 3s and exhale 6s",
+              "Think of number 3, inhale 3s and exhale 6s",
+              "Think of number 2, inhale 3s and exhale 6s",
+              "Think of number 1, inhale 3s and exhale 6s"
+            ]
           }
         }
       },
@@ -441,33 +581,68 @@
         "exercises": {
           "triangularBreathing": {
             "title": "Triangular Breathing 3-3-3",
-            "description": "Inhale 3 seconds, hold 3 seconds, exhale 3 seconds. Technique used by Navy SEALs for control under extreme stress.",
+            "description": "Technique used by Navy SEALs for control under extreme stress.",
             "science": "Navy SEALs technique for nervous system control under extreme stress.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Sit or stand firmly",
+              "Inhale for 3 seconds",
+              "Hold your breath for 3 seconds",
+              "Exhale for 3 seconds",
+              "Repeat until you regain control"
+            ]
           },
           "boxBreathing4444": {
             "title": "Box Breathing 4-4-4-4",
-            "description": "Inhale 4, hold 4, exhale 4, hold 4. Use when the crisis subsides a bit. Regulates heart rate.",
+            "description": "Regulates heart rate when the crisis starts to subside.",
             "science": "Vagal stimulation for heart rate regulation.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Inhale counting to 4",
+              "Hold the air counting to 4",
+              "Exhale counting to 4",
+              "Keep lungs empty counting to 4",
+              "Repeat the cycle several times"
+            ]
           },
           "physicalGrounding3Points": {
             "title": "Physical Grounding (3 contact points)",
-            "description": "Find three contact points: feet on the floor, back on the chair, hands on your legs. Feel each one.",
+            "description": "Reduce depersonalization by connecting with your body.",
             "science": "Somatic grounding to reduce depersonalization.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Feel your feet firmly on the floor",
+              "Notice your back resting on the chair",
+              "Place your hands on your legs",
+              "Feel each point of contact",
+              "Breathe while maintaining attention"
+            ]
           },
           "verbalAnchoring": {
             "title": "Verbal Anchoring",
-            "description": "Repeat internally: 'I am here. This will pass.' Orient your mind to the present time and space.",
+            "description": "Orient your mind to the present time and space.",
             "science": "Brief crisis intervention for temporal and spatial orientation.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Take one deep breath",
+              "Say out loud or mentally: 'I am here'",
+              "Repeat: 'This will pass'",
+              "Look around and name where you are",
+              "Continue repeating until you feel calm"
+            ]
           },
           "doubleExtendedExhale": {
             "title": "Double Extended Exhale",
-            "description": "Exhale gently, exhale a little more, inhale normally. Use when hyperventilation is intense. Relieves chest tension.",
+            "description": "Relieves chest tension when hyperventilation is intense.",
             "science": "Carbon dioxide reduction and immediate chest relief.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Exhale gently through your mouth",
+              "Exhale a little more, emptying your lungs",
+              "Inhale normally and relaxed",
+              "Repeat the pattern several times",
+              "Notice how your chest feels relieved"
+            ]
           }
         }
       }

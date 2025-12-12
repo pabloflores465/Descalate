@@ -242,7 +242,8 @@
       "completed": "Completado!",
       "continue": "Continuar",
       "remaining": "restante",
-      "tapToAdvance": "Toca para avanzar"
+      "tapToAdvance": "Toca para avanzar",
+      "howToDoIt": "Como hacerlo:"
     },
     "breathing": {
       "phases": {
@@ -305,33 +306,67 @@
         "exercises": {
           "cardiacCoherence": {
             "title": "Coherencia cardiaca 5-5",
-            "description": "Inhala durante 5 segundos, exhala durante 5 segundos. Repite por 10 ciclos. Esta tecnica activa la variabilidad del ritmo cardiaco y promueve la relajacion profunda.",
+            "description": "Esta tecnica activa la variabilidad del ritmo cardiaco y promueve la relajacion profunda.",
             "science": "Basado en estudios de HeartMath y respiracion resonante de Benson y Dispenza.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Sientate comodo y cierra los ojos",
+              "Inhala lentamente durante 5 segundos",
+              "Exhala suavemente durante 5 segundos",
+              "Repite este ciclo 10 veces",
+              "Mantén un ritmo constante y relajado"
+            ]
           },
           "diaphragmaticBreathing336": {
             "title": "Respiracion diafragmatica suave (3-3-6)",
-            "description": "Inhala 3 segundos, sosten 3 segundos, exhala 6 segundos. La exhalacion prolongada reduce la actividad de la amigdala.",
+            "description": "La exhalacion prolongada reduce la actividad de la amigdala y activa el sistema parasimpatico.",
             "science": "Basado en investigaciones de Andrew Huberman sobre exhalacion prolongada.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Coloca una mano en tu abdomen",
+              "Inhala profundo por 3 segundos sintiendo como se expande",
+              "Sosten la respiracion por 3 segundos",
+              "Exhala lentamente durante 6 segundos",
+              "Repite hasta sentir calma"
+            ]
           },
           "bodyScanQuick": {
             "title": "Escaneo corporal rapido",
-            "description": "Recorre mentalmente tu cuerpo desde los pies hasta la cabeza con respiracion suave. Nota las sensaciones sin juzgarlas.",
+            "description": "Recorre mentalmente tu cuerpo notando las sensaciones sin juzgarlas.",
             "science": "Tecnica de Jon Kabat-Zinn del programa MBSR (Reduccion de Estres Basada en Mindfulness).",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Cierra los ojos y respira profundo",
+              "Empieza por los pies, nota cualquier tension",
+              "Sube lentamente por piernas, torso y brazos",
+              "Llega hasta la cabeza y rostro",
+              "Libera cualquier tension que encuentres"
+            ]
           },
           "microMeditationAppreciation": {
             "title": "Micro-meditacion de apreciacion",
-            "description": "Piensa en algo que hoy salio bien durante 20-40 segundos. Deja que el sentimiento de gratitud se expanda en tu cuerpo.",
+            "description": "Deja que el sentimiento de gratitud se expanda en tu cuerpo.",
             "science": "Basado en la respuesta de relajacion de Benson y estudios sobre gratitud.",
-            "duration": 1
+            "duration": 1,
+            "steps": [
+              "Cierra los ojos y respira suave",
+              "Piensa en algo que hoy salio bien",
+              "Siente la gratitud en tu pecho",
+              "Deja que esa sensacion se expanda"
+            ]
           },
           "calmVisualization": {
             "title": "Visualizacion breve de calma",
-            "description": "Imagina un espacio seguro y tranquilo mientras respiras lentamente. Visualiza los detalles: colores, sonidos, sensaciones.",
+            "description": "Imagina un espacio seguro y tranquilo mientras respiras lentamente.",
             "science": "Tecnica de Joe Dispenza para mantener fisiologia estable.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Cierra los ojos y relaja tu cuerpo",
+              "Imagina un lugar donde te sientas seguro",
+              "Visualiza los colores y formas del lugar",
+              "Escucha los sonidos tranquilos",
+              "Siente las sensaciones agradables"
+            ]
           }
         }
       },
@@ -339,33 +374,68 @@
         "exercises": {
           "tensionRelease": {
             "title": "Tension-liberacion muscular (2 zonas)",
-            "description": "Tensa los hombros durante 5 segundos y suelta. Luego tensa las manos 5 segundos y suelta. Siente como la tension se libera.",
+            "description": "Siente como la tension se libera de tu cuerpo con esta tecnica.",
             "science": "Tecnica de Jacobson de relajacion muscular progresiva para reduccion simpatica.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Tensa los hombros llevandolos hacia las orejas",
+              "Manten la tension por 5 segundos",
+              "Suelta y siente como se relajan",
+              "Ahora tensa las manos en punos por 5 segundos",
+              "Suelta y nota la diferencia"
+            ]
           },
           "breathing46": {
             "title": "Respiracion 4-6",
-            "description": "Inhala durante 4 segundos, exhala durante 6 segundos. Repite por 1-2 minutos. La exhalacion prolongada activa el sistema parasimpatico.",
+            "description": "La exhalacion prolongada activa el sistema parasimpatico y reduce el estres.",
             "science": "Basado en investigaciones de Huberman sobre reduccion del estres.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Sientate o recuestate comodo",
+              "Inhala lentamente durante 4 segundos",
+              "Exhala suavemente durante 6 segundos",
+              "Repite por 1-2 minutos",
+              "Mantén un ritmo constante"
+            ]
           },
           "neckStretch": {
             "title": "Estiramiento de trapecios y cuello consciente",
-            "description": "Inclina la cabeza hacia un lado, exhala mientras aflojas la tension. Repite del otro lado. Hazlo con atencion plena.",
+            "description": "Libera la tension acumulada en cuello y hombros con atencion plena.",
             "science": "Estudios de liberacion somatica combinados con mindfulness.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Sientate con la espalda recta",
+              "Inclina la cabeza hacia la izquierda suavemente",
+              "Exhala mientras aflojas la tension",
+              "Vuelve al centro lentamente",
+              "Repite del lado derecho"
+            ]
           },
           "breathCounting": {
             "title": "Contar respiraciones",
-            "description": "Cuenta del 1 al 10 con cada exhalacion. Hazlo lentamente. Si pierdes la cuenta, vuelve a empezar sin juzgarte.",
+            "description": "Ancla tu atencion al presente contando tus respiraciones.",
             "science": "Tecnica de Jon Kabat-Zinn para anclar la atencion al presente.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Cierra los ojos y respira naturalmente",
+              "Cuenta 1 en tu primera exhalacion",
+              "Continua contando hasta llegar a 10",
+              "Si pierdes la cuenta, empieza de nuevo",
+              "Hazlo sin juzgarte"
+            ]
           },
           "sensoryGrounding2": {
             "title": "Aterrizaje sensorial simple (2 sentidos)",
-            "description": "Nota algo que ves y algo que tocas. Describelos mentalmente con detalle. Esto te ancla al momento presente.",
+            "description": "Anclate al momento presente usando tus sentidos.",
             "science": "El grounding reduce la actividad del sistema nervioso simpatico.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Mira a tu alrededor con calma",
+              "Elige algo que veas y describelo mentalmente",
+              "Ahora toca algo cerca de ti",
+              "Describe su textura y temperatura",
+              "Nota como te sientes mas presente"
+            ]
           }
         }
       },
@@ -373,33 +443,68 @@
         "exercises": {
           "grounding54321": {
             "title": "Grounding completo 5-4-3-2-1",
-            "description": "Identifica 5 cosas que ves, 4 que tocas, 3 que oyes, 2 que hueles, 1 que saboreas. Toma tu tiempo con cada una.",
+            "description": "Usa tus sentidos para anclarte al momento presente.",
             "science": "Tecnica MBSR combinada con reguladores somaticos.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Nombra 5 cosas que puedes ver a tu alrededor",
+              "Identifica 4 cosas que puedes tocar",
+              "Escucha y nombra 3 sonidos",
+              "Nota 2 cosas que puedes oler",
+              "Identifica 1 cosa que puedes saborear"
+            ]
           },
           "physiologicalSigh": {
             "title": "Respiracion fisiologica (Doble Inhalacion)",
-            "description": "Inhala profundo, agrega una mini-inhalacion adicional, luego exhala largo y lento. Repite varias veces.",
+            "description": "Esta tecnica reduce la angustia de forma inmediata.",
             "science": "Tecnica de Huberman para reduccion inmediata de angustia.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Inhala profundamente por la nariz",
+              "Agrega una segunda inhalacion corta",
+              "Exhala largo y lento por la boca",
+              "Repite varias veces",
+              "Nota como baja la tension"
+            ]
           },
           "emotionalLabeling": {
             "title": "Etiquetado emocional",
-            "description": "Nombra lo que sientes: 'Esto es preocupacion. No es peligro.' Nombrar las emociones reduce su intensidad.",
+            "description": "Nombrar las emociones reduce su intensidad.",
             "science": "Estudios de UCLA (Lieberman) muestran que nombrar reduce actividad de la amigdala.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Haz una pausa y observa como te sientes",
+              "Identifica la emocion que estas sintiendo",
+              "Nombrala en voz alta o mentalmente",
+              "Di: 'Esto es preocupacion, no es peligro'",
+              "Acepta la emocion sin juzgarla"
+            ]
           },
           "feetAttention": {
             "title": "Atencion en los pies",
-            "description": "Siente tus pies apoyados en el suelo. Nota la presion, la temperatura, el contacto. Respira lentamente.",
+            "description": "Reconectate con tu cuerpo a traves de tus pies.",
             "science": "Tecnica de grounding somatico para reconexion con el cuerpo.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Siente tus pies apoyados en el suelo",
+              "Nota la presion contra el piso",
+              "Percibe la temperatura de tus pies",
+              "Siente el contacto con tus zapatos o el suelo",
+              "Respira lentamente mientras mantienes la atencion"
+            ]
           },
           "extendedExhale2x": {
             "title": "Exhalacion extendida 2x",
-            "description": "Inhala 3 segundos, exhala 6 segundos. La exhalacion doble activa el tono vagal y calma el sistema nervioso.",
+            "description": "La exhalacion doble activa el tono vagal y calma el sistema nervioso.",
             "science": "Basado en estudios de tono vagal y regulacion autonoma.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Sientate comodo y relaja los hombros",
+              "Inhala por la nariz durante 3 segundos",
+              "Exhala lentamente durante 6 segundos",
+              "Mantén el ritmo constante",
+              "Continua hasta sentir calma"
+            ]
           }
         }
       },
@@ -407,33 +512,68 @@
         "exercises": {
           "physiologicalSighRepeated": {
             "title": "Respiracion fisiologica repetida",
-            "description": "Inhala, agrega una mini-inhalacion, exhala largo. Repite por 10 ciclos. Es el mecanismo mas rapido conocido para reducir estres agudo.",
+            "description": "El mecanismo mas rapido conocido para reducir estres agudo.",
             "science": "Tecnica de Andrew Huberman validada para estres agudo.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Inhala profundo por la nariz",
+              "Agrega una mini-inhalacion adicional",
+              "Exhala largo y lento por la boca",
+              "Repite este patron 10 veces",
+              "Nota como la angustia disminuye"
+            ]
           },
           "breathing478": {
             "title": "Respiracion 4-7-8",
-            "description": "Inhala 4 segundos, sosten 7 segundos, exhala 8 segundos. Esta tecnica activa profundamente el sistema parasimpatico.",
+            "description": "Esta tecnica activa profundamente el sistema parasimpatico.",
             "science": "Tecnica de Andrew Weil para activacion vagal y reduccion de ansiedad.",
-            "duration": 5
+            "duration": 5,
+            "steps": [
+              "Sientate comodo y cierra los ojos",
+              "Inhala por la nariz durante 4 segundos",
+              "Sosten la respiracion por 7 segundos",
+              "Exhala completamente durante 8 segundos",
+              "Repite el ciclo varias veces"
+            ]
           },
           "somaticHold": {
             "title": "Autocontencion somatica (manos en el pecho)",
-            "description": "Coloca una mano en el pecho y otra en el abdomen. Siente el movimiento de tu respiracion. Esto activa la autoregulacion.",
+            "description": "Activa la autoregulacion sintiendo tu respiracion.",
             "science": "Tecnica de autoconsuelo somatico para regulacion parasimpatica.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Coloca una mano en tu pecho",
+              "Pon la otra mano en tu abdomen",
+              "Siente el movimiento al respirar",
+              "Nota como sube y baja tu abdomen",
+              "Respira lento y profundo"
+            ]
           },
           "tactileGrounding": {
             "title": "Aterrizaje tactil",
-            "description": "Toca una superficie firme. Siente su temperatura y textura. Describela mentalmente. Esto reduce la disociacion y angustia.",
+            "description": "Reduce la disociacion y angustia usando el tacto.",
             "science": "Grounding tactil para reducir disociacion y angustia.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Busca una superficie firme cerca de ti",
+              "Tocala con ambas manos",
+              "Siente su temperatura (fria o calida)",
+              "Nota su textura (lisa, rugosa, suave)",
+              "Describela mentalmente con detalle"
+            ]
           },
           "countdown54321Breath": {
             "title": "Cuenta regresiva 5-4-3-2-1 con respiraciones largas",
-            "description": "Con cada numero, inhala 3 segundos y exhala 6. Esto interrumpe el loop cognitivo y activa la corteza prefrontal.",
+            "description": "Interrumpe el loop cognitivo y activa la corteza prefrontal.",
             "science": "Interrupcion del loop cognitivo y activacion de corteza prefrontal.",
-            "duration": 5
+            "duration": 5,
+            "steps": [
+              "Piensa en el numero 5, inhala 3s y exhala 6s",
+              "Piensa en el numero 4, inhala 3s y exhala 6s",
+              "Piensa en el numero 3, inhala 3s y exhala 6s",
+              "Piensa en el numero 2, inhala 3s y exhala 6s",
+              "Piensa en el numero 1, inhala 3s y exhala 6s"
+            ]
           }
         }
       },
@@ -441,33 +581,68 @@
         "exercises": {
           "triangularBreathing": {
             "title": "Respiracion triangular 3-3-3",
-            "description": "Inhala 3 segundos, sosten 3 segundos, exhala 3 segundos. Tecnica usada por Navy SEALs para control bajo estres extremo.",
+            "description": "Tecnica usada por Navy SEALs para control bajo estres extremo.",
             "science": "Tecnica de Navy SEALs para control del sistema nervioso bajo estres extremo.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Sientate o ponte de pie firme",
+              "Inhala durante 3 segundos",
+              "Sosten la respiracion por 3 segundos",
+              "Exhala durante 3 segundos",
+              "Repite hasta recuperar el control"
+            ]
           },
           "boxBreathing4444": {
             "title": "Respiracion caja 4-4-4-4",
-            "description": "Inhala 4, sosten 4, exhala 4, sosten 4. Usar cuando la crisis baja un poco. Regula el ritmo cardiaco.",
+            "description": "Regula el ritmo cardiaco cuando la crisis empieza a bajar.",
             "science": "Estimulacion vagal para regulacion del ritmo cardiaco.",
-            "duration": 4
+            "duration": 4,
+            "steps": [
+              "Inhala contando hasta 4",
+              "Sosten el aire contando hasta 4",
+              "Exhala contando hasta 4",
+              "Manten los pulmones vacios contando hasta 4",
+              "Repite el ciclo varias veces"
+            ]
           },
           "physicalGrounding3Points": {
             "title": "Aterrizaje fisico (3 puntos de contacto)",
-            "description": "Encuentra tres puntos de contacto: pies en el piso, espalda en la silla, manos en las piernas. Siente cada uno.",
+            "description": "Reduce la despersonalizacion conectando con tu cuerpo.",
             "science": "Grounding somatico para reducir despersonalizacion.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Siente tus pies firmemente en el piso",
+              "Nota tu espalda apoyada en la silla",
+              "Coloca tus manos sobre tus piernas",
+              "Siente cada punto de contacto",
+              "Respira mientras mantienes la atencion"
+            ]
           },
           "verbalAnchoring": {
             "title": "Anclaje verbal",
-            "description": "Repite internamente: 'Estoy aqui. Esto va a pasar.' Orienta tu mente al tiempo y espacio presente.",
+            "description": "Orienta tu mente al tiempo y espacio presente.",
             "science": "Intervencion breve en crisis para orientacion temporal y espacial.",
-            "duration": 2
+            "duration": 2,
+            "steps": [
+              "Respira profundo una vez",
+              "Di en voz alta o mentalmente: 'Estoy aqui'",
+              "Repite: 'Esto va a pasar'",
+              "Mira a tu alrededor y nombra donde estas",
+              "Continua repitiendo hasta sentir calma"
+            ]
           },
           "doubleExtendedExhale": {
             "title": "Doble exhalacion prolongada",
-            "description": "Exhala suave, exhala un poco mas, inhala normal. Usar cuando la hiperventilacion es intensa. Alivia tension toracica.",
+            "description": "Alivia tension toracica cuando hay hiperventilacion intensa.",
             "science": "Reduccion de dioxido de carbono y alivio toracico inmediato.",
-            "duration": 3
+            "duration": 3,
+            "steps": [
+              "Exhala suavemente por la boca",
+              "Exhala un poco mas, vaciando los pulmones",
+              "Inhala de forma normal y relajada",
+              "Repite el patron varias veces",
+              "Nota como se alivia el pecho"
+            ]
           }
         }
       }

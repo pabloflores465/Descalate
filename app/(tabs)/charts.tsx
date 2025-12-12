@@ -495,6 +495,10 @@ export default function ChartsScreen() {
                   donut
                   radius={80}
                   innerRadius={50}
+                  showText
+                  textColor="#fff"
+                  textSize={11}
+                  fontWeight="bold"
                   centerLabelComponent={() => (
                     <View style={styles.pieCenter}>
                       <Text style={styles.pieCenterNumber}>{stats.totalSessions}</Text>
@@ -507,7 +511,6 @@ export default function ChartsScreen() {
                     <View key={index} style={styles.pieLegendItem}>
                       <View style={[styles.pieLegendColor, { backgroundColor: item.color }]} />
                       <Text style={styles.pieLegendText}>{t(`anxietyLevels.${item.label}.title`)}</Text>
-                      <Text style={styles.pieLegendValue}>{item.text}</Text>
                     </View>
                   ))}
                 </View>
@@ -568,7 +571,7 @@ export default function ChartsScreen() {
                   <View style={[styles.listRank, { backgroundColor: '#f0f4f8' }]}>
                     <Ionicons name="bookmark" size={16} color="#2d9a6e" />
                   </View>
-                  <Text style={styles.listItemText}>{t(`tips.categories.${category.name.toLowerCase()}`)}</Text>
+                  <Text style={styles.listItemText}>{t(`tips.categories.${category.name}`, { defaultValue: category.name })}</Text>
                   <View style={styles.listCount}>
                     <Text style={styles.listCountText}>{category.count}x</Text>
                   </View>
@@ -724,12 +727,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#2C3E50',
     marginTop: 8,
+    textAlign: 'center',
+    width: '100%',
   },
   statLabel: {
     fontSize: 11,
     color: '#7F8C8D',
     marginTop: 4,
     textAlign: 'center',
+    width: '100%',
   },
   card: {
     backgroundColor: '#fff',
@@ -796,7 +802,9 @@ const styles = StyleSheet.create({
   pieChartContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    gap: 20,
+    paddingHorizontal: 20,
   },
   pieCenter: {
     alignItems: 'center',
@@ -811,7 +819,7 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
   },
   pieLegend: {
-    marginLeft: 20,
+    flexShrink: 1,
   },
   pieLegendItem: {
     flexDirection: 'row',
@@ -827,12 +835,15 @@ const styles = StyleSheet.create({
   pieLegendText: {
     fontSize: 13,
     color: '#2C3E50',
-    width: 70,
+    width: 90,
+    marginRight: 10,
   },
   pieLegendValue: {
     fontSize: 13,
     color: '#7F8C8D',
     fontWeight: '600',
+    minWidth: 40,
+    textAlign: 'right',
   },
   listItem: {
     flexDirection: 'row',
