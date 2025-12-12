@@ -224,7 +224,8 @@
     "buttons": {
       "start": "Start",
       "next": "Next",
-      "begin": "Begin"
+      "begin": "Begin",
+      "skip": "Skip"
     },
     "stepIndicator": "{{current}}/{{total}}"
   },

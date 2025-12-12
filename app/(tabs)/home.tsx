@@ -132,6 +132,13 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const hasStartedTour = useRef(false);
 
+  // Reset flag when tutorial should show (handles rebuilds/restarts)
+  useEffect(() => {
+    if (shouldShowTutorial) {
+      hasStartedTour.current = false;
+    }
+  }, [shouldShowTutorial]);
+
   // Start tutorial when ready
   useEffect(() => {
     if (!tutorialLoading && shouldShowTutorial && !hasStartedTour.current) {

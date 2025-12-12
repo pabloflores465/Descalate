@@ -192,7 +192,7 @@ function TabLayoutContent() {
 const createTourSteps = (t: TFunction): TourStep[] => [
   // Step 0: Welcome
   {
-    render: ({ next }) => (
+    render: ({ next, stop }) => (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
@@ -202,6 +202,9 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.welcome.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.welcome.description')}</Text>
         <View style={styles.tooltipButtons}>
+          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+            <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
+          </Pressable>
           <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.start')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
@@ -212,7 +215,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
   },
   // Step 1: Anxiety levels
   {
-    render: ({ next, previous }) => (
+    render: ({ next, previous, stop }) => (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
@@ -222,6 +225,9 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.anxietyLevels.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.anxietyLevels.description')}</Text>
         <View style={styles.tooltipButtons}>
+          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+            <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
+          </Pressable>
           <Pressable onPress={previous} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
@@ -235,7 +241,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
   },
   // Step 2: Session flow explanation
   {
-    render: ({ next, previous }) => (
+    render: ({ next, previous, stop }) => (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
@@ -245,6 +251,9 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.howItWorks.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.howItWorks.description')}</Text>
         <View style={styles.tooltipButtons}>
+          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+            <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
+          </Pressable>
           <Pressable onPress={previous} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
@@ -258,7 +267,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
   },
   // Step 3: Charts tab
   {
-    render: ({ next, previous }) => (
+    render: ({ next, previous, stop }) => (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
@@ -268,6 +277,9 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.statistics.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.statistics.description')}</Text>
         <View style={styles.tooltipButtons}>
+          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+            <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
+          </Pressable>
           <Pressable onPress={previous} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
@@ -281,7 +293,7 @@ const createTourSteps = (t: TFunction): TourStep[] => [
   },
   // Step 4: Profile tab
   {
-    render: ({ next, previous }) => (
+    render: ({ next, previous, stop }) => (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
@@ -291,6 +303,9 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.profile.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.profile.description')}</Text>
         <View style={styles.tooltipButtons}>
+          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+            <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
+          </Pressable>
           <Pressable onPress={previous} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
@@ -450,5 +465,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#fff',
+  },
+  tooltipButtonSkip: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginRight: 'auto',
+  },
+  tooltipButtonTextSkip: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#95A5A6',
   },
 });
