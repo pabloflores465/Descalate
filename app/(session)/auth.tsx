@@ -10,8 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useState, useEffect } from 'react';
 import { db, expoDb } from '@/database/db';
 import { users, registerUserSchema, loginUserSchema, googleUserSchema } from '@/database/schema';
@@ -283,6 +283,8 @@ export default function AuthScreen() {
     }
   };
 
+  const levelColors = ['#5a67d8', '#2d9a6e', '#d97706', '#c026d3', '#be185d'];
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -294,20 +296,25 @@ export default function AuthScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.formContainer}>
-              <LinearGradient
-                colors={['#be185d', '#c026d3', '#d97706', '#2d9a6e', '#5a67d8']}
-                locations={[0, 0.25, 0.5, 0.75, 1]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.colorBar}
-              />
+          <ImageBackground
+            source={require('@/assets/images/scale.jpeg')}
+            style={styles.hero}
+            imageStyle={styles.heroImageStyle}
+          >
+            <View style={styles.heroOverlay}>
+              <Text style={styles.heroTitle}>{t('auth.welcome')}</Text>
+              <View style={styles.levelDots}>
+                {levelColors.map((color) => (
+                  <View key={color} style={[styles.levelDot, { backgroundColor: color }]} />
+                ))}
+              </View>
+            </View>
+          </ImageBackground>
 
+          <View style={styles.formCard}>
               <View style={styles.languageRow}>
                 <LanguageSelector />
               </View>
-
-              <Text style={styles.welcomeText}>{t('auth.welcome')}</Text>
 
               <View style={styles.tabContainer}>
               <Pressable
@@ -461,27 +468,49 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
   },
-  formContainer: {
+  hero: {
+    height: 220,
+    justifyContent: 'flex-end',
+  },
+  heroImageStyle: {
+    resizeMode: 'cover',
+  },
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.40)',
+    justifyContent: 'flex-end',
     paddingHorizontal: 28,
-    paddingTop: 24,
+    paddingBottom: 28,
+  },
+  heroTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#ffffff',
+    marginBottom: 14,
+    letterSpacing: 0.5,
+  },
+  levelDots: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  levelDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  formCard: {
+    backgroundColor: '#ffffff',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    marginTop: -24,
+    paddingHorizontal: 28,
+    paddingTop: 28,
     paddingBottom: 48,
   },
   languageRow: {
     alignItems: 'flex-end',
-    marginBottom: 16,
-  },
-  welcomeText: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#2d9a6e',
-    textAlign: 'center',
-    marginBottom: 28,
-    letterSpacing: 0.5,
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    marginBottom: 20,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -600,10 +629,5 @@ const styles = StyleSheet.create({
     color: '#374151',
     fontSize: 16,
     fontWeight: '600',
-  },
-  colorBar: {
-    height: 6,
-    borderRadius: 3,
-    marginBottom: 24,
   },
 });

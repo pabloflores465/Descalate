@@ -186,20 +186,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <AttachStep index={0} style={{ width: '100%' }}>
-        <LinearGradient
-          colors={['#be185d', '#c026d3', '#d97706', '#2d9a6e', '#5a67d8']}
-          locations={[0, 0.25, 0.5, 0.75, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.header}
-        >
-          <Ionicons name="pulse" size={44} color="#fff" />
-          <Text style={styles.title}>{t('home.title')}</Text>
-          <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
-        </LinearGradient>
-      </AttachStep>
-
       <ScrollView
         style={styles.cardsContainer}
         contentContainerStyle={styles.cardsContentContainer}
@@ -235,31 +221,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f4f8',
   },
-  header: {
-    alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 34,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    marginTop: 16,
-    color: '#fff',
-    letterSpacing: 0.5,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 8,
-    fontWeight: '500',
-  },
   cardsContainer: {
     flex: 1,
   },
   cardsContentContainer: {
     padding: 20,
+    paddingTop: 24,
     paddingBottom: 40,
   },
   cardsInner: {
