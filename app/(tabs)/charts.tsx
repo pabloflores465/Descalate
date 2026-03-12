@@ -279,12 +279,6 @@ export default function ChartsScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <View style={styles.header}>
-        <Ionicons name="stats-chart" size={48} color="#2d9a6e" />
-        <Text style={styles.title}>{t('charts.title')}</Text>
-        <Text style={styles.subtitle}>{t('charts.subtitle')}</Text>
-      </View>
-
       {!hasData ? (
         <View style={styles.noDataContainer}>
           <Ionicons name="analytics-outline" size={80} color="#BDC3C7" />
