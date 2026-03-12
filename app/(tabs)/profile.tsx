@@ -11,6 +11,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { db, resetDatabase } from '@/database/db';
@@ -308,7 +309,7 @@ export default function ProfileScreen() {
       style={styles.bgContainer}
       imageStyle={styles.bgImage}
     >
-    <View style={styles.container}>
+    <BlurView intensity={50} tint="dark" style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
           <LanguageSelector style={styles.languageSelector} />
@@ -497,7 +498,7 @@ export default function ProfileScreen() {
           )}
         </View>
       </ScrollView>
-    </View>
+    </BlurView>
     </ImageBackground>
   );
 }
@@ -511,7 +512,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.25)',
   },
   scrollContent: {
     flexGrow: 1,
