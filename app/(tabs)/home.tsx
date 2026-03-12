@@ -38,11 +38,11 @@ function AnxietyCard({
   return (
     <View style={styles.cardWrapper}>
       <Pressable onPress={onContinue} style={styles.cardPressable}>
-        <BlurView intensity={40} tint="default" style={styles.card}>
+        <BlurView intensity={30} tint="dark" style={styles.card}>
           <View
             style={[
               styles.cardColorOverlay,
-              { backgroundColor: levelConfig.colors[0] + '40' },
+              { backgroundColor: levelConfig.colors[0] + '30' },
             ]}
           />
           <View style={styles.cardContent}>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   darkOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
   },
   flex: {
     flex: 1,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     paddingBottom: 72,
-    gap: 6,
+    gap: 8,
   },
   cardWrapper: {
     flex: 1,
@@ -180,8 +180,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
   },
   cardColorOverlay: {
     ...StyleSheet.absoluteFillObject,
