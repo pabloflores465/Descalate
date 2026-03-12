@@ -38,7 +38,7 @@ function AnxietyCard({
   return (
     <View style={styles.cardWrapper}>
       <Pressable onPress={onContinue} style={styles.cardPressable}>
-        <BlurView intensity={60} tint="dark" style={styles.card}>
+        <BlurView intensity={40} tint="default" style={styles.card}>
           <View
             style={[
               styles.cardColorOverlay,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   darkOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   flex: {
     flex: 1,
