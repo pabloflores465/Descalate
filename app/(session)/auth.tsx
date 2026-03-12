@@ -11,7 +11,6 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useState, useEffect } from 'react';
 import { db, expoDb } from '@/database/db';
 import { users, registerUserSchema, loginUserSchema, googleUserSchema } from '@/database/schema';
@@ -284,13 +283,6 @@ export default function AuthScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={['#be185d', '#c026d3', '#d97706', '#2d9a6e', '#5a67d8']}
-      locations={[0, 0.25, 0.5, 0.75, 1]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-      style={styles.gradient}
-    >
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -447,17 +439,13 @@ export default function AuthScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   </SafeAreaView>
-  </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#ffffff',
   },
   keyboardView: {
     flex: 1,
@@ -465,20 +453,11 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 32,
   },
   formContainer: {
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderRadius: 24,
-    paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 40,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
+    paddingHorizontal: 28,
+    paddingTop: 24,
+    paddingBottom: 48,
   },
   languageRow: {
     alignItems: 'flex-end',
