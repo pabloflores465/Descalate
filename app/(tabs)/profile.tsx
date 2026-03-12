@@ -419,82 +419,77 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.saveButton,
-              isSaving && styles.saveButtonDisabled,
-              !isSaving && pressed && { backgroundColor: '#4a7c59' },
-            ]}
-            onPress={handleSave}
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
-            ) : (
-              <Ionicons
-                name="checkmark-circle"
-                size={20}
-                color="white"
-                style={{ marginRight: 10 }}
-              />
-            )}
-            <Text style={styles.saveButtonText}>{isSaving ? t('profile.buttons.saving') : t('profile.buttons.saveChanges')}</Text>
-          </Pressable>
+          <View style={styles.buttonRow}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.iconButton,
+                styles.saveButton,
+                isSaving && styles.saveButtonDisabled,
+                !isSaving && pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleSave}
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <ActivityIndicator color="white" size="small" />
+              ) : (
+                <Ionicons name="save" size={22} color="white" />
+              )}
+            </Pressable>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.logoutButton,
-              { backgroundColor: pressed ? '#d63031' : '#e74c3c' },
-            ]}
-            onPress={handleLogout}
-          >
-            <Ionicons name="log-out" size={20} color="white" style={{ marginRight: 10 }} />
-            <Text style={styles.logoutText}>{t('profile.buttons.logOut')}</Text>
-          </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.iconButton,
+                styles.logoutButton,
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleLogout}
+            >
+              <Ionicons name="log-out" size={22} color="white" />
+            </Pressable>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.tutorialButton,
-              { backgroundColor: pressed ? '#2563eb' : '#3b82f6' },
-            ]}
-            onPress={handleResetTutorial}
-          >
-            <Ionicons name="school" size={20} color="white" style={{ marginRight: 10 }} />
-            <Text style={styles.tutorialText}>{t('profile.buttons.resetTutorial')}</Text>
-          </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.iconButton,
+                styles.tutorialButton,
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleResetTutorial}
+            >
+              <Ionicons name="school" size={22} color="white" />
+            </Pressable>
+          </View>
 
           {__DEV__ && (
-            <>
+            <View style={styles.buttonRow}>
               <Pressable
                 style={({ pressed }) => [
+                  styles.iconButton,
                   styles.resetButton,
-                  { backgroundColor: pressed ? '#c0392b' : '#e67e22' },
+                  pressed && { opacity: 0.8 },
                 ]}
                 onPress={handleResetDatabase}
               >
-                <Ionicons name="warning" size={20} color="white" style={{ marginRight: 10 }} />
-                <Text style={styles.resetText}>{t('profile.devButtons.resetDatabase')}</Text>
+                <Ionicons name="warning" size={22} color="white" />
               </Pressable>
 
               <Pressable
                 style={({ pressed }) => [
+                  styles.iconButton,
                   styles.seedButton,
                   isSeeding && styles.seedButtonDisabled,
-                  { backgroundColor: pressed && !isSeeding ? '#6366f1' : '#818cf8' },
+                  pressed && !isSeeding && { opacity: 0.8 },
                 ]}
                 onPress={handleSeedData}
                 disabled={isSeeding}
               >
                 {isSeeding ? (
-                  <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+                  <ActivityIndicator color="white" size="small" />
                 ) : (
-                  <Ionicons name="flask" size={20} color="white" style={{ marginRight: 10 }} />
+                  <Ionicons name="flask" size={22} color="white" />
                 )}
-                <Text style={styles.seedText}>
-                  {isSeeding ? t('profile.devButtons.generating') : t('profile.devButtons.generateTestData')}
-                </Text>
               </Pressable>
-            </>
+            </View>
           )}
         </View>
       </ScrollView>
@@ -591,15 +586,15 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 6,
   },
   label: {
     fontSize: 16,
     color: 'rgba(255,255,255,0.85)',
     fontWeight: '600',
-    marginBottom: 5,
+    marginBottom: 6,
     marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 2,
   },
   input: {
     backgroundColor: 'rgba(255,255,255,0.15)',
@@ -639,87 +634,38 @@ const styles = StyleSheet.create({
   genderButtonTextActive: {
     color: 'white',
   },
-  saveButton: {
-    backgroundColor: '#2d9a6e',
-    borderRadius: 50,
-    paddingVertical: 16,
-    paddingHorizontal: 60,
+  buttonRow: {
     flexDirection: 'row',
+    gap: 12,
+    marginTop: 20,
+  },
+  iconButton: {
+    flex: 1,
+    paddingVertical: 15,
+    borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
-    gap: 10,
+  },
+  saveButton: {
+    backgroundColor: '#3b82f6',
   },
   saveButtonDisabled: {
     opacity: 0.6,
     backgroundColor: '#999',
   },
-  saveButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   tutorialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#818cf8',
-    borderRadius: 50,
-    paddingVertical: 15,
-    marginTop: 12,
-    gap: 10,
-  },
-  tutorialText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    backgroundColor: '#2d9a6e',
   },
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#e74c3c',
-    borderRadius: 50,
-    paddingVertical: 15,
-    marginTop: 12,
-    gap: 10,
-  },
-  logoutText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   resetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#e67e22',
-    borderRadius: 50,
-    paddingVertical: 15,
-    marginTop: 12,
-    gap: 10,
-  },
-  resetText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   seedButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#3b82f6',
-    borderRadius: 50,
-    paddingVertical: 15,
-    marginTop: 12,
-    gap: 10,
+    backgroundColor: '#818cf8',
   },
   seedButtonDisabled: {
     opacity: 0.6,
-  },
-  seedText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
   },
 });
