@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Pressable, ImageBackground } from 'react-native';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useCallback, useRef, useEffect } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { router, useFocusEffect } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
@@ -39,32 +38,45 @@ function AnxietyCard({
   return (
     <View style={styles.cardWrapper}>
       <Pressable onPress={onContinue} style={styles.cardPressable}>
-        <LinearGradient
-          colors={[levelConfig.colors[0] + 'CC', levelConfig.colors[1] + 'CC']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.card}
-        >
-          <View style={styles.cardTop}>
-            <View style={styles.iconCircle}>
-              <FontAwesome6 name={levelConfig.icon} size={20} color="#fff" />
+        <BlurView intensity={60} tint="dark" style={styles.card}>
+          <View
+            style={[
+              styles.cardColorOverlay,
+              { backgroundColor: levelConfig.colors[0] + '40' },
+            ]}
+          />
+          <View style={styles.cardContent}>
+            <View style={styles.cardTop}>
+              <View
+                style={[
+                  styles.iconCircle,
+                  { backgroundColor: levelConfig.colors[0] + '55' },
+                ]}
+              >
+                <FontAwesome6 name={levelConfig.icon} size={20} color="#fff" />
+              </View>
+              <View style={styles.titleArea}>
+                <Text style={styles.cardTitle} numberOfLines={1}>{title}</Text>
+                <Text style={styles.cardDescription} numberOfLines={2}>{description}</Text>
+              </View>
+              <View
+                style={[
+                  styles.levelBadge,
+                  { borderColor: levelConfig.colors[0] + '80' },
+                ]}
+              >
+                <Text style={styles.levelNumber}>{levelConfig.level}</Text>
+              </View>
             </View>
-            <View style={styles.titleArea}>
-              <Text style={styles.cardTitle} numberOfLines={1}>{title}</Text>
-              <Text style={styles.cardDescription} numberOfLines={2}>{description}</Text>
-            </View>
-            <View style={styles.levelBadge}>
-              <Text style={styles.levelNumber}>{levelConfig.level}</Text>
-            </View>
-          </View>
 
-          <View style={styles.cardBottom}>
-            <BlurView intensity={40} tint="light" style={styles.blurButton}>
-              <Text style={styles.continueText}>{continueText}</Text>
-              <Ionicons name="arrow-forward" size={14} color="#fff" />
-            </BlurView>
+            <View style={styles.cardBottom}>
+              <View style={[styles.continueButton, { backgroundColor: levelConfig.colors[0] + '66' }]}>
+                <Text style={styles.continueText}>{continueText}</Text>
+                <Ionicons name="arrow-forward" size={14} color="#fff" />
+              </View>
+            </View>
           </View>
-        </LinearGradient>
+        </BlurView>
       </Pressable>
     </View>
   );
@@ -110,7 +122,7 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={require('@/assets/images/scale.jpeg')}
+      source={require('@/assets/images/sand.jpg')}
       style={styles.container}
       imageStyle={styles.bgImage}
     >
@@ -166,12 +178,19 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+  },
+  cardColorOverlay: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  cardContent: {
+    flex: 1,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 16,
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
   },
   cardTop: {
     flexDirection: 'row',
@@ -220,14 +239,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 6,
   },
-  blurButton: {
+  continueButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 12,
-    overflow: 'hidden',
   },
   continueText: {
     color: '#fff',
