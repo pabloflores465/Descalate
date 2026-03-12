@@ -186,7 +186,7 @@ export default function HomeScreen() {
 
   return (
     <LinearGradient
-      colors={['#4a3f8a', '#3b5f8a', '#2d7a6e', '#8a6d3b', '#8a3b4a']}
+      colors={['#be185d', '#c026d3', '#d97706', '#2d9a6e', '#5a67d8']}
       locations={[0, 0.25, 0.5, 0.75, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
