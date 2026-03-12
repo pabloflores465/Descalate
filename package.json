@@ -26,6 +26,7 @@
     "drizzle-zod": "^0.8.3",
     "expo": "~54.0.28",
     "expo-auth-session": "~7.0.10",
+    "expo-blur": "~15.0.8",
     "expo-constants": "~18.0.10",
     "expo-crypto": "~15.0.8",
     "expo-file-system": "~19.0.19",

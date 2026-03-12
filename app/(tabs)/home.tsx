@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, Pressable, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform, UIManager } from 'react-native';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { router, useFocusEffect } from 'expo-router';
 import { useSession } from '@/context/SessionContext';
 import { AttachStep, useSpotlightTour } from 'react-native-spotlight-tour';
@@ -51,67 +52,46 @@ function AnxietyCard({
   title,
   description,
   continueText,
-  isExpanded,
-  onPress,
   onContinue,
 }: {
   levelConfig: AnxietyLevelConfig;
   title: string;
   description: string;
   continueText: string;
-  isExpanded: boolean;
-  onPress: () => void;
   onContinue: () => void;
 }) {
-  const contentOpacity = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (isExpanded) {
-      Animated.timing(contentOpacity, {
-        toValue: 1,
-        duration: 300,
-        delay: 150,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      contentOpacity.setValue(0);
-    }
-  }, [isExpanded, contentOpacity]);
-
   return (
-    <View style={[styles.cardWrapper, isExpanded && styles.cardWrapperExpanded]}>
-      <Pressable onPress={onPress} style={styles.cardPressable}>
+    <View style={styles.cardWrapper}>
+      <Pressable onPress={onContinue} style={styles.cardPressable}>
         <LinearGradient
           colors={levelConfig.colors as [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.card}
         >
-          <View style={styles.cardRow}>
+          <View style={styles.cardTop}>
             <View style={styles.iconCircle}>
               <FontAwesome6
                 name={levelConfig.icon}
-                size={22}
+                size={20}
                 color="#fff"
               />
             </View>
-            <Text style={styles.cardTitle} numberOfLines={1}>
-              {title}
-            </Text>
+            <View style={styles.titleArea}>
+              <Text style={styles.cardTitle} numberOfLines={1}>{title}</Text>
+              <Text style={styles.cardDescription} numberOfLines={2}>{description}</Text>
+            </View>
             <View style={styles.levelBadge}>
               <Text style={styles.levelNumber}>{levelConfig.level}</Text>
             </View>
           </View>
 
-          {isExpanded && (
-            <Animated.View style={[styles.expandedContent, { opacity: contentOpacity }]}>
-              <Text style={styles.cardDescription}>{description}</Text>
-              <Pressable onPress={onContinue} style={styles.continueButton}>
-                <Text style={styles.continueButtonText}>{continueText}</Text>
-                <Ionicons name="arrow-forward" size={16} color="#fff" />
-              </Pressable>
-            </Animated.View>
-          )}
+          <View style={styles.cardBottom}>
+            <BlurView intensity={30} tint="light" style={styles.blurButton}>
+              <Text style={styles.continueText}>{continueText}</Text>
+              <Ionicons name="arrow-forward" size={14} color="#fff" />
+            </BlurView>
+          </View>
         </LinearGradient>
       </Pressable>
     </View>
@@ -119,7 +99,6 @@ function AnxietyCard({
 }
 
 export default function HomeScreen() {
-  const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const { startSession } = useSession();
   const { start } = useSpotlightTour();
   const { shouldShowTutorial, isLoading: tutorialLoading } = useTutorial();
@@ -152,18 +131,7 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const handleCardPress = (level: number) => {
-    LayoutAnimation.configureNext({
-      duration: 300,
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
-    setExpandedLevel(expandedLevel === level ? null : level);
-  };
-
   const handleContinue = (level: number) => {
-    setExpandedLevel(null);
     startSession(level);
     router.push({
       pathname: '/exercises',
@@ -177,7 +145,6 @@ export default function HomeScreen() {
         <AttachStep index={2} style={styles.flex}>
           <AttachStep index={5} style={styles.flex}>
             <View style={styles.cardsInner}>
-              <Text style={styles.prompt}>{t('home.subtitle')}</Text>
               {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
                 <AnxietyCard
                   key={levelConfig.level}
@@ -185,8 +152,6 @@ export default function HomeScreen() {
                   title={t(`anxietyLevels.${levelConfig.level}.title`)}
                   description={t(`anxietyLevels.${levelConfig.level}.description`)}
                   continueText={t('home.continueButton')}
-                  isExpanded={expandedLevel === levelConfig.level}
-                  onPress={() => handleCardPress(levelConfig.level)}
                   onContinue={() => handleContinue(levelConfig.level)}
                 />
               ))}
@@ -208,58 +173,54 @@ const styles = StyleSheet.create({
   },
   cardsInner: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
-    gap: 8,
-  },
-  prompt: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6b7280',
-    marginBottom: 4,
-    marginLeft: 4,
+    padding: 12,
+    gap: 6,
   },
   cardWrapper: {
     flex: 1,
-  },
-  cardWrapperExpanded: {
-    flex: 2.5,
   },
   cardPressable: {
     flex: 1,
   },
   card: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    justifyContent: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 14,
+    justifyContent: 'space-between',
   },
-  cardRow: {
+  cardTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: 12,
   },
   iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cardTitle: {
+  titleArea: {
     flex: 1,
+  },
+  cardTitle: {
     color: '#fff',
     fontWeight: '700',
-    fontSize: 18,
+    fontSize: 16,
+  },
+  cardDescription: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2,
   },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -268,32 +229,25 @@ const styles = StyleSheet.create({
   levelNumber: {
     color: '#fff',
     fontWeight: '900',
-    fontSize: 14,
+    fontSize: 13,
   },
-  expandedContent: {
-    marginTop: 12,
+  cardBottom: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 6,
   },
-  cardDescription: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontSize: 15,
-    lineHeight: 22,
-    fontWeight: '500',
-    marginBottom: 12,
-  },
-  continueButton: {
+  blurButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    gap: 6,
+    gap: 4,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
-  continueButtonText: {
+  continueText: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
   },
 });
