@@ -508,24 +508,20 @@ const styles = StyleSheet.create({
   },
   bgImage: {
     resizeMode: 'cover',
-    opacity: 0.5,
   },
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0,0,0,0.25)',
   },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 30,
   },
   headerSection: {
-    backgroundColor: 'rgba(0,0,0,0.25)',
     paddingTop: 16,
     paddingBottom: 16,
     paddingHorizontal: 20,
     alignItems: 'center',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
   },
   languageSelector: {
     position: 'absolute',
