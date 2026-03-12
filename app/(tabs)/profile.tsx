@@ -518,14 +518,14 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   headerSection: {
-    paddingTop: 16,
+    paddingTop: 50,
     paddingBottom: 16,
     paddingHorizontal: 20,
     alignItems: 'center',
   },
   languageSelector: {
     position: 'absolute',
-    top: 50,
+    top: 10,
     right: 20,
     zIndex: 10,
   },
