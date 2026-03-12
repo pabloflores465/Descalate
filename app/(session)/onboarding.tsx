@@ -24,32 +24,32 @@ const slidesConfig: Slide[] = [
     titleKey: 'onboarding.slides.welcome.title',
     textKey: 'onboarding.slides.welcome.text',
     encouragementKey: 'onboarding.slides.welcome.encouragement',
-    icon: 'heart-outline',
-    colors: ['#2d9a6e', '#247a58'],
+    icon: 'leaf-outline',
+    colors: ['#2d9a6e', '#1e6e52'],
   },
   {
     key: '2',
     titleKey: 'onboarding.slides.understand.title',
     textKey: 'onboarding.slides.understand.text',
     encouragementKey: 'onboarding.slides.understand.encouragement',
-    icon: 'eye-outline',
-    colors: ['#5a67d8', '#4c51bf'],
+    icon: 'layers-outline',
+    colors: ['#5a67d8', '#3730a3'],
   },
   {
     key: '3',
     titleKey: 'onboarding.slides.tools.title',
     textKey: 'onboarding.slides.tools.text',
     encouragementKey: 'onboarding.slides.tools.encouragement',
-    icon: 'medical-outline',
-    colors: ['#2d9a6e', '#228b5b'],
+    icon: 'body-outline',
+    colors: ['#0891b2', '#0e7490'],
   },
   {
     key: '4',
     titleKey: 'onboarding.slides.progress.title',
     textKey: 'onboarding.slides.progress.text',
     encouragementKey: 'onboarding.slides.progress.encouragement',
-    icon: 'trending-up-outline',
-    colors: ['#c026d3', '#a21caf'],
+    icon: 'bar-chart-outline',
+    colors: ['#be185d', '#9d174d'],
   },
 ];
 
@@ -64,6 +64,9 @@ export default function OnboardingScreen() {
     router.replace('/(session)/complete-profile');
   };
 
+  const levelColors = ['#5a67d8', '#2d9a6e', '#d97706', '#c026d3', '#be185d'];
+  const levelLabels = ['1', '2', '3', '4', '5'];
+
   const renderItem = ({ item }: { item: Slide }) => {
     return (
       <LinearGradient colors={item.colors} style={styles.slide}>
@@ -72,8 +75,19 @@ export default function OnboardingScreen() {
           <Text style={styles.encouragementText}>{t(item.encouragementKey)}</Text>
         </View>
         <View style={styles.iconContainer}>
-          <Ionicons name={item.icon} size={100} color="rgba(255,255,255,0.9)" />
+          <Ionicons name={item.icon} size={90} color="rgba(255,255,255,0.9)" />
         </View>
+        {item.key === '2' && (
+          <View style={styles.levelIndicator}>
+            {levelColors.map((color, index) => (
+              <View key={color} style={styles.levelItem}>
+                <View style={[styles.levelDot, { backgroundColor: color }]}>
+                  <Text style={styles.levelDotText}>{levelLabels[index]}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
         <Text style={styles.title}>{t(item.titleKey)}</Text>
         <Text style={styles.text}>{t(item.textKey)}</Text>
       </LinearGradient>
@@ -176,6 +190,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 26,
     paddingHorizontal: 10,
+  },
+  levelIndicator: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  levelItem: {
+    alignItems: 'center',
+  },
+  levelDot: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.4)',
+  },
+  levelDotText: {
+    color: '#fff',
+    fontWeight: '900',
+    fontSize: 15,
   },
   buttonCircle: {
     width: 50,

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,27 +22,27 @@ const anxietyLevelConfigs: AnxietyLevelConfig[] = [
   {
     level: 1,
     colors: ['#5a67d8', '#6b46c1'],
-    icon: 'face-smile',
+    icon: 'leaf',
   },
   {
     level: 2,
     colors: ['#2d9a6e', '#2b7a9b'],
-    icon: 'face-meh',
+    icon: 'wind',
   },
   {
     level: 3,
     colors: ['#d97706', '#1e4e6d'],
-    icon: 'face-frown-open',
+    icon: 'brain',
   },
   {
     level: 4,
     colors: ['#c026d3', '#dc2626'],
-    icon: 'face-sad-tear',
+    icon: 'heart-crack',
   },
   {
     level: 5,
     colors: ['#be185d', '#ea580c'],
-    icon: 'face-tired',
+    icon: 'circle-exclamation',
   },
 ];
 
@@ -79,8 +79,8 @@ function AnxietyCard({
   }, [isExpanded, contentOpacity]);
 
   return (
-    <View style={styles.cardWrapper}>
-      <Pressable onPress={onPress}>
+    <View style={[styles.cardWrapper, isExpanded && styles.cardWrapperExpanded]}>
+      <Pressable onPress={onPress} style={styles.cardPressable}>
         <LinearGradient
           colors={levelConfig.colors as [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
@@ -91,7 +91,7 @@ function AnxietyCard({
             <View style={styles.iconContainer}>
               <FontAwesome6
                 name={levelConfig.icon}
-                size={28}
+                size={24}
                 color="#fff"
               />
             </View>
@@ -132,14 +132,12 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const hasStartedTour = useRef(false);
 
-  // Reset flag when tutorial should show (handles rebuilds/restarts)
   useEffect(() => {
     if (shouldShowTutorial) {
       hasStartedTour.current = false;
     }
   }, [shouldShowTutorial]);
 
-  // Start tutorial when ready
   useEffect(() => {
     if (!tutorialLoading && shouldShowTutorial && !hasStartedTour.current) {
       const timer = setTimeout(() => {
@@ -152,7 +150,6 @@ export default function HomeScreen() {
     }
   }, [tutorialLoading, shouldShowTutorial, start]);
 
-  // Reset flag when screen loses focus
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -186,32 +183,26 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.cardsContainer}
-        contentContainerStyle={styles.cardsContentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <AttachStep index={1} style={{ width: '100%' }}>
-          <AttachStep index={2} style={{ width: '100%' }}>
-            <AttachStep index={5} style={{ width: '100%' }}>
-              <View style={styles.cardsInner}>
-                {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
-                  <AnxietyCard
-                    key={levelConfig.level}
-                    levelConfig={levelConfig}
-                    title={t(`anxietyLevels.${levelConfig.level}.title`)}
-                    description={t(`anxietyLevels.${levelConfig.level}.description`)}
-                    continueText={t('home.continueButton')}
-                    isExpanded={expandedLevel === levelConfig.level}
-                    onPress={() => handleCardPress(levelConfig.level)}
-                    onContinue={() => handleContinue(levelConfig.level)}
-                  />
-                ))}
-              </View>
-            </AttachStep>
+      <AttachStep index={1} style={styles.attachStep}>
+        <AttachStep index={2} style={styles.attachStep}>
+          <AttachStep index={5} style={styles.attachStep}>
+            <View style={styles.cardsInner}>
+              {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
+                <AnxietyCard
+                  key={levelConfig.level}
+                  levelConfig={levelConfig}
+                  title={t(`anxietyLevels.${levelConfig.level}.title`)}
+                  description={t(`anxietyLevels.${levelConfig.level}.description`)}
+                  continueText={t('home.continueButton')}
+                  isExpanded={expandedLevel === levelConfig.level}
+                  onPress={() => handleCardPress(levelConfig.level)}
+                  onContinue={() => handleContinue(levelConfig.level)}
+                />
+              ))}
+            </View>
           </AttachStep>
         </AttachStep>
-      </ScrollView>
+      </AttachStep>
     </View>
   );
 }
@@ -221,21 +212,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f4f8',
   },
-  cardsContainer: {
+  attachStep: {
     flex: 1,
   },
-  cardsContentContainer: {
-    padding: 20,
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
   cardsInner: {
-    gap: 12,
+    flex: 1,
+    gap: 10,
+    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 16,
   },
   cardWrapper: {
-    minHeight: 95,
+    flex: 1,
+  },
+  cardWrapperExpanded: {
+    flex: 2,
+  },
+  cardPressable: {
+    flex: 1,
   },
   card: {
+    flex: 1,
     padding: 16,
     borderRadius: 20,
   },
@@ -246,18 +243,18 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   iconContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -266,24 +263,25 @@ const styles = StyleSheet.create({
   levelNumber: {
     color: '#fff',
     fontWeight: '900',
-    fontSize: 16,
+    fontSize: 15,
   },
   cardTitle: {
     color: '#fff',
     fontWeight: '800',
-    fontSize: 20,
+    fontSize: 18,
+    marginTop: 4,
   },
   descriptionContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    padding: 16,
-    borderRadius: 16,
+    padding: 14,
+    borderRadius: 14,
     marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 14,
   },
   cardDescription: {
     color: '#fff',
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 22,
     fontWeight: '500',
   },
   continueButton: {
@@ -292,8 +290,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
+    paddingVertical: 12,
+    paddingHorizontal: 28,
     borderRadius: 25,
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.4)',
@@ -301,7 +299,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '700',
   },
 });

@@ -144,8 +144,8 @@ function TabLayoutContent() {
         options={{
           tabBarIcon: ({ color, size, focused }) => (
             <AnimatedTabIcon
-              name="home"
-              nameOutline="home-outline"
+              name="pulse"
+              nameOutline="pulse-outline"
               color={color}
               size={26}
               focused={focused}
@@ -159,8 +159,8 @@ function TabLayoutContent() {
           tabBarIcon: ({ color, size, focused }) => (
             <AttachStep index={3}>
               <AnimatedTabIcon
-                name="stats-chart"
-                nameOutline="stats-chart-outline"
+                name="analytics"
+                nameOutline="analytics-outline"
                 color={color}
                 size={26}
                 focused={focused}
@@ -175,8 +175,8 @@ function TabLayoutContent() {
           tabBarIcon: ({ color, size, focused }) => (
             <AttachStep index={4}>
               <AnimatedTabIcon
-                name="person"
-                nameOutline="person-outline"
+                name="person-circle"
+                nameOutline="person-circle-outline"
                 color={color}
                 size={26}
                 focused={focused}
