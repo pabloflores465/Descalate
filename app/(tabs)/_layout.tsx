@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Pressable, StyleSheet, Animated, Text } from 'react-native';
 import { useRef, useEffect, useMemo } from 'react';
+import { BlurView } from 'expo-blur';
 import {
   SpotlightTourProvider,
   TourStep,
@@ -125,10 +126,17 @@ function TabLayoutContent() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#2d9a6e',
-        tabBarInactiveTintColor: '#95A5A6',
+        tabBarActiveTintColor: '#4ade80',
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.45)',
         tabBarShowLabel: false,
         tabBarStyle: styles.tabBar,
+        tabBarBackground: () => (
+          <BlurView
+            intensity={80}
+            tint="dark"
+            style={StyleSheet.absoluteFill}
+          />
+        ),
         tabBarButton: (props) => (
           <AnimatedTabButton
             onPress={props.onPress ?? (() => {})}
@@ -365,12 +373,13 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#ffffff',
+    position: 'absolute',
+    backgroundColor: 'transparent',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.06)',
-    height: 56,
-    paddingBottom: 6,
-    paddingTop: 6,
+    borderTopColor: 'rgba(255,255,255,0.1)',
+    height: 60,
+    paddingBottom: 8,
+    paddingTop: 8,
     elevation: 0,
   },
   tabButton: {
@@ -389,7 +398,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(45, 154, 110, 0.12)',
+    backgroundColor: 'rgba(74, 222, 128, 0.2)',
   },
   tooltipContainer: {
     backgroundColor: '#fff',
