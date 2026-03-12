@@ -635,8 +635,8 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 34,
+    paddingTop: 16,
+    paddingBottom: 16,
     backgroundColor: '#F5F3ED',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,

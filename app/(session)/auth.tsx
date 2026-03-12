@@ -11,6 +11,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState, useEffect } from 'react';
 import { db, expoDb } from '@/database/db';
 import { users, registerUserSchema, loginUserSchema, googleUserSchema } from '@/database/schema';
@@ -294,6 +295,14 @@ export default function AuthScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.formContainer}>
+              <LinearGradient
+                colors={['#be185d', '#c026d3', '#d97706', '#2d9a6e', '#5a67d8']}
+                locations={[0, 0.25, 0.5, 0.75, 1]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.colorBar}
+              />
+
               <View style={styles.languageRow}>
                 <LanguageSelector />
               </View>
@@ -591,5 +600,10 @@ const styles = StyleSheet.create({
     color: '#374151',
     fontSize: 16,
     fontWeight: '600',
+  },
+  colorBar: {
+    height: 6,
+    borderRadius: 3,
+    marginBottom: 24,
   },
 });
