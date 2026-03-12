@@ -20,52 +20,40 @@ type TabIconProps = {
   focused: boolean;
 };
 
+type TabButtonProps = {
+  children: React.ReactNode;
+  onPress: () => void;
+  onLongPress: () => void;
+};
+
 function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconProps) {
   const translateYAnim = useRef(new Animated.Value(0)).current;
-  const opacityAnim = useRef(new Animated.Value(focused ? 1 : 0)).current;
+  const bgAnim = useRef(new Animated.Value(focused ? 1 : 0)).current;
 
   useEffect(() => {
-    if (focused) {
-      Animated.parallel([
-        Animated.spring(translateYAnim, {
-          toValue: -4,
-          friction: 5,
-          tension: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacityAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.spring(translateYAnim, {
-          toValue: 0,
-          friction: 5,
-          tension: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacityAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
+    Animated.spring(translateYAnim, {
+      toValue: focused ? -2 : 0,
+      friction: 5,
+      tension: 200,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(bgAnim, {
+      toValue: focused ? 1 : 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
   }, [focused]);
+
+  const backgroundColor = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['transparent', 'rgba(74, 222, 128, 0.25)'],
+  });
 
   return (
     <View style={styles.iconContainer}>
-      <Animated.View
-        style={[
-          styles.iconBackground,
-          {
-            opacity: opacityAnim,
-          },
-        ]}
-      />
+      <Animated.View style={[styles.tabSectionFill, { backgroundColor }]}>
+        <Animated.View style={[styles.tabActiveTopLine, { opacity: bgAnim }]} />
+      </Animated.View>
       <Animated.View
         style={{
           transform: [{ translateY: translateYAnim }],
@@ -80,12 +68,6 @@ function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconPro
     </View>
   );
 }
-
-type TabButtonProps = {
-  children: React.ReactNode;
-  onPress: () => void;
-  onLongPress: () => void;
-};
 
 function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
   const opacityAnim = useRef(new Animated.Value(1)).current;
@@ -135,6 +117,7 @@ function TabLayoutContent() {
             intensity={80}
             tint="dark"
             style={StyleSheet.absoluteFill}
+            experimentalBlurMethod="dimezisBlurView"
           />
         ),
         tabBarButton: (props) => (
@@ -375,30 +358,39 @@ const styles = StyleSheet.create({
   tabBar: {
     position: 'absolute',
     backgroundColor: 'transparent',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.1)',
+    borderTopWidth: 0,
     height: 60,
-    paddingBottom: 8,
-    paddingTop: 8,
+    paddingBottom: 0,
+    paddingTop: 0,
     elevation: 0,
   },
   tabButton: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   iconContainer: {
-    width: 48,
-    height: 32,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'visible',
   },
-  iconBackground: {
+  tabSectionFill: {
     position: 'absolute',
-    width: 48,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(74, 222, 128, 0.2)',
+    top: -30,
+    bottom: -30,
+    left: -100,
+    right: -100,
+  },
+  tabActiveTopLine: {
+    position: 'absolute',
+    top: 14,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: '#4ade80',
   },
   tooltipContainer: {
     backgroundColor: '#fff',

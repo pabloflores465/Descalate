@@ -309,7 +309,7 @@ export default function ProfileScreen() {
       style={styles.bgContainer}
       imageStyle={styles.bgImage}
     >
-    <BlurView intensity={50} tint="dark" style={styles.container}>
+    <BlurView intensity={50} tint="dark" style={styles.container} experimentalBlurMethod="dimezisBlurView">
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
           <LanguageSelector style={styles.languageSelector} />

@@ -38,7 +38,7 @@ function AnxietyCard({
   return (
     <View style={styles.cardWrapper}>
       <Pressable onPress={onContinue} style={styles.cardPressable}>
-        <BlurView intensity={30} tint="dark" style={styles.card}>
+        <BlurView intensity={30} tint="dark" style={styles.card} experimentalBlurMethod="dimezisBlurView">
           <View
             style={[
               styles.cardColorOverlay,

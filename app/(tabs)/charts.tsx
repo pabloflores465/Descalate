@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl, ImageBackground, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, PieChart, LineChart } from 'react-native-gifted-charts';
 import { useState, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -188,7 +189,7 @@ export default function ChartsScreen() {
         last7Days.push({
           value: Math.round(avgLevel * 10) / 10,
           label: `${date.getDate()}/${date.getMonth() + 1}`,
-          frontColor: avgLevel > 0 ? levelColors[Math.round(avgLevel)] || '#2d9a6e' : '#E0E0E0',
+          frontColor: avgLevel > 0 ? levelColors[Math.round(avgLevel)] || '#2d9a6e' : 'rgba(255,255,255,0.2)',
         });
       }
       setWeeklyData(last7Days);
@@ -278,15 +279,16 @@ export default function ChartsScreen() {
       style={styles.bgContainer}
       imageStyle={styles.bgImage}
     >
+    <BlurView intensity={50} tint="dark" style={styles.blurContainer} experimentalBlurMethod="dimezisBlurView">
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />
       }
     >
       {!hasData ? (
         <View style={styles.noDataContainer}>
-          <Ionicons name="analytics-outline" size={80} color="#BDC3C7" />
+          <Ionicons name="analytics-outline" size={80} color="rgba(255,255,255,0.4)" />
           <Text style={styles.noDataTitle}>{t('charts.noData.title')}</Text>
           <Text style={styles.noDataText}>
             {t('charts.noData.message')}
@@ -347,7 +349,7 @@ export default function ChartsScreen() {
                       {
                         backgroundColor: level <= Math.round(stats.averageLevel)
                           ? levelColors[level]
-                          : '#E0E0E0',
+                          : 'rgba(255,255,255,0.2)',
                       },
                     ]}
                   />
@@ -374,8 +376,8 @@ export default function ChartsScreen() {
                 hideDataPoints={false}
                 dataPointsColor="#5a67d8"
                 dataPointsRadius={5}
-                xAxisColor="#E0E0E0"
-                yAxisColor="#E0E0E0"
+                xAxisColor="rgba(255,255,255,0.2)"
+                yAxisColor="rgba(255,255,255,0.2)"
                 yAxisTextStyle={styles.axisText}
                 xAxisLabelTextStyle={styles.axisText}
                 hideRules
@@ -413,7 +415,7 @@ export default function ChartsScreen() {
                   hideDataPoints={false}
                   dataPointsColor="#2d9a6e"
                   dataPointsRadius={6}
-                  textColor="#7F8C8D"
+                  textColor="rgba(255,255,255,0.6)"
                   textFontSize={11}
                   textShiftY={-8}
                   textShiftX={-5}
@@ -457,7 +459,7 @@ export default function ChartsScreen() {
                   hideDataPoints={false}
                   dataPointsColor="#c026d3"
                   dataPointsRadius={8}
-                  textColor="#7F8C8D"
+                  textColor="rgba(255,255,255,0.6)"
                   textFontSize={12}
                   textShiftY={-10}
                   textShiftX={-8}
@@ -567,7 +569,7 @@ export default function ChartsScreen() {
               </View>
               {topCategories.map((category, index) => (
                 <View key={index} style={styles.listItem}>
-                  <View style={[styles.listRank, { backgroundColor: '#f0f4f8' }]}>
+                  <View style={[styles.listRank, { backgroundColor: 'rgba(45,154,110,0.2)' }]}>
                     <Ionicons name="bookmark" size={16} color="#2d9a6e" />
                   </View>
                   <Text style={styles.listItemText}>{t(`tips.categories.${category.name}`, { defaultValue: category.name })}</Text>
@@ -624,6 +626,7 @@ export default function ChartsScreen() {
         </View>
       )}
     </ScrollView>
+    </BlurView>
     </ImageBackground>
   );
 }
@@ -634,57 +637,33 @@ const styles = StyleSheet.create({
   },
   bgImage: {
     resizeMode: 'cover',
-    opacity: 0.3,
+  },
+  blurContainer: {
+    flex: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
-  },
-  header: {
-    alignItems: 'center',
-    paddingTop: 16,
-    paddingBottom: 16,
-    backgroundColor: '#F5F3ED',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    marginTop: 16,
-    color: '#2C3E50',
-    letterSpacing: 0.5,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#7F8C8D',
-    marginTop: 10,
-    fontWeight: '500',
   },
   content: {
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 80,
   },
   noDataContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
+    paddingVertical: 200,
     paddingHorizontal: 40,
   },
   noDataTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.7)',
     marginTop: 20,
   },
   noDataText: {
     fontSize: 16,
-    color: '#95A5A6',
+    color: 'rgba(255,255,255,0.5)',
     marginTop: 12,
     textAlign: 'center',
     lineHeight: 24,
@@ -698,18 +677,13 @@ const styles = StyleSheet.create({
   statCard: {
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
   },
   statCardPrimary: {
     width: '100%',
   },
   statCardSecondary: {
     width: (SCREEN_WIDTH - 64) / 3,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.12)',
     padding: 16,
     alignItems: 'center',
   },
@@ -732,28 +706,25 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: '#fff',
     marginTop: 8,
     textAlign: 'center',
     width: '100%',
   },
   statLabel: {
     fontSize: 11,
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 4,
     textAlign: 'center',
     width: '100%',
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderRadius: 18,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -764,7 +735,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2C3E50',
+    color: '#fff',
   },
   levelBadge: {
     paddingHorizontal: 12,
@@ -799,11 +770,11 @@ const styles = StyleSheet.create({
   },
   chartSubtitle: {
     fontSize: 13,
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.5)',
     marginBottom: 12,
   },
   axisText: {
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.5)',
     fontSize: 11,
   },
   pieChartContainer: {
@@ -819,11 +790,11 @@ const styles = StyleSheet.create({
   pieCenterNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: '#fff',
   },
   pieCenterLabel: {
     fontSize: 12,
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.6)',
   },
   pieLegend: {
     flexShrink: 1,
@@ -841,13 +812,13 @@ const styles = StyleSheet.create({
   },
   pieLegendText: {
     fontSize: 13,
-    color: '#2C3E50',
+    color: 'rgba(255,255,255,0.85)',
     width: 90,
     marginRight: 10,
   },
   pieLegendValue: {
     fontSize: 13,
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.6)',
     fontWeight: '600',
     minWidth: 40,
     textAlign: 'right',
@@ -857,7 +828,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   listRank: {
     width: 28,
@@ -876,17 +847,17 @@ const styles = StyleSheet.create({
   listItemText: {
     flex: 1,
     fontSize: 15,
-    color: '#2C3E50',
+    color: 'rgba(255,255,255,0.85)',
   },
   listCount: {
-    backgroundColor: '#f0f4f8',
+    backgroundColor: 'rgba(45,154,110,0.2)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   listCountText: {
     fontSize: 13,
-    color: '#2d9a6e',
+    color: '#4ade80',
     fontWeight: '600',
   },
   sessionItem: {
@@ -894,7 +865,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   sessionLevel: {
     width: 36,
@@ -914,21 +885,21 @@ const styles = StyleSheet.create({
   },
   sessionTitle: {
     fontSize: 15,
-    color: '#2C3E50',
+    color: 'rgba(255,255,255,0.85)',
     fontWeight: '600',
   },
   sessionDate: {
     fontSize: 13,
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.5)',
     marginTop: 2,
   },
   sessionDuration: {
     fontSize: 13,
-    color: '#2d9a6e',
+    color: '#4ade80',
     fontWeight: '600',
   },
   infoCard: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: 'rgba(45,154,110,0.15)',
     borderRadius: 18,
     padding: 20,
     borderLeftWidth: 4,
@@ -942,12 +913,12 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: '#fff',
     marginLeft: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#5F6368',
+    color: 'rgba(255,255,255,0.7)',
     lineHeight: 22,
   },
 });
