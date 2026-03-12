@@ -365,16 +365,13 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#f1f8f3',
-    borderTopWidth: 0,
-    height: 60,
-    paddingBottom: 8,
-    paddingTop: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 8,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.06)',
+    height: 56,
+    paddingBottom: 6,
+    paddingTop: 6,
+    elevation: 0,
   },
   tabButton: {
     flex: 1,
@@ -392,7 +389,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(90, 140, 106, 0.15)',
+    backgroundColor: 'rgba(45, 154, 110, 0.12)',
   },
   tooltipContainer: {
     backgroundColor: '#fff',

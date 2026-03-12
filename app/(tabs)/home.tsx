@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -79,42 +79,36 @@ function AnxietyCard({
   }, [isExpanded, contentOpacity]);
 
   return (
-    <View style={styles.cardWrapper}>
-      <Pressable onPress={onPress}>
+    <View style={[styles.cardWrapper, isExpanded && styles.cardWrapperExpanded]}>
+      <Pressable onPress={onPress} style={styles.cardPressable}>
         <LinearGradient
           colors={levelConfig.colors as [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.card}
         >
-          <View style={styles.cardHeader}>
-            <View style={styles.iconContainer}>
+          <View style={styles.cardRow}>
+            <View style={styles.iconCircle}>
               <FontAwesome6
                 name={levelConfig.icon}
-                size={28}
+                size={22}
                 color="#fff"
               />
             </View>
+            <Text style={styles.cardTitle} numberOfLines={1}>
+              {title}
+            </Text>
             <View style={styles.levelBadge}>
-              <Text style={styles.levelNumber}>
-                {levelConfig.level}
-              </Text>
+              <Text style={styles.levelNumber}>{levelConfig.level}</Text>
             </View>
           </View>
 
-          <Text style={styles.cardTitle}>
-            {title}
-          </Text>
-
           {isExpanded && (
-            <Animated.View style={{ opacity: contentOpacity }}>
-              <View style={styles.descriptionContainer}>
-                <Text style={styles.cardDescription}>{description}</Text>
-              </View>
-
+            <Animated.View style={[styles.expandedContent, { opacity: contentOpacity }]}>
+              <Text style={styles.cardDescription}>{description}</Text>
               <Pressable onPress={onContinue} style={styles.continueButton}>
                 <Text style={styles.continueButtonText}>{continueText}</Text>
-                <Ionicons name="arrow-forward" size={18} color="#fff" />
+                <Ionicons name="arrow-forward" size={16} color="#fff" />
               </Pressable>
             </Animated.View>
           )}
@@ -132,14 +126,12 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const hasStartedTour = useRef(false);
 
-  // Reset flag when tutorial should show (handles rebuilds/restarts)
   useEffect(() => {
     if (shouldShowTutorial) {
       hasStartedTour.current = false;
     }
   }, [shouldShowTutorial]);
 
-  // Start tutorial when ready
   useEffect(() => {
     if (!tutorialLoading && shouldShowTutorial && !hasStartedTour.current) {
       const timer = setTimeout(() => {
@@ -152,7 +144,6 @@ export default function HomeScreen() {
     }
   }, [tutorialLoading, shouldShowTutorial, start]);
 
-  // Reset flag when screen loses focus
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -168,11 +159,7 @@ export default function HomeScreen() {
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-    if (expandedLevel === level) {
-      setExpandedLevel(null);
-    } else {
-      setExpandedLevel(level);
-    }
+    setExpandedLevel(expandedLevel === level ? null : level);
   };
 
   const handleContinue = (level: number) => {
@@ -186,32 +173,27 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.cardsContainer}
-        contentContainerStyle={styles.cardsContentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <AttachStep index={1} style={{ width: '100%' }}>
-          <AttachStep index={2} style={{ width: '100%' }}>
-            <AttachStep index={5} style={{ width: '100%' }}>
-              <View style={styles.cardsInner}>
-                {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
-                  <AnxietyCard
-                    key={levelConfig.level}
-                    levelConfig={levelConfig}
-                    title={t(`anxietyLevels.${levelConfig.level}.title`)}
-                    description={t(`anxietyLevels.${levelConfig.level}.description`)}
-                    continueText={t('home.continueButton')}
-                    isExpanded={expandedLevel === levelConfig.level}
-                    onPress={() => handleCardPress(levelConfig.level)}
-                    onContinue={() => handleContinue(levelConfig.level)}
-                  />
-                ))}
-              </View>
-            </AttachStep>
+      <AttachStep index={1} style={styles.flex}>
+        <AttachStep index={2} style={styles.flex}>
+          <AttachStep index={5} style={styles.flex}>
+            <View style={styles.cardsInner}>
+              <Text style={styles.prompt}>{t('home.subtitle')}</Text>
+              {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
+                <AnxietyCard
+                  key={levelConfig.level}
+                  levelConfig={levelConfig}
+                  title={t(`anxietyLevels.${levelConfig.level}.title`)}
+                  description={t(`anxietyLevels.${levelConfig.level}.description`)}
+                  continueText={t('home.continueButton')}
+                  isExpanded={expandedLevel === levelConfig.level}
+                  onPress={() => handleCardPress(levelConfig.level)}
+                  onContinue={() => handleContinue(levelConfig.level)}
+                />
+              ))}
+            </View>
           </AttachStep>
         </AttachStep>
-      </ScrollView>
+      </AttachStep>
     </View>
   );
 }
@@ -221,43 +203,63 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f4f8',
   },
-  cardsContainer: {
+  flex: {
     flex: 1,
   },
-  cardsContentContainer: {
-    padding: 20,
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
   cardsInner: {
-    gap: 12,
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+    gap: 8,
+  },
+  prompt: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6b7280',
+    marginBottom: 4,
+    marginLeft: 4,
   },
   cardWrapper: {
-    minHeight: 95,
+    flex: 1,
+  },
+  cardWrapperExpanded: {
+    flex: 2.5,
+  },
+  cardPressable: {
+    flex: 1,
   },
   card: {
-    padding: 16,
-    borderRadius: 20,
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    justifyContent: 'center',
   },
-  cardHeader: {
+  cardRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    gap: 14,
   },
-  iconContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+  iconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  cardTitle: {
+    flex: 1,
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 18,
+  },
   levelBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -266,42 +268,32 @@ const styles = StyleSheet.create({
   levelNumber: {
     color: '#fff',
     fontWeight: '900',
-    fontSize: 16,
+    fontSize: 14,
   },
-  cardTitle: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 20,
-  },
-  descriptionContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 8,
-    marginBottom: 16,
+  expandedContent: {
+    marginTop: 12,
   },
   cardDescription: {
-    color: '#fff',
-    fontSize: 16,
-    lineHeight: 24,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 15,
+    lineHeight: 22,
     fontWeight: '500',
+    marginBottom: 12,
   },
   continueButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    borderRadius: 25,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    gap: 6,
   },
   continueButtonText: {
     color: '#fff',
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
