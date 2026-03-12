@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "expo-web",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["/Users/gp/Documents/descalate/.claude/start-expo.sh"],
+      "port": 8081
+    }
+  ]
+}

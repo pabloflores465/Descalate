@@ -185,10 +185,16 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#4a3f8a', '#3b5f8a', '#2d7a6e', '#8a6d3b', '#8a3b4a']}
+      locations={[0, 0.25, 0.5, 0.75, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={styles.container}
+    >
       <AttachStep index={0} style={{ width: '100%' }}>
         <View style={styles.header}>
-          <Ionicons name="pulse" size={48} color="#2d9a6e" />
+          <Ionicons name="pulse" size={48} color="rgba(255,255,255,0.9)" />
           <Text style={styles.title}>{t('home.title')}</Text>
           <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
         </View>
@@ -220,38 +226,32 @@ export default function HomeScreen() {
           </AttachStep>
         </AttachStep>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f1f8f3',
   },
   header: {
     alignItems: 'center',
     paddingTop: 60,
     paddingBottom: 34,
-    backgroundColor: '#F5F3ED',
+    backgroundColor: 'rgba(0,0,0,0.15)',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 6,
   },
   title: {
     fontSize: 34,
     fontWeight: 'bold',
     marginTop: 16,
-    color: '#2C3E50',
+    color: '#fff',
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#566573',
+    color: 'rgba(255,255,255,0.85)',
     marginTop: 10,
     fontWeight: '500',
   },
