@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TextInput,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useCallback, useEffect } from 'react';
@@ -302,6 +303,11 @@ export default function ProfileScreen() {
   }
 
   return (
+    <ImageBackground
+      source={require('@/assets/images/wall3.jpg')}
+      style={styles.bgContainer}
+      imageStyle={styles.bgImage}
+    >
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
@@ -492,13 +498,21 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
     </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  bgContainer: {
+    flex: 1,
+  },
+  bgImage: {
+    resizeMode: 'cover',
+    opacity: 0.3,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f1f8f3',
+    backgroundColor: 'transparent',
   },
   scrollContent: {
     flexGrow: 1,

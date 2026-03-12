@@ -122,7 +122,7 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={require('@/assets/images/sand.jpg')}
+      source={require('@/assets/images/wall1.jpg')}
       style={styles.container}
       imageStyle={styles.bgImage}
     >

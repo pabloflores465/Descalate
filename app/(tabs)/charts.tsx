@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, PieChart, LineChart } from 'react-native-gifted-charts';
 import { useState, useCallback } from 'react';
@@ -273,6 +273,11 @@ export default function ChartsScreen() {
   const hasData = sessions.length > 0;
 
   return (
+    <ImageBackground
+      source={require('@/assets/images/wall2.jpg')}
+      style={styles.bgContainer}
+      imageStyle={styles.bgImage}
+    >
     <ScrollView
       style={styles.container}
       refreshControl={
@@ -619,13 +624,21 @@ export default function ChartsScreen() {
         </View>
       )}
     </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  bgContainer: {
+    flex: 1,
+  },
+  bgImage: {
+    resizeMode: 'cover',
+    opacity: 0.3,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f1f8f3',
+    backgroundColor: 'transparent',
   },
   header: {
     alignItems: 'center',
