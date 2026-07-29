@@ -2,11 +2,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
-import { STORAGE_KEYS } from '@/constants/storage-keys';
 import LanguageSelector from '@/components/LanguageSelector';
+import { useAuth } from '@/context/AuthContext';
+import { setUserProgress } from '@/database/user-progress';
 
 type Slide = {
   key: string;
@@ -55,10 +55,15 @@ const slidesConfig: Slide[] = [
 export default function OnboardingScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { currentUserEmail } = useAuth();
 
   const handleDone = async () => {
-    // Global key cleared on logout to ensure new users see onboarding
-    await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
+    if (!currentUserEmail) {
+      router.replace('/(session)/auth');
+      return;
+    }
+
+    await setUserProgress(currentUserEmail, 'onboarding_completed', true);
     router.replace('/(session)/complete-profile');
   };
 

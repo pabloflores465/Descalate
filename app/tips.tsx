@@ -9,7 +9,18 @@ import DonationModal from '@/components/DonationModal';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const CONFETTI_COLORS = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#FF69B4', '#00CED1'];
+const CONFETTI_COLORS = [
+  '#FFD700',
+  '#FF6B6B',
+  '#4ECDC4',
+  '#45B7D1',
+  '#96CEB4',
+  '#FFEAA7',
+  '#DDA0DD',
+  '#98D8C8',
+  '#FF69B4',
+  '#00CED1',
+];
 const CONFETTI_COUNT = 60;
 
 function Confetti() {
@@ -66,7 +77,7 @@ function Confetti() {
         ]).start();
       }, piece.delay);
     });
-  }, []);
+  }, [animations, pieces]);
 
   return (
     <View style={styles.confettiContainer} pointerEvents="none">
@@ -112,6 +123,8 @@ type Tip = {
   steps: string[];
 };
 
+type GradientColors = [string, string, ...string[]];
+
 type TipConfig = {
   id: number;
   translationKey: string;
@@ -153,7 +166,7 @@ const tipConfigsByLevel: Record<number, TipConfig[]> = {
   ],
 };
 
-const levelColors: Record<number, string[]> = {
+const levelColors: Record<number, GradientColors> = {
   1: ['#5a67d8', '#6b46c1'],
   2: ['#2d9a6e', '#2b7a9b'],
   3: ['#d97706', '#1e4e6d'],
@@ -183,7 +196,7 @@ function LevelSelectCard({
   title: string;
   description: string;
   icon: string;
-  colors: string[];
+  colors: GradientColors;
   isExpanded: boolean;
   onExpand: () => void;
   onSelect: () => void;
@@ -228,7 +241,7 @@ function LevelSelectCard({
         useNativeDriver: true,
       }).start();
     }
-  }, [isExpanded]);
+  }, [contentOpacity, contentTranslate, isExpanded, scaleAnim]);
 
   return (
     <Animated.View
@@ -250,12 +263,12 @@ function LevelSelectCard({
               <FontAwesome6 name={icon} size={24} color="#fff" />
             </View>
             <View style={styles.levelTextContainer}>
-              <Text style={[styles.levelSelectTitle, isExpanded && styles.levelSelectTitleExpanded]}>
+              <Text
+                style={[styles.levelSelectTitle, isExpanded && styles.levelSelectTitleExpanded]}
+              >
                 {title}
               </Text>
-              {!isExpanded && (
-                <Text style={styles.levelSelectSubtitle}>Nivel {levelNum}</Text>
-              )}
+              {!isExpanded && <Text style={styles.levelSelectSubtitle}>Nivel {levelNum}</Text>}
             </View>
             <View style={styles.levelBadge}>
               <Text style={styles.levelBadgeText}>{levelNum}</Text>
@@ -297,7 +310,7 @@ function UnifiedTipScreen({
   onEndSession,
 }: {
   tip: Tip;
-  colors: string[];
+  colors: GradientColors;
   levelTitle: string;
   level: number;
   onGoBack: () => void;
@@ -323,9 +336,7 @@ function UnifiedTipScreen({
         </Pressable>
 
         <View style={styles.unifiedHeader}>
-          <Text style={styles.unifiedSubtitle}>
-            {t('tips.subtitle', { levelTitle, level })}
-          </Text>
+          <Text style={styles.unifiedSubtitle}>{t('tips.subtitle', { levelTitle, level })}</Text>
         </View>
 
         <View style={styles.unifiedTipIconContainer}>
@@ -363,9 +374,7 @@ function UnifiedTipScreen({
 
         <Pressable style={styles.unifiedSecondaryButton} onPress={onEndSession}>
           <Ionicons name="checkmark-circle-outline" size={20} color="#fff" />
-          <Text style={styles.unifiedSecondaryButtonText}>
-            {t('tips.finishSession')}
-          </Text>
+          <Text style={styles.unifiedSecondaryButtonText}>{t('tips.finishSession')}</Text>
         </Pressable>
       </ScrollView>
     </LinearGradient>
@@ -406,7 +415,7 @@ function FeedbackScreen({
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [opacityAnim, scaleAnim]);
 
   const getFeedbackMessages = (): string[] => {
     switch (feedbackData.type) {
@@ -441,7 +450,7 @@ function FeedbackScreen({
     }
   };
 
-  const getGradientColors = (): string[] => {
+  const getGradientColors = (): GradientColors => {
     switch (feedbackData.type) {
       case 'improved':
         return ['#2d9a6e', '#2b7a9b'];
@@ -474,16 +483,10 @@ function FeedbackScreen({
         ]}
       >
         <View style={styles.feedbackIconContainer}>
-          <Ionicons
-            name={getIcon()}
-            size={64}
-            color="#fff"
-          />
+          <Ionicons name={getIcon()} size={64} color="#fff" />
         </View>
 
-        <Text style={styles.feedbackTitle}>
-          {getTitle()}
-        </Text>
+        <Text style={styles.feedbackTitle}>{getTitle()}</Text>
 
         <View style={styles.feedbackLevelChange}>
           <View style={styles.feedbackLevelBadge}>
@@ -508,11 +511,7 @@ function FeedbackScreen({
   );
 }
 
-function CelebrationScreen({
-  onContinue,
-}: {
-  onContinue: () => void;
-}) {
+function CelebrationScreen({ onContinue }: { onContinue: () => void }) {
   const { t } = useTranslation();
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -531,7 +530,7 @@ function CelebrationScreen({
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [opacityAnim, scaleAnim]);
 
   return (
     <LinearGradient
@@ -554,9 +553,7 @@ function CelebrationScreen({
           <Ionicons name="trophy" size={64} color="#fff" />
         </View>
 
-        <Text style={styles.feedbackTitle}>
-          {t('tips.celebration.title')}
-        </Text>
+        <Text style={styles.feedbackTitle}>{t('tips.celebration.title')}</Text>
 
         <View style={styles.feedbackMessageContainer}>
           <Text style={styles.feedbackMessage}>{t('tips.celebration.message')}</Text>
@@ -583,9 +580,9 @@ export default function TipsScreen() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showTip, setShowTip] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
-  const { setSessionTip, endSession, startSession, clearSession } = useSession();
+  const { sessionData, setSessionTip, endSession, startSession, clearSession } = useSession();
 
-  const tips: Tip[] = tipConfigs.map(config => {
+  const tips: Tip[] = tipConfigs.map((config) => {
     const categoryKey = t(`tips.levels.${level}.tips.${config.translationKey}.category`);
     return {
       id: config.id,
@@ -594,29 +591,38 @@ export default function TipsScreen() {
       icon: config.icon,
       category: t(`tips.categories.${categoryKey}`),
       categoryKey: categoryKey,
-      steps: t(`tips.levels.${level}.tips.${config.translationKey}.steps`, { returnObjects: true }) as string[],
+      steps: t(`tips.levels.${level}.tips.${config.translationKey}.steps`, {
+        returnObjects: true,
+      }) as string[],
     };
   });
 
   const [randomTip] = useState(() => {
+    const restoredTip = sessionData?.tip
+      ? tips.find((tip) => tip.id === sessionData.tip?.id)
+      : undefined;
+    if (restoredTip) {
+      return restoredTip;
+    }
+
     const randomIndex = Math.floor(Math.random() * tipConfigs.length);
     return tips[randomIndex];
   });
 
   useEffect(() => {
-    setSessionTip({
+    void setSessionTip({
       id: randomTip.id,
       title: randomTip.title,
       category: randomTip.categoryKey,
-    });
-  }, [randomTip]);
+    }).catch((error) => console.error('Could not persist the session tip:', error));
+  }, [randomTip, setSessionTip]);
 
   const handleGoBack = () => {
     router.back();
   };
 
   const handleLevelExpand = (lvl: number) => {
-    setExpandedLevel(prev => prev === lvl ? null : lvl);
+    setExpandedLevel((prev) => (prev === lvl ? null : lvl));
   };
 
   const handleLevelSelect = async (selectedLevel: number) => {
@@ -640,7 +646,7 @@ export default function TipsScreen() {
     if (feedbackData) {
       await endSession('new_level');
       clearSession();
-      startSession(feedbackData.newLevel);
+      await startSession(feedbackData.newLevel);
       router.replace({
         pathname: '/exercises',
         params: { level: feedbackData.newLevel },
@@ -669,11 +675,7 @@ export default function TipsScreen() {
   };
 
   if (showCelebration) {
-    return (
-      <CelebrationScreen
-        onContinue={handleCelebrationContinue}
-      />
-    );
+    return <CelebrationScreen onContinue={handleCelebrationContinue} />;
   }
 
   if (showTip) {
@@ -688,21 +690,13 @@ export default function TipsScreen() {
           onSelectNewLevel={() => setShowTip(false)}
           onEndSession={handleTipContinue}
         />
-        <DonationModal
-          visible={showDonation}
-          onClose={handleDonationClose}
-        />
+        <DonationModal visible={showDonation} onClose={handleDonationClose} />
       </>
     );
   }
 
   if (feedbackData) {
-    return (
-      <FeedbackScreen
-        feedbackData={feedbackData}
-        onContinue={handleFeedbackContinue}
-      />
-    );
+    return <FeedbackScreen feedbackData={feedbackData} onContinue={handleFeedbackContinue} />;
   }
 
   return (
@@ -724,9 +718,7 @@ export default function TipsScreen() {
           </View>
         </LinearGradient>
 
-        <Text style={styles.sectionTitle}>
-          {t('tips.sectionTitle')}
-        </Text>
+        <Text style={styles.sectionTitle}>{t('tips.sectionTitle')}</Text>
 
         {[1, 2, 3, 4, 5].map((lvl) => (
           <LevelSelectCard
@@ -750,10 +742,7 @@ export default function TipsScreen() {
         </Pressable>
       </ScrollView>
 
-      <DonationModal
-        visible={showDonation}
-        onClose={handleDonationClose}
-      />
+      <DonationModal visible={showDonation} onClose={handleDonationClose} />
     </>
   );
 }

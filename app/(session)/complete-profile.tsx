@@ -13,13 +13,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { expoDb } from '@/database/db';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
-import { STORAGE_KEYS } from '@/constants/storage-keys';
 import LanguageSelector from '@/components/LanguageSelector';
+import { setUserProgress } from '@/database/user-progress';
 
 export default function CompleteProfileScreen() {
   const router = useRouter();
@@ -80,33 +79,28 @@ export default function CompleteProfileScreen() {
         return;
       }
 
-      const updateData: Record<string, unknown> = {
-        name: name.trim(),
-        age: ageNumber,
-        gender: gender || null,
-      };
+      const normalizedName = name.trim();
+      const normalizedGender = gender || null;
+      let encodedProfileImage: string | null = null;
 
       if (profileImageUri) {
         const file = new File(profileImageUri);
         const base64 = await file.base64();
-        updateData.profile_image = `data:image/jpeg;base64,${base64}`;
+        encodedProfileImage = `data:image/jpeg;base64,${base64}`;
       }
 
-      await expoDb.runAsync(
+      const result = await expoDb.runAsync(
         `UPDATE users
-         SET name = ?, age = ?, gender = ?, profile_image = COALESCE(?, profile_image)
+         SET name = ?, age = ?, gender = ?,
+             profile_image = COALESCE(?, profile_image),
+             profile_completed = 1
          WHERE email = ?`,
-        [
-          updateData.name,
-          updateData.age,
-          updateData.gender,
-          updateData.profile_image ?? null,
-          currentUserEmail,
-        ]
+        [normalizedName, ageNumber, normalizedGender, encodedProfileImage, currentUserEmail]
       );
 
-      // Global key cleared on logout to ensure new users complete profile
-      await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETE, 'true');
+      if (result.changes !== 1) {
+        throw new Error('Authenticated user no longer exists');
+      }
 
       router.replace('/(tabs)/home');
     } catch (error) {
@@ -118,8 +112,12 @@ export default function CompleteProfileScreen() {
   };
 
   const handleSkip = async () => {
-    // Global key cleared on logout to ensure new users complete profile
-    await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETE, 'true');
+    if (!currentUserEmail) {
+      router.replace('/(session)/auth');
+      return;
+    }
+
+    await setUserProgress(currentUserEmail, 'profile_completed', true);
     router.replace('/(tabs)/home');
   };
 
@@ -181,7 +179,10 @@ export default function CompleteProfileScreen() {
               >
                 <Ionicons name="male" size={20} color={gender === 'Male' ? 'white' : '#2d9a6e'} />
                 <Text
-                  style={[styles.genderButtonText, gender === 'Male' && styles.genderButtonTextActive]}
+                  style={[
+                    styles.genderButtonText,
+                    gender === 'Male' && styles.genderButtonTextActive,
+                  ]}
                 >
                   {t('completeProfile.genderOptions.male')}
                 </Text>
@@ -191,9 +192,16 @@ export default function CompleteProfileScreen() {
                 style={[styles.genderButton, gender === 'Female' && styles.genderButtonActive]}
                 onPress={() => setGender('Female')}
               >
-                <Ionicons name="female" size={20} color={gender === 'Female' ? 'white' : '#2d9a6e'} />
+                <Ionicons
+                  name="female"
+                  size={20}
+                  color={gender === 'Female' ? 'white' : '#2d9a6e'}
+                />
                 <Text
-                  style={[styles.genderButtonText, gender === 'Female' && styles.genderButtonTextActive]}
+                  style={[
+                    styles.genderButtonText,
+                    gender === 'Female' && styles.genderButtonTextActive,
+                  ]}
                 >
                   {t('completeProfile.genderOptions.female')}
                 </Text>
@@ -203,9 +211,16 @@ export default function CompleteProfileScreen() {
                 style={[styles.genderButton, gender === 'Other' && styles.genderButtonActive]}
                 onPress={() => setGender('Other')}
               >
-                <Ionicons name="transgender" size={20} color={gender === 'Other' ? 'white' : '#2d9a6e'} />
+                <Ionicons
+                  name="transgender"
+                  size={20}
+                  color={gender === 'Other' ? 'white' : '#2d9a6e'}
+                />
                 <Text
-                  style={[styles.genderButtonText, gender === 'Other' && styles.genderButtonTextActive]}
+                  style={[
+                    styles.genderButtonText,
+                    gender === 'Other' && styles.genderButtonTextActive,
+                  ]}
                 >
                   {t('completeProfile.genderOptions.other')}
                 </Text>
@@ -221,10 +236,17 @@ export default function CompleteProfileScreen() {
             {isLoading ? (
               <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
             ) : (
-              <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginRight: 10 }} />
+              <Ionicons
+                name="checkmark-circle"
+                size={20}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
             )}
             <Text style={styles.saveButtonText}>
-              {isLoading ? t('completeProfile.buttons.saving') : t('completeProfile.buttons.continue')}
+              {isLoading
+                ? t('completeProfile.buttons.saving')
+                : t('completeProfile.buttons.continue')}
             </Text>
           </Pressable>
 

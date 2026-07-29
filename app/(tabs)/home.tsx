@@ -1,4 +1,14 @@
-import { View, Text, StyleSheet, Pressable, Animated, ScrollView, LayoutAnimation, Platform, UIManager } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Animated,
+  ScrollView,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from 'react-native';
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -89,22 +99,14 @@ function AnxietyCard({
         >
           <View style={styles.cardHeader}>
             <View style={styles.iconContainer}>
-              <FontAwesome6
-                name={levelConfig.icon}
-                size={28}
-                color="#fff"
-              />
+              <FontAwesome6 name={levelConfig.icon} size={28} color="#fff" />
             </View>
             <View style={styles.levelBadge}>
-              <Text style={styles.levelNumber}>
-                {levelConfig.level}
-              </Text>
+              <Text style={styles.levelNumber}>{levelConfig.level}</Text>
             </View>
           </View>
 
-          <Text style={styles.cardTitle}>
-            {title}
-          </Text>
+          <Text style={styles.cardTitle}>{title}</Text>
 
           {isExpanded && (
             <Animated.View style={{ opacity: contentOpacity }}>
@@ -175,13 +177,17 @@ export default function HomeScreen() {
     }
   };
 
-  const handleContinue = (level: number) => {
-    setExpandedLevel(null);
-    startSession(level);
-    router.push({
-      pathname: '/exercises',
-      params: { level },
-    });
+  const handleContinue = async (level: number) => {
+    try {
+      await startSession(level);
+      setExpandedLevel(null);
+      router.push({
+        pathname: '/exercises',
+        params: { level },
+      });
+    } catch (error) {
+      console.error('Could not persist the new session:', error);
+    }
   };
 
   return (
@@ -203,18 +209,21 @@ export default function HomeScreen() {
           <AttachStep index={2} style={{ width: '100%' }}>
             <AttachStep index={5} style={{ width: '100%' }}>
               <View style={styles.cardsInner}>
-                {anxietyLevelConfigs.slice().reverse().map((levelConfig) => (
-                  <AnxietyCard
-                    key={levelConfig.level}
-                    levelConfig={levelConfig}
-                    title={t(`anxietyLevels.${levelConfig.level}.title`)}
-                    description={t(`anxietyLevels.${levelConfig.level}.description`)}
-                    continueText={t('home.continueButton')}
-                    isExpanded={expandedLevel === levelConfig.level}
-                    onPress={() => handleCardPress(levelConfig.level)}
-                    onContinue={() => handleContinue(levelConfig.level)}
-                  />
-                ))}
+                {anxietyLevelConfigs
+                  .slice()
+                  .reverse()
+                  .map((levelConfig) => (
+                    <AnxietyCard
+                      key={levelConfig.level}
+                      levelConfig={levelConfig}
+                      title={t(`anxietyLevels.${levelConfig.level}.title`)}
+                      description={t(`anxietyLevels.${levelConfig.level}.description`)}
+                      continueText={t('home.continueButton')}
+                      isExpanded={expandedLevel === levelConfig.level}
+                      onPress={() => handleCardPress(levelConfig.level)}
+                      onContinue={() => handleContinue(levelConfig.level)}
+                    />
+                  ))}
               </View>
             </AttachStep>
           </AttachStep>

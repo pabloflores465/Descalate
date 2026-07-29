@@ -2,11 +2,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Pressable, StyleSheet, Animated, Text } from 'react-native';
 import { useRef, useEffect, useMemo, useCallback } from 'react';
-import {
-  SpotlightTourProvider,
-  TourStep,
-  AttachStep,
-} from 'react-native-spotlight-tour';
+import { SpotlightTourProvider, TourStep, AttachStep } from 'react-native-spotlight-tour';
 import { useTutorial } from '@/context/TutorialContext';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
@@ -70,11 +66,7 @@ function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconPro
           transform: [{ translateY: translateYAnim }],
         }}
       >
-        <Ionicons
-          name={focused ? name : nameOutline}
-          size={focused ? 28 : size}
-          color={color}
-        />
+        <Ionicons name={focused ? name : nameOutline} size={focused ? 28 : size} color={color} />
       </Animated.View>
     </View>
   );
@@ -82,8 +74,8 @@ function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconPro
 
 type TabButtonProps = {
   children: React.ReactNode;
-  onPress: () => void;
-  onLongPress: () => void;
+  onPress: React.ComponentProps<typeof Pressable>['onPress'];
+  onLongPress: React.ComponentProps<typeof Pressable>['onLongPress'];
 };
 
 function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
@@ -113,9 +105,7 @@ function AnimatedTabButton({ children, onPress, onLongPress }: TabButtonProps) {
       onPressOut={handlePressOut}
       style={styles.tabButton}
     >
-      <Animated.View style={{ opacity: opacityAnim }}>
-        {children}
-      </Animated.View>
+      <Animated.View style={{ opacity: opacityAnim }}>{children}</Animated.View>
     </Pressable>
   );
 }
@@ -191,17 +181,16 @@ function TabLayoutContent() {
 
 type TourAction = () => void;
 
-const createTourSteps = (
-  t: TFunction,
-  runTourAction: (action: TourAction) => void
-): TourStep[] => [
+const createTourSteps = (t: TFunction, runTourAction: (action: TourAction) => void): TourStep[] => [
   // Step 0: Welcome
   {
     render: ({ next, stop }) => (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
-            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 1, total: 6 })}</Text>
+            <Text style={styles.stepIndicatorText}>
+              {t('tutorial.stepIndicator', { current: 1, total: 6 })}
+            </Text>
           </View>
         </View>
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.welcome.title')}</Text>
@@ -224,7 +213,9 @@ const createTourSteps = (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
-            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 2, total: 6 })}</Text>
+            <Text style={styles.stepIndicatorText}>
+              {t('tutorial.stepIndicator', { current: 2, total: 6 })}
+            </Text>
           </View>
         </View>
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.anxietyLevels.title')}</Text>
@@ -250,7 +241,9 @@ const createTourSteps = (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
-            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 3, total: 6 })}</Text>
+            <Text style={styles.stepIndicatorText}>
+              {t('tutorial.stepIndicator', { current: 3, total: 6 })}
+            </Text>
           </View>
         </View>
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.howItWorks.title')}</Text>
@@ -276,7 +269,9 @@ const createTourSteps = (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
-            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 4, total: 6 })}</Text>
+            <Text style={styles.stepIndicatorText}>
+              {t('tutorial.stepIndicator', { current: 4, total: 6 })}
+            </Text>
           </View>
         </View>
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.statistics.title')}</Text>
@@ -302,7 +297,9 @@ const createTourSteps = (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
-            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 5, total: 6 })}</Text>
+            <Text style={styles.stepIndicatorText}>
+              {t('tutorial.stepIndicator', { current: 5, total: 6 })}
+            </Text>
           </View>
         </View>
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.profile.title')}</Text>
@@ -328,7 +325,9 @@ const createTourSteps = (
       <View style={styles.tooltipContainer}>
         <View style={styles.tooltipHeader}>
           <View style={styles.stepIndicator}>
-            <Text style={styles.stepIndicatorText}>{t('tutorial.stepIndicator', { current: 6, total: 6 })}</Text>
+            <Text style={styles.stepIndicatorText}>
+              {t('tutorial.stepIndicator', { current: 6, total: 6 })}
+            </Text>
           </View>
         </View>
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.ready.title')}</Text>
@@ -375,10 +374,7 @@ export default function TabLayout() {
     };
   }, []);
 
-  const tourSteps = useMemo(
-    () => createTourSteps(t, runTourAction),
-    [t, runTourAction]
-  );
+  const tourSteps = useMemo(() => createTourSteps(t, runTourAction), [t, runTourAction]);
 
   const handleTourStop = () => {
     completeTutorial();

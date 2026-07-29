@@ -12,6 +12,11 @@ export const users = sqliteTable('users', {
   age: integer('age'),
   gender: text('gender'),
   profile_image: text('profile_image'),
+  onboarding_completed: integer('onboarding_completed', { mode: 'boolean' })
+    .notNull()
+    .default(false),
+  profile_completed: integer('profile_completed', { mode: 'boolean' }).notNull().default(false),
+  tutorial_completed: integer('tutorial_completed', { mode: 'boolean' }).notNull().default(false),
   created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
 });
 
@@ -51,6 +56,9 @@ export type User = {
   age: number | null;
   gender: string | null;
   profile_image: string | null;
+  onboarding_completed: boolean;
+  profile_completed: boolean;
+  tutorial_completed: boolean;
   created_at: string;
 };
 
@@ -69,7 +77,9 @@ export type UpdateUser = Partial<Omit<NewUser, 'id' | 'created_at'>>;
 
 export const anxietyLogs = sqliteTable('anxiety_logs', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  user_id: integer('user_id').notNull().references(() => users.id),
+  user_id: integer('user_id')
+    .notNull()
+    .references(() => users.id),
   anxiety_level: integer('anxiety_level').notNull(),
   notes: text('notes'),
   created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
@@ -90,7 +100,9 @@ export type NewAnxietyLog = Omit<AnxietyLog, 'id' | 'created_at'>;
 
 export const sessions = sqliteTable('sessions', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  user_id: integer('user_id').notNull().references(() => users.id),
+  user_id: integer('user_id')
+    .notNull()
+    .references(() => users.id),
   anxiety_level: integer('anxiety_level').notNull(),
   selected_exercises: text('selected_exercises'),
   tip_id: integer('tip_id'),
@@ -120,3 +132,27 @@ export type Session = {
 };
 
 export type NewSession = Omit<Session, 'id' | 'created_at'>;
+
+export const activeSessions = sqliteTable('active_sessions', {
+  user_id: integer('user_id')
+    .primaryKey()
+    .references(() => users.id),
+  anxiety_level: integer('anxiety_level').notNull(),
+  selected_exercises: text('selected_exercises'),
+  tip_id: integer('tip_id'),
+  tip_title: text('tip_title'),
+  tip_category: text('tip_category'),
+  start_time: integer('start_time').notNull(),
+  updated_at: text('updated_at').notNull().default('CURRENT_TIMESTAMP'),
+});
+
+export type ActiveSession = {
+  user_id: number;
+  anxiety_level: number;
+  selected_exercises: string | null;
+  tip_id: number | null;
+  tip_title: string | null;
+  tip_category: string | null;
+  start_time: number;
+  updated_at: string;
+};

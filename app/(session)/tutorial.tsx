@@ -1,16 +1,9 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Animated,
-} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import { STORAGE_KEYS } from '@/constants/storage-keys';
+import { useTutorial } from '@/context/TutorialContext';
 
 type TutorialStep = {
   id: number;
@@ -25,7 +18,8 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 1,
     title: 'Como Empezar',
-    instruction: 'En la pantalla de inicio veras 5 tarjetas de colores. Toca la que mejor represente como te sientes ahora mismo.',
+    instruction:
+      'En la pantalla de inicio veras 5 tarjetas de colores. Toca la que mejor represente como te sientes ahora mismo.',
     tip: 'Nivel 1 es calma total, nivel 5 es ansiedad intensa',
     icon: 'hand-left-outline',
     colors: ['#2d9a6e', '#247a58'],
@@ -33,7 +27,8 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 2,
     title: 'Elige tus Ejercicios',
-    instruction: 'Despues de seleccionar tu nivel, veras ejercicios recomendados. Marca los que quieras practicar y presiona continuar.',
+    instruction:
+      'Despues de seleccionar tu nivel, veras ejercicios recomendados. Marca los que quieras practicar y presiona continuar.',
     tip: 'Puedes seleccionar varios ejercicios a la vez',
     icon: 'checkbox-outline',
     colors: ['#5a67d8', '#4c51bf'],
@@ -41,7 +36,8 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 3,
     title: 'Recibe tu Tip',
-    instruction: 'Al final de cada sesion recibiras un consejo personalizado. Leelo y decide si quieres guardarlo o finalizar.',
+    instruction:
+      'Al final de cada sesion recibiras un consejo personalizado. Leelo y decide si quieres guardarlo o finalizar.',
     tip: 'Los tips se adaptan a tu nivel de ansiedad',
     icon: 'bulb-outline',
     colors: ['#d97706', '#b45309'],
@@ -49,7 +45,8 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 4,
     title: 'Revisa tu Progreso',
-    instruction: 'En la pestana de estadisticas puedes ver graficas de tu historial semanal, mensual y anual.',
+    instruction:
+      'En la pestana de estadisticas puedes ver graficas de tu historial semanal, mensual y anual.',
     tip: 'Desliza hacia abajo para ver todas las estadisticas',
     icon: 'bar-chart-outline',
     colors: ['#c026d3', '#a21caf'],
@@ -58,6 +55,7 @@ const tutorialSteps: TutorialStep[] = [
 
 export default function TutorialScreen() {
   const router = useRouter();
+  const { completeTutorial } = useTutorial();
   const [currentStep, setCurrentStep] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -131,7 +129,7 @@ export default function TutorialScreen() {
   };
 
   const handleComplete = async () => {
-    await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
+    await completeTutorial();
     router.replace('/(tabs)/home');
   };
 
@@ -141,7 +139,7 @@ export default function TutorialScreen() {
     }
 
     isTransitioning.current = true;
-    await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
+    await completeTutorial();
     router.replace('/(tabs)/home');
   };
 
@@ -164,7 +162,9 @@ export default function TutorialScreen() {
         ]}
       >
         <View style={styles.stepBadge}>
-          <Text style={styles.stepNumber}>Paso {currentStep + 1} de {tutorialSteps.length}</Text>
+          <Text style={styles.stepNumber}>
+            Paso {currentStep + 1} de {tutorialSteps.length}
+          </Text>
         </View>
 
         <View style={styles.iconContainer}>
@@ -174,7 +174,12 @@ export default function TutorialScreen() {
         <Text style={styles.title}>{step.title}</Text>
 
         <View style={styles.instructionCard}>
-          <Ionicons name="information-circle" size={24} color="#fff" style={styles.instructionIcon} />
+          <Ionicons
+            name="information-circle"
+            size={24}
+            color="#fff"
+            style={styles.instructionIcon}
+          />
           <Text style={styles.instruction}>{step.instruction}</Text>
         </View>
 
@@ -186,10 +191,7 @@ export default function TutorialScreen() {
 
       <View style={styles.dotsContainer}>
         {tutorialSteps.map((_, index) => (
-          <View
-            key={index}
-            style={[styles.dot, index === currentStep && styles.dotActive]}
-          />
+          <View key={index} style={[styles.dot, index === currentStep && styles.dotActive]} />
         ))}
       </View>
 
@@ -203,14 +205,8 @@ export default function TutorialScreen() {
         )}
 
         <Pressable style={styles.mainButton} onPress={handleNext}>
-          <Text style={styles.mainButtonText}>
-            {isLastStep ? 'Empezar' : 'Siguiente'}
-          </Text>
-          <Ionicons
-            name={isLastStep ? 'rocket' : 'arrow-forward'}
-            size={20}
-            color="#fff"
-          />
+          <Text style={styles.mainButtonText}>{isLastStep ? 'Empezar' : 'Siguiente'}</Text>
+          <Ionicons name={isLastStep ? 'rocket' : 'arrow-forward'} size={20} color="#fff" />
         </Pressable>
 
         <View style={styles.navButtonPlaceholder} />

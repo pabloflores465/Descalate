@@ -55,6 +55,23 @@ const red = '#E74C3C';
 const shadow = '#000000';
 
 export const Colors = {
+  light: {
+    text: textPrimary,
+    background,
+    tint: primary,
+    icon: textSecondary,
+    tabIconDefault: '#95A5A6',
+    tabIconSelected: primary,
+  },
+  dark: {
+    text: '#ECEDEE',
+    background: '#151718',
+    tint: primaryLight,
+    icon: '#9BA1A6',
+    tabIconDefault: '#9BA1A6',
+    tabIconSelected: primaryLight,
+  },
+
   // Primary palette
   primary,
   primaryDark,

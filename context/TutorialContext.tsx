@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import logger from '@/services/logger';
-import { STORAGE_KEYS } from '@/constants/storage-keys';
+import { getUserProgress, migrateLegacyProgress, setUserProgress } from '@/database/user-progress';
+import { useAuth } from './AuthContext';
 
 type TutorialContextType = {
   shouldShowTutorial: boolean;
@@ -15,52 +15,89 @@ type TutorialContextType = {
 const TutorialContext = createContext<TutorialContextType | undefined>(undefined);
 
 export function TutorialProvider({ children }: { children: ReactNode }) {
+  const { currentUserEmail, isLoading: authLoading } = useAuth();
   const [shouldShowTutorial, setShouldShowTutorial] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [tutorialTrigger, setTutorialTrigger] = useState(0);
 
   useEffect(() => {
-    checkTutorialStatus();
-  }, []);
+    let isCurrent = true;
 
-  const checkTutorialStatus = async () => {
-    try {
-      const completed = await AsyncStorage.getItem(STORAGE_KEYS.TUTORIAL_COMPLETE);
-      setShouldShowTutorial(completed !== 'true');
-    } catch (error) {
-      logger.error('Error checking tutorial status', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const checkTutorialStatus = async () => {
+      if (authLoading) {
+        return;
+      }
+
+      if (!currentUserEmail) {
+        setShouldShowTutorial(false);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        await migrateLegacyProgress(currentUserEmail);
+        const progress = await getUserProgress(currentUserEmail);
+        if (isCurrent) {
+          setShouldShowTutorial(progress ? !progress.tutorialCompleted : false);
+        }
+      } catch (error) {
+        logger.error('Error checking tutorial status', error);
+        if (isCurrent) {
+          setShouldShowTutorial(false);
+        }
+      } finally {
+        if (isCurrent) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    checkTutorialStatus();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [authLoading, currentUserEmail]);
 
   const completeTutorial = useCallback(async () => {
+    if (!currentUserEmail) return;
+
     try {
-      await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
+      await setUserProgress(currentUserEmail, 'tutorial_completed', true);
       setShouldShowTutorial(false);
     } catch (error) {
       logger.error('Error completing tutorial', error);
     }
-  }, []);
+  }, [currentUserEmail]);
 
   const resetTutorial = useCallback(async () => {
+    if (!currentUserEmail) return;
+
     try {
-      await AsyncStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETE);
+      await setUserProgress(currentUserEmail, 'tutorial_completed', false);
       setShouldShowTutorial(true);
     } catch (error) {
       logger.error('Error resetting tutorial', error);
     }
-  }, []);
+  }, [currentUserEmail]);
 
   const requestTutorialStart = useCallback(() => {
     if (shouldShowTutorial && !isLoading) {
-      setTutorialTrigger(prev => prev + 1);
+      setTutorialTrigger((prev) => prev + 1);
     }
   }, [shouldShowTutorial, isLoading]);
 
   return (
     <TutorialContext.Provider
-      value={{ shouldShowTutorial, completeTutorial, resetTutorial, isLoading, tutorialTrigger, requestTutorialStart }}
+      value={{
+        shouldShowTutorial,
+        completeTutorial,
+        resetTutorial,
+        isLoading,
+        tutorialTrigger,
+        requestTutorialStart,
+      }}
     >
       {children}
     </TutorialContext.Provider>

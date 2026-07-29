@@ -2,59 +2,83 @@ import { Redirect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEYS } from '@/constants/storage-keys';
+import { getUserProgress, migrateLegacyProgress } from '@/database/user-progress';
+import { useSession } from '@/context/SessionContext';
 
 export default function Index() {
   const { currentUserEmail, isLoading: authLoading } = useAuth();
+  const { sessionData, isLoading: sessionLoading } = useSession();
   const [checkingStatus, setCheckingStatus] = useState(true);
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
-  const [profileComplete, setProfileComplete] = useState(false);
+  const [nextRoute, setNextRoute] = useState<
+    '/(session)/auth' | '/(session)/onboarding' | '/(session)/complete-profile' | '/(tabs)/home'
+  >('/(session)/auth');
 
   useEffect(() => {
-    checkOnboardingStatus();
-  }, [currentUserEmail]);
+    let isCurrent = true;
 
-  const checkOnboardingStatus = async () => {
-    if (!currentUserEmail) {
-      setCheckingStatus(false);
-      return;
-    }
+    const checkUserStatus = async () => {
+      if (authLoading) return;
 
-    try {
-      const [onboarding, profile] = await Promise.all([
-        AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETE),
-        AsyncStorage.getItem(STORAGE_KEYS.PROFILE_COMPLETE),
-      ]);
+      setCheckingStatus(true);
+      try {
+        if (!currentUserEmail) {
+          if (isCurrent) setNextRoute('/(session)/auth');
+          return;
+        }
 
-      setOnboardingComplete(onboarding === 'true');
-      setProfileComplete(profile === 'true');
-    } catch (error) {
-      console.error('Error checking onboarding status:', error);
-    } finally {
-      setCheckingStatus(false);
-    }
-  };
+        await migrateLegacyProgress(currentUserEmail);
+        const progress = await getUserProgress(currentUserEmail);
 
-  if (authLoading || checkingStatus) {
+        if (!progress) {
+          if (isCurrent) setNextRoute('/(session)/auth');
+        } else if (!progress.onboardingCompleted) {
+          if (isCurrent) setNextRoute('/(session)/onboarding');
+        } else if (!progress.profileCompleted) {
+          if (isCurrent) setNextRoute('/(session)/complete-profile');
+        } else if (isCurrent) {
+          setNextRoute('/(tabs)/home');
+        }
+      } catch (error) {
+        console.error('Error checking user progress:', error);
+        if (isCurrent) setNextRoute('/(session)/auth');
+      } finally {
+        if (isCurrent) setCheckingStatus(false);
+      }
+    };
+
+    checkUserStatus();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [authLoading, currentUserEmail]);
+
+  if (authLoading || sessionLoading || checkingStatus) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f1f8f3' }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#f1f8f3',
+        }}
+      >
         <ActivityIndicator size="large" color="#2d9a6e" />
       </View>
     );
   }
 
-  if (!currentUserEmail) {
-    return <Redirect href="/(session)/auth" />;
+  if (nextRoute === '/(tabs)/home' && sessionData) {
+    const pathname = sessionData.selectedExercises.length > 0 ? '/tips' : '/exercises';
+    return (
+      <Redirect
+        href={{
+          pathname,
+          params: { level: sessionData.anxietyLevel },
+        }}
+      />
+    );
   }
 
-  if (!onboardingComplete) {
-    return <Redirect href="/(session)/onboarding" />;
-  }
-
-  if (!profileComplete) {
-    return <Redirect href="/(session)/complete-profile" />;
-  }
-
-  return <Redirect href="/(tabs)/home" />;
+  return <Redirect href={nextRoute} />;
 }

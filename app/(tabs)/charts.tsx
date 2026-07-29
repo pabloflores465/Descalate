@@ -6,6 +6,7 @@ import { expoDb } from '@/database/db';
 import { useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/context/AuthContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -67,6 +68,7 @@ const formatDuration = (seconds: number): string => {
 
 export default function ChartsScreen() {
   const { t } = useTranslation();
+  const { currentUserEmail } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({
@@ -81,13 +83,25 @@ export default function ChartsScreen() {
   const [weeklyData, setWeeklyData] = useState<BarData[]>([]);
   const [monthlyData, setMonthlyData] = useState<LineData[]>([]);
   const [yearlyData, setYearlyData] = useState<LineData[]>([]);
-  const [topExercises, setTopExercises] = useState<{ name: string; count: number; translationKey?: string; level?: number }[]>([]);
+  const [topExercises, setTopExercises] = useState<
+    { name: string; count: number; translationKey?: string; level?: number }[]
+  >([]);
   const [topCategories, setTopCategories] = useState<{ name: string; count: number }[]>([]);
 
   const loadData = useCallback(async () => {
     try {
+      if (!currentUserEmail) {
+        setSessions([]);
+        return;
+      }
+
       const sessionRows = await expoDb.getAllAsync<Session>(
-        `SELECT * FROM sessions ORDER BY created_at DESC`
+        `SELECT sessions.*
+         FROM sessions
+         INNER JOIN users ON users.id = sessions.user_id
+         WHERE users.email = ?
+         ORDER BY sessions.created_at DESC`,
+        [currentUserEmail]
       );
 
       if (!sessionRows || sessionRows.length === 0) {
@@ -115,16 +129,28 @@ export default function ChartsScreen() {
       const averageLevel = sessionRows.reduce((sum, s) => sum + s.anxiety_level, 0) / totalSessions;
 
       let totalExercises = 0;
-      const exerciseCounts: Record<string, { count: number; translationKey?: string; level?: number }> = {};
-      sessionRows.forEach(session => {
+      const exerciseCounts: Record<
+        string,
+        { count: number; translationKey?: string; level?: number }
+      > = {};
+      sessionRows.forEach((session) => {
         if (session.selected_exercises) {
           try {
-            const exercises = JSON.parse(session.selected_exercises) as { title: string; translationKey?: string; level?: number }[];
+            const exercises = JSON.parse(session.selected_exercises) as {
+              title: string;
+              translationKey?: string;
+              level?: number;
+            }[];
             totalExercises += exercises.length;
-            exercises.forEach(ex => {
-              const key = ex.translationKey && ex.level ? `${ex.level}:${ex.translationKey}` : ex.title;
+            exercises.forEach((ex) => {
+              const key =
+                ex.translationKey && ex.level ? `${ex.level}:${ex.translationKey}` : ex.title;
               if (!exerciseCounts[key]) {
-                exerciseCounts[key] = { count: 0, translationKey: ex.translationKey, level: ex.level };
+                exerciseCounts[key] = {
+                  count: 0,
+                  translationKey: ex.translationKey,
+                  level: ex.level,
+                };
               }
               exerciseCounts[key].count += 1;
             });
@@ -135,27 +161,32 @@ export default function ChartsScreen() {
       });
 
       const categoryCounts: Record<string, number> = {};
-      sessionRows.forEach(session => {
+      sessionRows.forEach((session) => {
         if (session.tip_category) {
           categoryCounts[session.tip_category] = (categoryCounts[session.tip_category] || 0) + 1;
         }
       });
 
-      const validDurations = sessionRows.filter(s => s.duration_seconds !== null && s.duration_seconds > 0);
-      const averageDuration = validDurations.length > 0
-        ? validDurations.reduce((sum, s) => sum + (s.duration_seconds || 0), 0) / validDurations.length
-        : 0;
+      const validDurations = sessionRows.filter(
+        (s) => s.duration_seconds !== null && s.duration_seconds > 0
+      );
+      const averageDuration =
+        validDurations.length > 0
+          ? validDurations.reduce((sum, s) => sum + (s.duration_seconds || 0), 0) /
+            validDurations.length
+          : 0;
 
       const levelCounts: Record<number, number> = {};
-      sessionRows.forEach(session => {
+      sessionRows.forEach((session) => {
         levelCounts[session.anxiety_level] = (levelCounts[session.anxiety_level] || 0) + 1;
       });
-      const mostCommonLevel = Object.entries(levelCounts)
-        .sort(([, a], [, b]) => b - a)[0]?.[0];
+      const mostCommonLevel = Object.entries(levelCounts).sort(([, a], [, b]) => b - a)[0]?.[0];
 
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      const sessionsThisWeek = sessionRows.filter(s => new Date(s.created_at) >= oneWeekAgo).length;
+      const sessionsThisWeek = sessionRows.filter(
+        (s) => new Date(s.created_at) >= oneWeekAgo
+      ).length;
 
       setStats({
         totalSessions,
@@ -179,10 +210,11 @@ export default function ChartsScreen() {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const dateStr = date.toISOString().split('T')[0];
-        const daySessions = sessionRows.filter(s => s.created_at.startsWith(dateStr));
-        const avgLevel = daySessions.length > 0
-          ? daySessions.reduce((sum, s) => sum + s.anxiety_level, 0) / daySessions.length
-          : 0;
+        const daySessions = sessionRows.filter((s) => s.created_at.startsWith(dateStr));
+        const avgLevel =
+          daySessions.length > 0
+            ? daySessions.reduce((sum, s) => sum + s.anxiety_level, 0) / daySessions.length
+            : 0;
         last7Days.push({
           value: Math.round(avgLevel * 10) / 10,
           label: `${date.getDate()}/${date.getMonth() + 1}`,
@@ -192,20 +224,34 @@ export default function ChartsScreen() {
       setWeeklyData(last7Days);
 
       // Monthly data - last 6 months
-      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const monthNames = [
+        'Ene',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dic',
+      ];
       const last6Months: LineData[] = [];
       for (let i = 5; i >= 0; i--) {
         const date = new Date();
         date.setMonth(date.getMonth() - i);
         const month = date.getMonth();
         const year = date.getFullYear();
-        const monthSessions = sessionRows.filter(s => {
+        const monthSessions = sessionRows.filter((s) => {
           const sessionDate = new Date(s.created_at);
           return sessionDate.getMonth() === month && sessionDate.getFullYear() === year;
         });
-        const avgLevel = monthSessions.length > 0
-          ? monthSessions.reduce((sum, s) => sum + s.anxiety_level, 0) / monthSessions.length
-          : 0;
+        const avgLevel =
+          monthSessions.length > 0
+            ? monthSessions.reduce((sum, s) => sum + s.anxiety_level, 0) / monthSessions.length
+            : 0;
         last6Months.push({
           value: Math.round(avgLevel * 10) / 10,
           label: monthNames[month],
@@ -219,13 +265,14 @@ export default function ChartsScreen() {
       const currentYear = new Date().getFullYear();
       for (let i = 2; i >= 0; i--) {
         const year = currentYear - i;
-        const yearSessions = sessionRows.filter(s => {
+        const yearSessions = sessionRows.filter((s) => {
           const sessionDate = new Date(s.created_at);
           return sessionDate.getFullYear() === year;
         });
-        const avgLevel = yearSessions.length > 0
-          ? yearSessions.reduce((sum, s) => sum + s.anxiety_level, 0) / yearSessions.length
-          : 0;
+        const avgLevel =
+          yearSessions.length > 0
+            ? yearSessions.reduce((sum, s) => sum + s.anxiety_level, 0) / yearSessions.length
+            : 0;
         last3Years.push({
           value: Math.round(avgLevel * 10) / 10,
           label: year.toString(),
@@ -250,11 +297,10 @@ export default function ChartsScreen() {
         .slice(0, 5)
         .map(([name, count]) => ({ name, count }));
       setTopCategories(topCat);
-
     } catch (error) {
       console.error('Error loading chart data:', error);
     }
-  }, []);
+  }, [currentUserEmail]);
 
   useFocusEffect(
     useCallback(() => {
@@ -273,9 +319,7 @@ export default function ChartsScreen() {
   return (
     <ScrollView
       style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
         <Ionicons name="stats-chart" size={48} color="#2d9a6e" />
@@ -287,18 +331,13 @@ export default function ChartsScreen() {
         <View style={styles.noDataContainer}>
           <Ionicons name="analytics-outline" size={80} color="#BDC3C7" />
           <Text style={styles.noDataTitle}>{t('charts.noData.title')}</Text>
-          <Text style={styles.noDataText}>
-            {t('charts.noData.message')}
-          </Text>
+          <Text style={styles.noDataText}>{t('charts.noData.message')}</Text>
         </View>
       ) : (
         <View style={styles.content}>
           <View style={styles.statsGrid}>
             <View style={[styles.statCard, styles.statCardPrimary]}>
-              <LinearGradient
-                colors={['#2d9a6e', '#4a7c5a']}
-                style={styles.statGradient}
-              >
+              <LinearGradient colors={['#2d9a6e', '#4a7c5a']} style={styles.statGradient}>
                 <Ionicons name="layers-outline" size={28} color="#fff" />
                 <Text style={styles.statNumberWhite}>{stats.totalSessions}</Text>
                 <Text style={styles.statLabelWhite}>{t('charts.stats.totalSessions')}</Text>
@@ -327,26 +366,40 @@ export default function ChartsScreen() {
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>{t('charts.cards.avgLevel')}</Text>
-              <View style={[styles.levelBadge, { backgroundColor: levelColors[Math.round(stats.averageLevel)] + '20' }]}>
-                <Text style={[styles.levelBadgeText, { color: levelColors[Math.round(stats.averageLevel)] }]}>
+              <View
+                style={[
+                  styles.levelBadge,
+                  { backgroundColor: levelColors[Math.round(stats.averageLevel)] + '20' },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.levelBadgeText,
+                    { color: levelColors[Math.round(stats.averageLevel)] },
+                  ]}
+                >
                   {t(`anxietyLevels.${Math.round(stats.averageLevel)}.title`) || 'N/A'}
                 </Text>
               </View>
             </View>
             <View style={styles.averageLevelContainer}>
-              <Text style={[styles.averageLevelNumber, { color: levelColors[Math.round(stats.averageLevel)] }]}>
+              <Text
+                style={[
+                  styles.averageLevelNumber,
+                  { color: levelColors[Math.round(stats.averageLevel)] },
+                ]}
+              >
                 {stats.averageLevel.toFixed(1)}
               </Text>
               <View style={styles.levelScale}>
-                {[1, 2, 3, 4, 5].map(level => (
+                {[1, 2, 3, 4, 5].map((level) => (
                   <View
                     key={level}
                     style={[
                       styles.levelDot,
                       {
-                        backgroundColor: level <= Math.round(stats.averageLevel)
-                          ? levelColors[level]
-                          : '#E0E0E0',
+                        backgroundColor:
+                          level <= Math.round(stats.averageLevel) ? levelColors[level] : '#E0E0E0',
                       },
                     ]}
                   />
@@ -363,7 +416,7 @@ export default function ChartsScreen() {
             <Text style={styles.chartSubtitle}>{t('charts.chartSubtitles.weekly')}</Text>
             <View style={styles.chartWrapper}>
               <LineChart
-                data={weeklyData.map(d => ({ value: d.value, label: d.label }))}
+                data={weeklyData.map((d) => ({ value: d.value, label: d.label }))}
                 width={SCREEN_WIDTH - 100}
                 height={150}
                 spacing={40}
@@ -393,7 +446,7 @@ export default function ChartsScreen() {
             </View>
           </View>
 
-          {monthlyData.some(d => d.value > 0) && (
+          {monthlyData.some((d) => d.value > 0) && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.monthlyTrend')}</Text>
@@ -437,7 +490,7 @@ export default function ChartsScreen() {
             </View>
           )}
 
-          {yearlyData.some(d => d.value > 0) && (
+          {yearlyData.some((d) => d.value > 0) && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{t('charts.cards.yearlyTrend')}</Text>
@@ -508,7 +561,9 @@ export default function ChartsScreen() {
                   {levelDistribution.map((item, index) => (
                     <View key={index} style={styles.pieLegendItem}>
                       <View style={[styles.pieLegendColor, { backgroundColor: item.color }]} />
-                      <Text style={styles.pieLegendText}>{t(`anxietyLevels.${item.label}.title`)}</Text>
+                      <Text style={styles.pieLegendText}>
+                        {t(`anxietyLevels.${item.label}.title`)}
+                      </Text>
                     </View>
                   ))}
                 </View>
@@ -527,14 +582,20 @@ export default function ChartsScreen() {
 
                 if (exercise.translationKey && exercise.level) {
                   // New data with translation key
-                  displayName = t(`exercises.levels.${exercise.level}.exercises.${exercise.translationKey}.title`);
+                  displayName = t(
+                    `exercises.levels.${exercise.level}.exercises.${exercise.translationKey}.title`
+                  );
                 } else {
                   // Old data - try to find translation key by matching title
                   for (const [levelStr, keys] of Object.entries(exerciseKeysByLevel)) {
                     const level = Number(levelStr);
                     for (const key of keys) {
-                      const enTitle = t(`exercises.levels.${level}.exercises.${key}.title`, { lng: 'en' });
-                      const esTitle = t(`exercises.levels.${level}.exercises.${key}.title`, { lng: 'es' });
+                      const enTitle = t(`exercises.levels.${level}.exercises.${key}.title`, {
+                        lng: 'en',
+                      });
+                      const esTitle = t(`exercises.levels.${level}.exercises.${key}.title`, {
+                        lng: 'es',
+                      });
                       if (exercise.name === enTitle || exercise.name === esTitle) {
                         displayName = t(`exercises.levels.${level}.exercises.${key}.title`);
                         break;
@@ -548,7 +609,9 @@ export default function ChartsScreen() {
                     <View style={styles.listRank}>
                       <Text style={styles.listRankText}>{index + 1}</Text>
                     </View>
-                    <Text style={styles.listItemText} numberOfLines={1}>{displayName}</Text>
+                    <Text style={styles.listItemText} numberOfLines={1}>
+                      {displayName}
+                    </Text>
                     <View style={styles.listCount}>
                       <Text style={styles.listCountText}>{exercise.count}x</Text>
                     </View>
@@ -569,7 +632,9 @@ export default function ChartsScreen() {
                   <View style={[styles.listRank, { backgroundColor: '#f0f4f8' }]}>
                     <Ionicons name="bookmark" size={16} color="#2d9a6e" />
                   </View>
-                  <Text style={styles.listItemText}>{t(`tips.categories.${category.name}`, { defaultValue: category.name })}</Text>
+                  <Text style={styles.listItemText}>
+                    {t(`tips.categories.${category.name}`, { defaultValue: category.name })}
+                  </Text>
                   <View style={styles.listCount}>
                     <Text style={styles.listCountText}>{category.count}x</Text>
                   </View>
@@ -590,15 +655,26 @@ export default function ChartsScreen() {
                 : 0;
               return (
                 <View key={index} style={styles.sessionItem}>
-                  <View style={[styles.sessionLevel, { backgroundColor: levelColors[session.anxiety_level] }]}>
+                  <View
+                    style={[
+                      styles.sessionLevel,
+                      { backgroundColor: levelColors[session.anxiety_level] },
+                    ]}
+                  >
                     <Text style={styles.sessionLevelText}>{session.anxiety_level}</Text>
                   </View>
                   <View style={styles.sessionInfo}>
                     <Text style={styles.sessionTitle}>
-                      {t(`anxietyLevels.${session.anxiety_level}.title`)} - {exerciseCount} {t('charts.stats.exercises').toLowerCase()}
+                      {t(`anxietyLevels.${session.anxiety_level}.title`)} - {exerciseCount}{' '}
+                      {t('charts.stats.exercises').toLowerCase()}
                     </Text>
                     <Text style={styles.sessionDate}>
-                      {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      {date.toLocaleDateString('es-ES', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </Text>
                   </View>
                   {session.duration_seconds && (
@@ -616,9 +692,7 @@ export default function ChartsScreen() {
               <Ionicons name="information-circle" size={24} color="#2d9a6e" />
               <Text style={styles.infoTitle}>{t('charts.infoBox.title')}</Text>
             </View>
-            <Text style={styles.infoText}>
-              {t('charts.infoBox.text')}
-            </Text>
+            <Text style={styles.infoText}>{t('charts.infoBox.text')}</Text>
           </View>
         </View>
       )}

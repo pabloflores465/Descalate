@@ -1,12 +1,10 @@
-import { View, Text, StyleSheet, FlatList, Pressable, Animated, Dimensions, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, Animated, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useSession } from '@/context/SessionContext';
 import { useTranslation } from 'react-i18next';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Breathing pattern types
 type BreathingPhaseType = 'inhale' | 'hold' | 'exhale' | 'holdAfterExhale';
@@ -30,9 +28,9 @@ type ExercisePattern = BreathingPattern | StepPattern;
 
 // Phase colors for visual feedback
 const phaseColors: Record<BreathingPhaseType, string> = {
-  inhale: '#60A5FA',      // Sky blue - expansion
-  hold: '#FBBF24',        // Amber - pause
-  exhale: '#34D399',      // Emerald - release
+  inhale: '#60A5FA', // Sky blue - expansion
+  hold: '#FBBF24', // Amber - pause
+  exhale: '#34D399', // Emerald - release
   holdAfterExhale: '#A78BFA', // Purple - deep pause
 };
 
@@ -47,39 +45,131 @@ const phaseIcons: Record<BreathingPhaseType, keyof typeof Ionicons.glyphMap> = {
 // Exercise breathing patterns configuration
 const exercisePatterns: Record<string, ExercisePattern> = {
   // Level 1
-  'cardiacCoherence': { type: 'breathing', phases: [{type: 'inhale', duration: 5}, {type: 'exhale', duration: 5}] },
-  'diaphragmaticBreathing336': { type: 'breathing', phases: [{type: 'inhale', duration: 3}, {type: 'hold', duration: 3}, {type: 'exhale', duration: 6}] },
-  'bodyScanQuick': { type: 'steps', steps: ['feet', 'legs', 'torso', 'arms', 'head'] },
-  'microMeditationAppreciation': { type: 'steps', steps: ['think', 'feel', 'expand'] },
-  'calmVisualization': { type: 'steps', steps: ['imaginePlace', 'seeColors', 'hearSounds', 'feelSensations'] },
+  cardiacCoherence: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 5 },
+      { type: 'exhale', duration: 5 },
+    ],
+  },
+  diaphragmaticBreathing336: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 3 },
+      { type: 'hold', duration: 3 },
+      { type: 'exhale', duration: 6 },
+    ],
+  },
+  bodyScanQuick: { type: 'steps', steps: ['feet', 'legs', 'torso', 'arms', 'head'] },
+  microMeditationAppreciation: { type: 'steps', steps: ['think', 'feel', 'expand'] },
+  calmVisualization: {
+    type: 'steps',
+    steps: ['imaginePlace', 'seeColors', 'hearSounds', 'feelSensations'],
+  },
 
   // Level 2
-  'tensionRelease': { type: 'steps', steps: ['shouldersTense', 'shouldersRelease', 'handsTense', 'handsRelease'] },
-  'breathing46': { type: 'breathing', phases: [{type: 'inhale', duration: 4}, {type: 'exhale', duration: 6}] },
-  'neckStretch': { type: 'steps', steps: ['leftSide', 'release', 'rightSide', 'releaseRight'] },
-  'breathCounting': { type: 'breathing', phases: [{type: 'inhale', duration: 4}, {type: 'exhale', duration: 4}] },
-  'sensoryGrounding2': { type: 'steps', steps: ['seeSomething', 'touchSomething'] },
+  tensionRelease: {
+    type: 'steps',
+    steps: ['shouldersTense', 'shouldersRelease', 'handsTense', 'handsRelease'],
+  },
+  breathing46: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 4 },
+      { type: 'exhale', duration: 6 },
+    ],
+  },
+  neckStretch: { type: 'steps', steps: ['leftSide', 'release', 'rightSide', 'releaseRight'] },
+  breathCounting: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 4 },
+      { type: 'exhale', duration: 4 },
+    ],
+  },
+  sensoryGrounding2: { type: 'steps', steps: ['seeSomething', 'touchSomething'] },
 
   // Level 3
-  'grounding54321': { type: 'steps', steps: ['see5', 'touch4', 'hear3', 'smell2', 'taste1'] },
-  'physiologicalSigh': { type: 'breathing', phases: [{type: 'inhale', duration: 3}, {type: 'inhale', duration: 1}, {type: 'exhale', duration: 6}] },
-  'emotionalLabeling': { type: 'steps', steps: ['identify', 'name', 'accept'] },
-  'feetAttention': { type: 'steps', steps: ['feelPressure', 'noticeTemperature', 'breathe'] },
-  'extendedExhale2x': { type: 'breathing', phases: [{type: 'inhale', duration: 3}, {type: 'exhale', duration: 6}] },
+  grounding54321: { type: 'steps', steps: ['see5', 'touch4', 'hear3', 'smell2', 'taste1'] },
+  physiologicalSigh: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 3 },
+      { type: 'inhale', duration: 1 },
+      { type: 'exhale', duration: 6 },
+    ],
+  },
+  emotionalLabeling: { type: 'steps', steps: ['identify', 'name', 'accept'] },
+  feetAttention: { type: 'steps', steps: ['feelPressure', 'noticeTemperature', 'breathe'] },
+  extendedExhale2x: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 3 },
+      { type: 'exhale', duration: 6 },
+    ],
+  },
 
   // Level 4
-  'physiologicalSighRepeated': { type: 'breathing', phases: [{type: 'inhale', duration: 3}, {type: 'inhale', duration: 1}, {type: 'exhale', duration: 6}] },
-  'breathing478': { type: 'breathing', phases: [{type: 'inhale', duration: 4}, {type: 'hold', duration: 7}, {type: 'exhale', duration: 8}] },
-  'somaticHold': { type: 'steps', steps: ['handOnChest', 'handOnAbdomen', 'feelMovement', 'breatheSlowly'] },
-  'tactileGrounding': { type: 'steps', steps: ['touchSurface', 'feelTemperature', 'describeTexture'] },
-  'countdown54321Breath': { type: 'breathing', phases: [{type: 'inhale', duration: 3}, {type: 'exhale', duration: 6}] },
+  physiologicalSighRepeated: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 3 },
+      { type: 'inhale', duration: 1 },
+      { type: 'exhale', duration: 6 },
+    ],
+  },
+  breathing478: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 4 },
+      { type: 'hold', duration: 7 },
+      { type: 'exhale', duration: 8 },
+    ],
+  },
+  somaticHold: {
+    type: 'steps',
+    steps: ['handOnChest', 'handOnAbdomen', 'feelMovement', 'breatheSlowly'],
+  },
+  tactileGrounding: {
+    type: 'steps',
+    steps: ['touchSurface', 'feelTemperature', 'describeTexture'],
+  },
+  countdown54321Breath: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 3 },
+      { type: 'exhale', duration: 6 },
+    ],
+  },
 
   // Level 5
-  'triangularBreathing': { type: 'breathing', phases: [{type: 'inhale', duration: 3}, {type: 'hold', duration: 3}, {type: 'exhale', duration: 3}] },
-  'boxBreathing4444': { type: 'breathing', phases: [{type: 'inhale', duration: 4}, {type: 'hold', duration: 4}, {type: 'exhale', duration: 4}, {type: 'holdAfterExhale', duration: 4}] },
-  'physicalGrounding3Points': { type: 'steps', steps: ['feetOnFloor', 'backOnChair', 'handsOnLegs'] },
-  'verbalAnchoring': { type: 'steps', steps: ['sayIAmHere', 'sayThisWillPass', 'repeat'] },
-  'doubleExtendedExhale': { type: 'breathing', phases: [{type: 'exhale', duration: 3}, {type: 'exhale', duration: 3}, {type: 'inhale', duration: 4}] },
+  triangularBreathing: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 3 },
+      { type: 'hold', duration: 3 },
+      { type: 'exhale', duration: 3 },
+    ],
+  },
+  boxBreathing4444: {
+    type: 'breathing',
+    phases: [
+      { type: 'inhale', duration: 4 },
+      { type: 'hold', duration: 4 },
+      { type: 'exhale', duration: 4 },
+      { type: 'holdAfterExhale', duration: 4 },
+    ],
+  },
+  physicalGrounding3Points: { type: 'steps', steps: ['feetOnFloor', 'backOnChair', 'handsOnLegs'] },
+  verbalAnchoring: { type: 'steps', steps: ['sayIAmHere', 'sayThisWillPass', 'repeat'] },
+  doubleExtendedExhale: {
+    type: 'breathing',
+    phases: [
+      { type: 'exhale', duration: 3 },
+      { type: 'exhale', duration: 3 },
+      { type: 'inhale', duration: 4 },
+    ],
+  },
 };
 
 type ExerciseConfig = {
@@ -99,6 +189,8 @@ type Exercise = {
   level: number;
   steps: string[];
 };
+
+type GradientColors = [string, string, ...string[]];
 
 const exerciseConfigsByLevel: Record<number, ExerciseConfig[]> = {
   1: [
@@ -138,7 +230,7 @@ const exerciseConfigsByLevel: Record<number, ExerciseConfig[]> = {
   ],
 };
 
-const levelColors: Record<number, string[]> = {
+const levelColors: Record<number, GradientColors> = {
   1: ['#5a67d8', '#6b46c1'],
   2: ['#2d9a6e', '#2b7a9b'],
   3: ['#d97706', '#1e4e6d'],
@@ -163,8 +255,8 @@ function BreathingIndicator({
   const [phaseTimeLeft, setPhaseTimeLeft] = useState(pattern.phases[0].duration);
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const cycleDuration = useMemo(() =>
-    pattern.phases.reduce((sum, phase) => sum + phase.duration, 0),
+  const cycleDuration = useMemo(
+    () => pattern.phases.reduce((sum, phase) => sum + phase.duration, 0),
     [pattern.phases]
   );
 
@@ -224,9 +316,9 @@ function BreathingIndicator({
         useNativeDriver: true,
       }).start();
     }
-  }, [isRunning, currentPhaseIndex, currentPhase]);
+  }, [isRunning, currentPhaseIndex, currentPhase, scaleAnim]);
 
-  const totalProgress = 1 - (totalTimeLeft / totalSeconds);
+  const totalProgress = 1 - totalTimeLeft / totalSeconds;
 
   const getPhaseLabel = (phaseType: BreathingPhaseType) => {
     return t(`exercises.breathing.phases.${phaseType}`);
@@ -253,7 +345,7 @@ function BreathingIndicator({
             borderBottomColor: totalProgress > 0.5 ? 'rgba(255,255,255,0.9)' : 'transparent',
             borderLeftColor: totalProgress > 0.75 ? 'rgba(255,255,255,0.9)' : 'transparent',
             transform: [{ rotate: '-45deg' }],
-          }
+          },
         ]}
       />
 
@@ -265,7 +357,7 @@ function BreathingIndicator({
             backgroundColor: phaseColor + '25',
             borderColor: phaseColor,
             transform: [{ scale: scaleAnim }],
-          }
+          },
         ]}
       >
         {/* Center content */}
@@ -274,18 +366,14 @@ function BreathingIndicator({
           <Text style={[indicatorStyles.phaseLabel, { color: phaseColor }]}>
             {getPhaseLabel(currentPhase.type)}
           </Text>
-          <Text style={[indicatorStyles.phaseTime, { color: phaseColor }]}>
-            {phaseTimeLeft}
-          </Text>
+          <Text style={[indicatorStyles.phaseTime, { color: phaseColor }]}>{phaseTimeLeft}</Text>
         </View>
       </Animated.View>
 
       {/* Total time at bottom */}
       <View style={indicatorStyles.totalTimeContainer}>
         <Ionicons name="time-outline" size={16} color="rgba(255,255,255,0.9)" />
-        <Text style={indicatorStyles.totalTimeText}>
-          {formatTime(totalTimeLeft)}
-        </Text>
+        <Text style={indicatorStyles.totalTimeText}>{formatTime(totalTimeLeft)}</Text>
       </View>
     </View>
   );
@@ -323,12 +411,10 @@ function StepIndicator({
     if (!isRunning) return;
 
     const interval = setInterval(() => {
-      setStepTimeLeft(prev => {
+      setStepTimeLeft((prev) => {
         if (prev <= 1) {
           // Auto-advance to next step (cyclical)
-          setCurrentStepIndex(currentIdx =>
-            (currentIdx + 1) % pattern.steps.length
-          );
+          setCurrentStepIndex((currentIdx) => (currentIdx + 1) % pattern.steps.length);
           return stepDuration;
         }
         return prev - 1;
@@ -343,7 +429,7 @@ function StepIndicator({
     if (!isRunning) return;
 
     // Advance to next step cyclically
-    setCurrentStepIndex(prev => (prev + 1) % pattern.steps.length);
+    setCurrentStepIndex((prev) => (prev + 1) % pattern.steps.length);
     setStepTimeLeft(stepDuration);
   };
 
@@ -370,9 +456,9 @@ function StepIndicator({
     ).start();
 
     return () => pulseAnim.setValue(1);
-  }, [isRunning]);
+  }, [isRunning, pulseAnim]);
 
-  const totalProgress = 1 - (totalTimeLeft / totalSeconds);
+  const totalProgress = 1 - totalTimeLeft / totalSeconds;
   const currentStep = pattern.steps[currentStepIndex];
 
   const formatTime = (seconds: number) => {
@@ -396,17 +482,14 @@ function StepIndicator({
             borderBottomColor: totalProgress > 0.5 ? 'rgba(255,255,255,0.9)' : 'transparent',
             borderLeftColor: totalProgress > 0.75 ? 'rgba(255,255,255,0.9)' : 'transparent',
             transform: [{ rotate: '-45deg' }],
-          }
+          },
         ]}
       />
 
       {/* Inner animated circle - tappable */}
       <Pressable onPress={handleTapToAdvance}>
         <Animated.View
-          style={[
-            indicatorStyles.innerCircleSteps,
-            { transform: [{ scale: pulseAnim }] }
-          ]}
+          style={[indicatorStyles.innerCircleSteps, { transform: [{ scale: pulseAnim }] }]}
         >
           {/* Step dots */}
           <View style={indicatorStyles.stepDotsContainer}>
@@ -427,22 +510,14 @@ function StepIndicator({
             <Text style={indicatorStyles.stepNumber}>
               {currentStepIndex + 1}/{pattern.steps.length}
             </Text>
-            <Text style={indicatorStyles.stepLabel}>
-              {t(`exercises.steps.${currentStep}`)}
-            </Text>
+            <Text style={indicatorStyles.stepLabel}>{t(`exercises.steps.${currentStep}`)}</Text>
             {/* Step timer */}
-            {isRunning && (
-              <Text style={indicatorStyles.stepTimer}>
-                {stepTimeLeft}s
-              </Text>
-            )}
+            {isRunning && <Text style={indicatorStyles.stepTimer}>{stepTimeLeft}s</Text>}
           </View>
 
           {/* Tap hint */}
           {isRunning && (
-            <Text style={indicatorStyles.tapHint}>
-              {t('exercises.timer.tapToAdvance')}
-            </Text>
+            <Text style={indicatorStyles.tapHint}>{t('exercises.timer.tapToAdvance')}</Text>
           )}
         </Animated.View>
       </Pressable>
@@ -450,9 +525,7 @@ function StepIndicator({
       {/* Total time at bottom */}
       <View style={indicatorStyles.totalTimeContainer}>
         <Ionicons name="time-outline" size={16} color="rgba(255,255,255,0.9)" />
-        <Text style={indicatorStyles.totalTimeText}>
-          {formatTime(totalTimeLeft)}
-        </Text>
+        <Text style={indicatorStyles.totalTimeText}>{formatTime(totalTimeLeft)}</Text>
       </View>
     </View>
   );
@@ -595,29 +668,18 @@ function ExerciseCard({
   onPress,
 }: {
   exercise: Exercise;
-  colors: string[];
+  colors: GradientColors;
   onPress: () => void;
 }) {
   return (
     <Pressable onPress={onPress} style={styles.exerciseCardWrapper}>
       <View style={styles.exerciseCard}>
         <View style={styles.exerciseCardContent}>
-          <View
-            style={[
-              styles.exerciseIconContainer,
-              { backgroundColor: colors[0] + '20' }
-            ]}
-          >
-            <Ionicons
-              name={exercise.icon}
-              size={28}
-              color={colors[0]}
-            />
+          <View style={[styles.exerciseIconContainer, { backgroundColor: colors[0] + '20' }]}>
+            <Ionicons name={exercise.icon} size={28} color={colors[0]} />
           </View>
           <View style={styles.exerciseInfo}>
-            <Text style={styles.exerciseTitle}>
-              {exercise.title}
-            </Text>
+            <Text style={styles.exerciseTitle}>{exercise.title}</Text>
             <View style={styles.durationContainer}>
               <Ionicons name="time-outline" size={14} color="#566573" />
               <Text style={styles.durationText}>{exercise.duration}</Text>
@@ -637,7 +699,7 @@ function TimerScreen({
   onBack,
 }: {
   exercise: Exercise;
-  colors: string[];
+  colors: GradientColors;
   onFinish: () => void;
   onBack: () => void;
 }) {
@@ -786,11 +848,7 @@ function TimerScreen({
                   style={[styles.timerButton, styles.timerButtonPrimary]}
                   onPress={handleStartPause}
                 >
-                  <Ionicons
-                    name={isRunning ? 'pause' : 'play'}
-                    size={32}
-                    color={colors[0]}
-                  />
+                  <Ionicons name={isRunning ? 'pause' : 'play'} size={32} color={colors[0]} />
                 </Pressable>
                 <Pressable
                   style={[styles.timerButton, styles.timerButtonSecondary]}
@@ -800,13 +858,8 @@ function TimerScreen({
                 </Pressable>
               </>
             ) : (
-              <Pressable
-                style={styles.continueButton}
-                onPress={onFinish}
-              >
-                <Text style={styles.continueButtonText}>
-                  {t('exercises.timer.continue')}
-                </Text>
+              <Pressable style={styles.continueButton} onPress={onFinish}>
+                <Text style={styles.continueButtonText}>{t('exercises.timer.continue')}</Text>
                 <Ionicons name="arrow-forward" size={20} color={colors[0]} />
               </Pressable>
             )}
@@ -827,14 +880,20 @@ export default function ExercisesScreen() {
   const [activeExercise, setActiveExercise] = useState<Exercise | null>(null);
   const { setSelectedExercises } = useSession();
 
-  const exercises: Exercise[] = exerciseConfigs.map(config => {
-    const stepsArray = t(`exercises.levels.${level}.exercises.${config.translationKey}.steps`, { returnObjects: true });
+  const exercises: Exercise[] = exerciseConfigs.map((config) => {
+    const stepsArray = t(`exercises.levels.${level}.exercises.${config.translationKey}.steps`, {
+      returnObjects: true,
+    });
     return {
       id: config.id,
       title: t(`exercises.levels.${level}.exercises.${config.translationKey}.title`),
       description: t(`exercises.levels.${level}.exercises.${config.translationKey}.description`),
-      duration: t('exercises.duration', { minutes: t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`) }),
-      durationMinutes: Number(t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`)),
+      duration: t('exercises.duration', {
+        minutes: t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`),
+      }),
+      durationMinutes: Number(
+        t(`exercises.levels.${level}.exercises.${config.translationKey}.duration`)
+      ),
       icon: config.icon,
       translationKey: config.translationKey,
       level: level,
@@ -846,15 +905,17 @@ export default function ExercisesScreen() {
     setActiveExercise(exercise);
   };
 
-  const handleExerciseFinish = () => {
+  const handleExerciseFinish = async () => {
     if (activeExercise) {
-      setSelectedExercises([{
-        id: activeExercise.id,
-        title: activeExercise.title,
-        duration: activeExercise.duration,
-        translationKey: activeExercise.translationKey,
-        level: activeExercise.level,
-      }]);
+      await setSelectedExercises([
+        {
+          id: activeExercise.id,
+          title: activeExercise.title,
+          duration: activeExercise.duration,
+          translationKey: activeExercise.translationKey,
+          level: activeExercise.level,
+        },
+      ]);
       router.push({
         pathname: '/tips',
         params: { level, showLevelSelector: 'true' },
@@ -898,9 +959,7 @@ export default function ExercisesScreen() {
           <Text style={styles.subtitle}>{t('exercises.subtitle', { levelTitle, level })}</Text>
         </View>
       </LinearGradient>
-      <Text style={styles.sectionTitle}>
-        {t('exercises.selectExercise')}
-      </Text>
+      <Text style={styles.sectionTitle}>{t('exercises.selectExercise')}</Text>
     </>
   );
 
@@ -911,11 +970,7 @@ export default function ExercisesScreen() {
       data={exercises}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <ExerciseCard
-          exercise={item}
-          colors={colors}
-          onPress={() => handleExercisePress(item)}
-        />
+        <ExerciseCard exercise={item} colors={colors} onPress={() => handleExercisePress(item)} />
       )}
       ListHeaderComponent={renderHeader}
       showsVerticalScrollIndicator={true}

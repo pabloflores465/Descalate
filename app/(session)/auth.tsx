@@ -21,11 +21,8 @@ import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
 import { useAuth } from '@/context/AuthContext';
-import { useTutorial } from '@/context/TutorialContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -35,7 +32,6 @@ bcrypt.setRandomFallback((len: number) => {
 export default function AuthScreen() {
   const router = useRouter();
   const { setCurrentUserEmail } = useAuth();
-  const { resetTutorial } = useTutorial();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
@@ -71,11 +67,9 @@ export default function AuthScreen() {
               .limit(1);
 
             if (existingUser.length === 0) {
-              Alert.alert(
-                t('auth.errors.userNotFound'),
-                t('auth.errors.noAccountExists'),
-                [{ text: 'OK' }]
-              );
+              Alert.alert(t('auth.errors.userNotFound'), t('auth.errors.noAccountExists'), [
+                { text: 'OK' },
+              ]);
               // Clear Google userInfo so user can try again
               signOut();
               return;
@@ -83,7 +77,7 @@ export default function AuthScreen() {
 
             console.log('Google user logged in successfully');
             await setCurrentUserEmail(userInfo.email);
-            router.replace('/home');
+            router.replace('/');
           } else {
             const validationResult = googleUserSchema.safeParse({
               email: userInfo.email,
@@ -112,12 +106,7 @@ export default function AuthScreen() {
 
             console.log('Google user saved successfully');
             await setCurrentUserEmail(userInfo.email);
-            await AsyncStorage.multiRemove([
-              STORAGE_KEYS.ONBOARDING_COMPLETE,
-              STORAGE_KEYS.PROFILE_COMPLETE,
-            ]);
-            await resetTutorial();
-            router.replace('/(session)/onboarding');
+            router.replace('/');
           }
         } catch (error) {
           console.error('Error handling Google user:', error);
@@ -129,7 +118,7 @@ export default function AuthScreen() {
       };
       handleGoogleUser();
     }
-  }, [userInfo, router, activeTab, setCurrentUserEmail, signOut, t, resetTutorial]);
+  }, [userInfo, router, activeTab, setCurrentUserEmail, signOut, t]);
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
@@ -175,10 +164,7 @@ export default function AuthScreen() {
       const user = existingUser[0];
 
       if (!user.password) {
-        Alert.alert(
-          t('common.error'),
-          t('auth.errors.googleAccountExists')
-        );
+        Alert.alert(t('common.error'), t('auth.errors.googleAccountExists'));
         setIsLoading(false);
         return;
       }
@@ -194,7 +180,7 @@ export default function AuthScreen() {
       console.log('User logged in successfully');
       await setCurrentUserEmail(validationResult.data.email);
       console.log('Email saved:', validationResult.data.email);
-      router.replace('/home');
+      router.replace('/');
     } catch (error: unknown) {
       console.error('Error logging in:', error);
       Alert.alert(t('common.error'), t('auth.errors.loginFailed'));
@@ -250,12 +236,7 @@ export default function AuthScreen() {
 
       console.log('User registered successfully');
       await setCurrentUserEmail(validationResult.data.email);
-      await AsyncStorage.multiRemove([
-        STORAGE_KEYS.ONBOARDING_COMPLETE,
-        STORAGE_KEYS.PROFILE_COMPLETE,
-      ]);
-      await resetTutorial();
-      router.replace('/(session)/onboarding');
+      router.replace('/');
     } catch (error: unknown) {
       console.error('Error registering user:', error);
 
@@ -289,13 +270,13 @@ export default function AuthScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.formContainer}>
-              <View style={styles.languageRow}>
-                <LanguageSelector />
-              </View>
+            <View style={styles.languageRow}>
+              <LanguageSelector />
+            </View>
 
-              <Text style={styles.welcomeText}>{t('auth.welcome')}</Text>
+            <Text style={styles.welcomeText}>{t('auth.welcome')}</Text>
 
-              <View style={styles.tabContainer}>
+            <View style={styles.tabContainer}>
               <Pressable
                 onPress={() => {
                   setActiveTab('login');
@@ -303,17 +284,9 @@ export default function AuthScreen() {
                   setPassword('');
                   setErrors({});
                 }}
-                style={[
-                  styles.tab,
-                  activeTab === 'login' && styles.tabActive,
-                ]}
+                style={[styles.tab, activeTab === 'login' && styles.tabActive]}
               >
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === 'login' && styles.tabTextActive,
-                  ]}
-                >
+                <Text style={[styles.tabText, activeTab === 'login' && styles.tabTextActive]}>
                   {t('auth.tabs.login')}
                 </Text>
               </Pressable>
@@ -324,17 +297,9 @@ export default function AuthScreen() {
                   setPassword('');
                   setErrors({});
                 }}
-                style={[
-                  styles.tab,
-                  activeTab === 'register' && styles.tabActive,
-                ]}
+                style={[styles.tab, activeTab === 'register' && styles.tabActive]}
               >
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === 'register' && styles.tabTextActive,
-                  ]}
-                >
+                <Text style={[styles.tabText, activeTab === 'register' && styles.tabTextActive]}>
                   {t('auth.tabs.register')}
                 </Text>
               </Pressable>
@@ -349,14 +314,9 @@ export default function AuthScreen() {
                 placeholder={t('auth.fields.emailPlaceholder')}
                 placeholderTextColor="#9CA3AF"
                 autoCapitalize="none"
-                style={[
-                  styles.input,
-                  errors.email && styles.inputError,
-                ]}
+                style={[styles.input, errors.email && styles.inputError]}
               />
-              {errors.email && (
-                <Text style={styles.errorText}>{errors.email}</Text>
-              )}
+              {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
             </View>
 
             <View style={styles.inputGroup}>
@@ -372,14 +332,9 @@ export default function AuthScreen() {
                 returnKeyType="done"
                 maxLength={50}
                 onSubmitEditing={handleSubmit}
-                style={[
-                  styles.input,
-                  errors.password && styles.inputError,
-                ]}
+                style={[styles.input, errors.password && styles.inputError]}
               />
-              {errors.password && (
-                <Text style={styles.errorText}>{errors.password}</Text>
-              )}
+              {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
             </View>
 
             <Pressable
@@ -397,9 +352,7 @@ export default function AuthScreen() {
                 <>
                   <Ionicons name="log-in-outline" size={20} color="#fff" />
                   <Text style={styles.submitButtonText}>
-                    {activeTab === 'login'
-                      ? t('auth.buttons.login')
-                      : t('auth.buttons.register')}
+                    {activeTab === 'login' ? t('auth.buttons.login') : t('auth.buttons.register')}
                   </Text>
                 </>
               )}
@@ -424,16 +377,14 @@ export default function AuthScreen() {
               ) : (
                 <>
                   <AntDesign name="google" size={20} color="#374151" />
-                  <Text style={styles.googleButtonText}>
-                    {t('auth.buttons.googleContinue')}
-                  </Text>
+                  <Text style={styles.googleButtonText}>{t('auth.buttons.googleContinue')}</Text>
                 </>
               )}
-          </Pressable>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </SafeAreaView>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
