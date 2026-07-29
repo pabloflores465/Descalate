@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  GoogleOneTapSignIn,
+  isCancelledResponse,
+  isNoSavedCredentialFoundResponse,
+  isSuccessResponse,
+} from 'react-native-nitro-google-signin';
 import { GOOGLE_CONFIG } from '../constants/google-config';
-
-// Completa el flujo de autenticación del navegador
-WebBrowser.maybeCompleteAuthSession();
 
 export interface GoogleUser {
   id: string;
@@ -20,65 +21,78 @@ export interface GoogleUser {
 export function useGoogleAuth() {
   const [userInfo, setUserInfo] = useState<GoogleUser | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // Usar la configuración más simple que funciona con Expo Go
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: GOOGLE_CONFIG.webClientId,
-    iosClientId: GOOGLE_CONFIG.iosClientId,
-    androidClientId: GOOGLE_CONFIG.androidClientId,
-  });
+  const [isConfigured, setIsConfigured] = useState(false);
 
   useEffect(() => {
-    if (request) {
-      console.log('🔗 Request ready. Redirect URI:', request?.redirectUri);
-      console.log('🔑 Using Web Client ID for Expo Go');
-    }
-  }, [request]);
+    GoogleOneTapSignIn.configure({
+      webClientId: GOOGLE_CONFIG.webClientId,
+      iosClientId: GOOGLE_CONFIG.iosClientId,
+      autoSelectOnSignIn: false,
+    });
+    setIsConfigured(true);
+  }, []);
 
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { authentication } = response;
-      if (authentication?.accessToken) {
-        fetchUserInfo(authentication.accessToken);
-      }
-    } else if (response?.type === 'error') {
-      console.error('❌ Auth Error:', response.error);
+  const promptAsync = useCallback(async () => {
+    if (!isConfigured) {
+      throw new Error('Google Sign-In is not configured yet');
     }
-  }, [response]);
 
-  const fetchUserInfo = async (token: string) => {
     setLoading(true);
     try {
-      const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await GoogleOneTapSignIn.checkPlayServices(true);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user info');
+      let response = await GoogleOneTapSignIn.signIn();
+
+      if (isNoSavedCredentialFoundResponse(response)) {
+        response = await GoogleOneTapSignIn.createAccount();
       }
 
-      const user = await response.json();
-      setUserInfo(user);
-      console.log('✅ Google User Info:', user);
-      console.log('📧 Email:', user.email);
-      console.log('👤 Name:', user.name);
-    } catch (error) {
-      console.error('❌ Error fetching user info:', error);
+      if (isNoSavedCredentialFoundResponse(response)) {
+        response = await GoogleOneTapSignIn.presentExplicitSignIn();
+      }
+
+      if (isCancelledResponse(response)) {
+        return;
+      }
+
+      if (!isSuccessResponse(response)) {
+        throw new Error('Google Sign-In did not return a user');
+      }
+
+      const { user } = response.data;
+      if (!user.email) {
+        throw new Error('Google account did not provide an email address');
+      }
+
+      setUserInfo({
+        id: user.id,
+        email: user.email,
+        verified_email: true,
+        name: user.name ?? user.email,
+        given_name: user.givenName ?? '',
+        family_name: user.familyName ?? '',
+        picture: user.photo ?? '',
+        locale: '',
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [isConfigured]);
 
-  const signOut = () => {
+  const signOut = useCallback(async () => {
     setUserInfo(null);
-    console.log('👋 User signed out');
-  };
+    try {
+      await GoogleOneTapSignIn.signOut();
+    } catch (error) {
+      console.error('Google Sign-Out error:', error);
+    }
+  }, []);
 
   return {
     promptAsync,
     userInfo,
     loading,
-    request,
+    request: isConfigured,
     signOut,
   };
 }

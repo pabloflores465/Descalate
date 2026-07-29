@@ -61,6 +61,7 @@ export default function TutorialScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const isTransitioning = useRef(false);
 
   const step = tutorialSteps[currentStep];
   const isLastStep = currentStep === tutorialSteps.length - 1;
@@ -78,10 +79,17 @@ export default function TutorialScreen() {
         tension: 40,
         useNativeDriver: true,
       }),
-    ]).start();
-  }, [currentStep]);
+    ]).start(() => {
+      isTransitioning.current = false;
+    });
+  }, [currentStep, fadeAnim, slideAnim]);
 
   const animateTransition = (callback: () => void) => {
+    if (isTransitioning.current) {
+      return;
+    }
+
+    isTransitioning.current = true;
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -100,16 +108,25 @@ export default function TutorialScreen() {
   };
 
   const handleNext = () => {
+    if (isTransitioning.current) {
+      return;
+    }
+
     if (isLastStep) {
+      isTransitioning.current = true;
       handleComplete();
     } else {
-      animateTransition(() => setCurrentStep(currentStep + 1));
+      animateTransition(() => setCurrentStep((previousStep) => previousStep + 1));
     }
   };
 
   const handlePrev = () => {
+    if (isTransitioning.current) {
+      return;
+    }
+
     if (currentStep > 0) {
-      animateTransition(() => setCurrentStep(currentStep - 1));
+      animateTransition(() => setCurrentStep((previousStep) => previousStep - 1));
     }
   };
 
@@ -119,6 +136,11 @@ export default function TutorialScreen() {
   };
 
   const handleSkip = async () => {
+    if (isTransitioning.current) {
+      return;
+    }
+
+    isTransitioning.current = true;
     await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
     router.replace('/(tabs)/home');
   };

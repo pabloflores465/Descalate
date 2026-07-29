@@ -12,20 +12,20 @@ import {
   ScrollView,
 } from 'react-native';
 import { useState, useEffect } from 'react';
-import { db, expoDb } from '@/database/db';
+import { db } from '@/database/db';
 import { users, registerUserSchema, loginUserSchema, googleUserSchema } from '@/database/schema';
-import { runMigrations } from '@/database/migrations';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import bcrypt from 'bcryptjs';
 import * as Crypto from 'expo-crypto';
 import { eq } from 'drizzle-orm';
-import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTutorial } from '@/context/TutorialContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEYS } from '@/constants/storage-keys';
 
 bcrypt.setRandomFallback((len: number) => {
   const randomBytes = Crypto.getRandomBytes(len);
@@ -40,19 +40,6 @@ export default function AuthScreen() {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
   const { promptAsync, userInfo, request, signOut } = useGoogleAuth();
-
-  useEffect(() => {
-    async function setUpDatabase() {
-      try {
-        console.log('starting database connection ...');
-        await runMigrations(expoDb);
-        console.info('database ready');
-      } catch (error) {
-        console.error('Error setting up database:', error);
-      }
-    }
-    setUpDatabase();
-  }, []);
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -125,7 +112,12 @@ export default function AuthScreen() {
 
             console.log('Google user saved successfully');
             await setCurrentUserEmail(userInfo.email);
-            router.replace('/home');
+            await AsyncStorage.multiRemove([
+              STORAGE_KEYS.ONBOARDING_COMPLETE,
+              STORAGE_KEYS.PROFILE_COMPLETE,
+            ]);
+            await resetTutorial();
+            router.replace('/(session)/onboarding');
           }
         } catch (error) {
           console.error('Error handling Google user:', error);
@@ -137,7 +129,7 @@ export default function AuthScreen() {
       };
       handleGoogleUser();
     }
-  }, [userInfo, router, activeTab, setCurrentUserEmail, signOut]);
+  }, [userInfo, router, activeTab, setCurrentUserEmail, signOut, t, resetTutorial]);
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
@@ -258,7 +250,10 @@ export default function AuthScreen() {
 
       console.log('User registered successfully');
       await setCurrentUserEmail(validationResult.data.email);
-      // Reset tutorial flag for new users so they see the tutorial
+      await AsyncStorage.multiRemove([
+        STORAGE_KEYS.ONBOARDING_COMPLETE,
+        STORAGE_KEYS.PROFILE_COMPLETE,
+      ]);
       await resetTutorial();
       router.replace('/(session)/onboarding');
     } catch (error: unknown) {

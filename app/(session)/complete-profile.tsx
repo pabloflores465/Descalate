@@ -7,16 +7,14 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { db } from '@/database/db';
-import { users } from '@/database/schema';
-import { eq } from 'drizzle-orm';
+import { expoDb } from '@/database/db';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Image } from 'react-native';
 import { File } from 'expo-file-system';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
@@ -94,7 +92,18 @@ export default function CompleteProfileScreen() {
         updateData.profile_image = `data:image/jpeg;base64,${base64}`;
       }
 
-      await db.update(users).set(updateData).where(eq(users.email, currentUserEmail));
+      await expoDb.runAsync(
+        `UPDATE users
+         SET name = ?, age = ?, gender = ?, profile_image = COALESCE(?, profile_image)
+         WHERE email = ?`,
+        [
+          updateData.name,
+          updateData.age,
+          updateData.gender,
+          updateData.profile_image ?? null,
+          currentUserEmail,
+        ]
+      );
 
       // Global key cleared on logout to ensure new users complete profile
       await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETE, 'true');

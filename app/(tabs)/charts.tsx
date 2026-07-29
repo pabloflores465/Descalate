@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BarChart, PieChart, LineChart } from 'react-native-gifted-charts';
+import { PieChart, LineChart } from 'react-native-gifted-charts';
 import { useState, useCallback } from 'react';
-import * as SQLite from 'expo-sqlite';
+import { expoDb } from '@/database/db';
 import { useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
@@ -86,9 +86,7 @@ export default function ChartsScreen() {
 
   const loadData = useCallback(async () => {
     try {
-      const db = await SQLite.openDatabaseAsync('descalate.db');
-
-      const sessionRows = await db.getAllAsync<Session>(
+      const sessionRows = await expoDb.getAllAsync<Session>(
         `SELECT * FROM sessions ORDER BY created_at DESC`
       );
 

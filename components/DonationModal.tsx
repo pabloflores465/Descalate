@@ -6,7 +6,6 @@ import {
   Modal,
   Pressable,
   Animated,
-  TextInput,
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
@@ -20,6 +19,7 @@ import {
   purchaseDonation,
   connectToStore,
   disconnectFromStore,
+  getDonationProducts,
   isIapAvailable,
 } from '@/services/donations';
 
@@ -48,9 +48,8 @@ export default function DonationModal({
 }: DonationModalProps) {
   const { t } = useTranslation();
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
-  const [customAmount, setCustomAmount] = useState('');
-  const [isCustom, setIsCustom] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [localizedPrices, setLocalizedPrices] = useState<Record<string, string>>({});
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(300)).current;
 
@@ -94,56 +93,50 @@ export default function DonationModal({
         disconnectFromStore();
       }
     };
+  }, [visible, iapAvailable, fadeAnim, slideAnim]);
+
+  useEffect(() => {
+    if (!visible || !iapAvailable) return;
+
+    let isActive = true;
+
+    getDonationProducts().then((products) => {
+      if (!isActive) return;
+
+      setLocalizedPrices(
+        Object.fromEntries(products.map((product) => [product.productId, product.localizedPrice]))
+      );
+    });
+
+    return () => {
+      isActive = false;
+    };
   }, [visible, iapAvailable]);
 
   const handleAmountSelect = (amount: number) => {
     setSelectedAmount(amount);
-    setIsCustom(false);
-    setCustomAmount('');
-  };
-
-  const handleCustomSelect = () => {
-    setSelectedAmount(null);
-    setIsCustom(true);
   };
 
   const handleDonate = async () => {
     // Check if IAP is available
     if (!iapAvailable) {
-      Alert.alert(
-        t('donation.errors.title'),
-        t('donation.errors.notAvailable'),
-        [{ text: 'OK', onPress: handleClose }]
-      );
+      Alert.alert(t('donation.errors.title'), t('donation.errors.notAvailable'), [
+        { text: 'OK', onPress: handleClose },
+      ]);
       return;
     }
 
-    const amount = isCustom ? parseFloat(customAmount) : selectedAmount;
-
-    if (!amount || amount <= 0) {
+    if (!selectedAmount || selectedAmount <= 0) {
       Alert.alert(t('donation.errors.title'), t('donation.errors.invalidAmount'));
       return;
     }
 
-    // Find the matching product ID
-    let productId: string;
-    if (isCustom) {
-      // For custom amounts, round to nearest available tier
-      if (amount <= 2) {
-        productId = DONATION_PRODUCT_IDS.DONATE_1;
-      } else if (amount <= 7) {
-        productId = DONATION_PRODUCT_IDS.DONATE_5;
-      } else {
-        productId = DONATION_PRODUCT_IDS.DONATE_10;
-      }
-    } else {
-      const option = DONATION_OPTIONS.find((opt) => opt.amount === amount);
-      if (!option) {
-        Alert.alert(t('donation.errors.title'), t('donation.errors.productNotFound'));
-        return;
-      }
-      productId = option.productId;
+    const option = DONATION_OPTIONS.find((item) => item.amount === selectedAmount);
+    if (!option) {
+      Alert.alert(t('donation.errors.title'), t('donation.errors.productNotFound'));
+      return;
     }
+    const productId = option.productId;
 
     setIsProcessing(true);
 
@@ -167,7 +160,10 @@ export default function DonationModal({
           // onError callback
           setIsProcessing(false);
           const message = error instanceof Error ? error.message : 'Unknown error';
-          Alert.alert(t('donation.errors.title'), t('donation.errors.purchaseFailed', { error: message }));
+          Alert.alert(
+            t('donation.errors.title'),
+            t('donation.errors.purchaseFailed', { error: message })
+          );
         }
       );
 
@@ -178,14 +174,15 @@ export default function DonationModal({
     } catch (error: unknown) {
       setIsProcessing(false);
       const message = error instanceof Error ? error.message : 'Unknown error';
-      Alert.alert(t('donation.errors.title'), t('donation.errors.purchaseFailed', { error: message }));
+      Alert.alert(
+        t('donation.errors.title'),
+        t('donation.errors.purchaseFailed', { error: message })
+      );
     }
   };
 
   const handleClose = () => {
     setSelectedAmount(null);
-    setCustomAmount('');
-    setIsCustom(false);
     onClose();
   };
 
@@ -193,7 +190,7 @@ export default function DonationModal({
     handleClose();
   };
 
-  const canDonate = (selectedAmount !== null && selectedAmount > 0) || (isCustom && parseFloat(customAmount) > 0);
+  const canDonate = selectedAmount !== null && selectedAmount > 0;
 
   return (
     <Modal transparent visible={visible} animationType="none" onRequestClose={handleClose}>
@@ -204,10 +201,7 @@ export default function DonationModal({
         <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
           <Pressable style={styles.overlayPressable} onPress={handleSkip} />
           <Animated.View
-            style={[
-              styles.modalContainer,
-              { transform: [{ translateY: slideAnim }] },
-            ]}
+            style={[styles.modalContainer, { transform: [{ translateY: slideAnim }] }]}
           >
             <LinearGradient
               colors={['#667eea', '#764ba2']}
@@ -246,40 +240,11 @@ export default function DonationModal({
                         selectedAmount === option.amount && styles.amountTextSelected,
                       ]}
                     >
-                      ${option.amount}
+                      {localizedPrices[option.productId] ?? `$${option.amount} USD`}
                     </Text>
                   </Pressable>
                 ))}
-                <Pressable
-                  style={[styles.amountButton, isCustom && styles.amountButtonSelected]}
-                  onPress={handleCustomSelect}
-                >
-                  <Ionicons
-                    name="create-outline"
-                    size={20}
-                    color={isCustom ? '#fff' : '#667eea'}
-                  />
-                  <Text style={[styles.amountText, isCustom && styles.amountTextSelected]}>
-                    {t('donation.custom')}
-                  </Text>
-                </Pressable>
               </View>
-
-              {isCustom && (
-                <View style={styles.customInputContainer}>
-                  <Text style={styles.currencySymbol}>$</Text>
-                  <TextInput
-                    style={styles.customInput}
-                    value={customAmount}
-                    onChangeText={setCustomAmount}
-                    placeholder="0.00"
-                    keyboardType="decimal-pad"
-                    placeholderTextColor="#999"
-                    autoFocus
-                  />
-                  <Text style={styles.currencyLabel}>USD</Text>
-                </View>
-              )}
 
               <Text style={styles.thankYouText}>{t('donation.thankYouMessage')}</Text>
 
@@ -420,34 +385,6 @@ const styles = StyleSheet.create({
   },
   amountTextSelected: {
     color: '#fff',
-  },
-  customInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 20,
-  },
-  currencySymbol: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#667eea',
-    marginRight: 4,
-  },
-  customInput: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#333',
-    minWidth: 80,
-    textAlign: 'center',
-  },
-  currencyLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginLeft: 8,
   },
   thankYouText: {
     fontSize: 14,

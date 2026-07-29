@@ -1,4 +1,4 @@
-import * as SQLite from 'expo-sqlite';
+import { expoDb } from './db';
 
 const exercises = [
   'Respiracion profunda',
@@ -34,9 +34,7 @@ function formatDate(date: Date): string {
 }
 
 export async function seedHistoricalSessions(userId: number): Promise<void> {
-  const db = await SQLite.openDatabaseAsync('descalate.db');
-
-  const sessionsToInsert: Array<{
+  const sessionsToInsert: {
     user_id: number;
     anxiety_level: number;
     selected_exercises: string;
@@ -47,7 +45,7 @@ export async function seedHistoricalSessions(userId: number): Promise<void> {
     duration_seconds: number;
     completed_at: string;
     created_at: string;
-  }> = [];
+  }[] = [];
 
   const now = new Date();
 
@@ -183,7 +181,7 @@ export async function seedHistoricalSessions(userId: number): Promise<void> {
 
   // Insert all sessions
   for (const session of sessionsToInsert) {
-    await db.runAsync(
+    await expoDb.runAsync(
       `INSERT INTO sessions (user_id, anxiety_level, selected_exercises, tip_id, tip_title, tip_category, final_action, duration_seconds, completed_at, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -205,7 +203,6 @@ export async function seedHistoricalSessions(userId: number): Promise<void> {
 }
 
 export async function clearSessions(userId: number): Promise<void> {
-  const db = await SQLite.openDatabaseAsync('descalate.db');
-  await db.runAsync('DELETE FROM sessions WHERE user_id = ?', [userId]);
+  await expoDb.runAsync('DELETE FROM sessions WHERE user_id = ?', [userId]);
   console.log(`Cleared all sessions for user ${userId}`);
 }

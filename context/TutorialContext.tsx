@@ -34,23 +34,23 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const completeTutorial = async () => {
+  const completeTutorial = useCallback(async () => {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.TUTORIAL_COMPLETE, 'true');
       setShouldShowTutorial(false);
     } catch (error) {
       logger.error('Error completing tutorial', error);
     }
-  };
+  }, []);
 
-  const resetTutorial = async () => {
+  const resetTutorial = useCallback(async () => {
     try {
       await AsyncStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETE);
       setShouldShowTutorial(true);
     } catch (error) {
       logger.error('Error resetting tutorial', error);
     }
-  };
+  }, []);
 
   const requestTutorialStart = useCallback(() => {
     if (shouldShowTutorial && !isLoading) {

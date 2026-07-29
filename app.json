@@ -5,7 +5,7 @@
     "owner": "pablo_flores_465",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon-corporate-memphis.png",
     "scheme": "descalate",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -47,12 +47,24 @@
       ],
       "expo-sqlite",
       "expo-web-browser",
+      [
+        "react-native-nitro-google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.435201606498-7fkuennuhmg3am4h51jc711l06ijiq91"
+        }
+      ],
       "expo-iap",
       "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b0d03a86-316e-4fd6-bf97-405f1d4119d5"
+      }
     }
   }
 }

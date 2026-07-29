@@ -10,13 +10,12 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
-import { db, resetDatabase } from '@/database/db';
-import { users, type User } from '@/database/schema';
+import { expoDb, resetDatabase } from '@/database/db';
+import { type User } from '@/database/schema';
 import { seedHistoricalSessions, clearSessions } from '@/database/seed';
 import { useFocusEffect } from '@react-navigation/native';
-import { eq } from 'drizzle-orm';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,7 +43,7 @@ export default function ProfileScreen() {
   const [hasNewImage, setHasNewImage] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
 
-  const loadUserData = async (email: string | null) => {
+  const loadUserData = useCallback(async (email: string | null) => {
     if (!email) {
       setIsLoading(false);
       return;
@@ -53,10 +52,12 @@ export default function ProfileScreen() {
     try {
       setIsLoading(true);
 
-      const userResult = await db.select().from(users).where(eq(users.email, email)).limit(1);
+      const userData = await expoDb.getFirstAsync<User>(
+        'SELECT * FROM users WHERE email = ? LIMIT 1',
+        [email]
+      );
 
-      if (userResult.length > 0) {
-        const userData = userResult[0];
+      if (userData) {
         setUser(userData);
         setName(userData.name || '');
         setAge(userData.age?.toString() || '');
@@ -75,7 +76,7 @@ export default function ProfileScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [hasNewImage]);
 
   useFocusEffect(
     useCallback(() => {
@@ -85,7 +86,7 @@ export default function ProfileScreen() {
       } else {
         setIsLoading(false);
       }
-    }, [currentUserEmail])
+    }, [currentUserEmail, loadUserData])
   );
 
   const pickImage = async () => {
@@ -153,7 +154,18 @@ export default function ProfileScreen() {
         }
       }
 
-      await db.update(users).set(updateData).where(eq(users.email, user.email));
+      await expoDb.runAsync(
+        `UPDATE users
+         SET name = ?, age = ?, gender = ?, profile_image = COALESCE(?, profile_image)
+         WHERE email = ?`,
+        [
+          updateData.name,
+          updateData.age,
+          updateData.gender,
+          updateData.profile_image ?? null,
+          user.email,
+        ]
+      );
 
       setHasNewImage(false);
       Alert.alert(t('common.success'), t('profile.alerts.success.profileUpdated'));

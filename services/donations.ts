@@ -1,5 +1,6 @@
-import { Platform, NativeModules } from 'react-native';
+import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import { requireOptionalNativeModule } from 'expo-modules-core';
 
 export const DONATION_PRODUCT_IDS = {
   DONATE_1: 'donate_1_usd',
@@ -19,17 +20,15 @@ export interface DonationProduct {
 
 // Check if we're running in Expo Go (where native modules are not available)
 const isExpoGo = Constants.appOwnership === 'expo';
+const hasIapNativeModule =
+  !isExpoGo && requireOptionalNativeModule('ExpoIap') !== null;
 
 let isConnected = false;
 let purchaseUpdateSubscription: { remove: () => void } | null = null;
 let purchaseErrorSubscription: { remove: () => void } | null = null;
 
 export function isIapAvailable(): boolean {
-  // IAP is not available in Expo Go
-  if (isExpoGo) return false;
-
-  // Check if native module exists
-  return !!NativeModules.ExpoIap;
+  return hasIapNativeModule;
 }
 
 // Lazy load expo-iap only when needed and available
@@ -37,6 +36,8 @@ function getExpoIap(): typeof import('expo-iap') | null {
   if (!isIapAvailable()) return null;
 
   try {
+    // Keep this lazy so opening the project in Expo Go does not load a missing native module.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require('expo-iap');
   } catch {
     return null;

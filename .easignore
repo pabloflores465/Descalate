@@ -1,0 +1,39 @@
+# Dependencies and generated output
+node_modules/
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+.kotlin/
+ios/
+android/
+
+# Local tooling and assistant metadata
+.claude/
+.codex/
+**/.claude/
+**/.codex/
+
+# Local documents not required by the application build
+*.docx
+
+# Credentials and local environment files
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+.env*.local
+
+# Logs, caches, and editor/system files
+.metro-health-check*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.DS_Store
+*.tsbuildinfo
+*.orig.*
+
+# Unused template project
+app-example/

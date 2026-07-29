@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
-import * as SQLite from 'expo-sqlite';
 import { useAuth } from './AuthContext';
 import logger from '@/services/logger';
+import { expoDb } from '@/database/db';
 
 type SelectedExercise = {
   id: number;
@@ -66,9 +66,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if (!sessionData || !currentUserEmail) return;
 
     try {
-      const db = await SQLite.openDatabaseAsync('descalate.db');
-
-      const user = await db.getFirstAsync<{ id: number }>(
+      const user = await expoDb.getFirstAsync<{ id: number }>(
         'SELECT id FROM users WHERE email = ?',
         [currentUserEmail]
       );
@@ -81,7 +79,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       const durationSeconds = Math.floor((Date.now() - sessionData.startTime) / 1000);
       const completedAt = new Date().toISOString();
 
-      await db.runAsync(
+      await expoDb.runAsync(
         `INSERT INTO sessions (
           user_id, anxiety_level, selected_exercises,
           tip_id, tip_title, tip_category,
@@ -100,7 +98,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         ]
       );
 
-      await db.runAsync(
+      await expoDb.runAsync(
         `INSERT INTO anxiety_logs (user_id, anxiety_level, notes) VALUES (?, ?, ?)`,
         [
           user.id,

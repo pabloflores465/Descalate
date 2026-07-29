@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Pressable, StyleSheet, Animated, Text } from 'react-native';
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useCallback } from 'react';
 import {
   SpotlightTourProvider,
   TourStep,
@@ -53,7 +53,7 @@ function AnimatedTabIcon({ name, nameOutline, color, size, focused }: TabIconPro
         }),
       ]).start();
     }
-  }, [focused]);
+  }, [focused, opacityAnim, translateYAnim]);
 
   return (
     <View style={styles.iconContainer}>
@@ -189,7 +189,12 @@ function TabLayoutContent() {
   );
 }
 
-const createTourSteps = (t: TFunction): TourStep[] => [
+type TourAction = () => void;
+
+const createTourSteps = (
+  t: TFunction,
+  runTourAction: (action: TourAction) => void
+): TourStep[] => [
   // Step 0: Welcome
   {
     render: ({ next, stop }) => (
@@ -202,10 +207,10 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.welcome.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.welcome.description')}</Text>
         <View style={styles.tooltipButtons}>
-          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+          <Pressable onPress={() => runTourAction(stop)} style={styles.tooltipButtonSkip}>
             <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
           </Pressable>
-          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+          <Pressable onPress={() => runTourAction(next)} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.start')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
@@ -225,13 +230,13 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.anxietyLevels.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.anxietyLevels.description')}</Text>
         <View style={styles.tooltipButtons}>
-          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+          <Pressable onPress={() => runTourAction(stop)} style={styles.tooltipButtonSkip}>
             <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
           </Pressable>
-          <Pressable onPress={previous} style={styles.tooltipButton}>
+          <Pressable onPress={() => runTourAction(previous)} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
-          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+          <Pressable onPress={() => runTourAction(next)} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
@@ -251,13 +256,13 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.howItWorks.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.howItWorks.description')}</Text>
         <View style={styles.tooltipButtons}>
-          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+          <Pressable onPress={() => runTourAction(stop)} style={styles.tooltipButtonSkip}>
             <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
           </Pressable>
-          <Pressable onPress={previous} style={styles.tooltipButton}>
+          <Pressable onPress={() => runTourAction(previous)} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
-          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+          <Pressable onPress={() => runTourAction(next)} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
@@ -277,13 +282,13 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.statistics.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.statistics.description')}</Text>
         <View style={styles.tooltipButtons}>
-          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+          <Pressable onPress={() => runTourAction(stop)} style={styles.tooltipButtonSkip}>
             <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
           </Pressable>
-          <Pressable onPress={previous} style={styles.tooltipButton}>
+          <Pressable onPress={() => runTourAction(previous)} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
-          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+          <Pressable onPress={() => runTourAction(next)} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
@@ -303,13 +308,13 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.profile.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.profile.description')}</Text>
         <View style={styles.tooltipButtons}>
-          <Pressable onPress={stop} style={styles.tooltipButtonSkip}>
+          <Pressable onPress={() => runTourAction(stop)} style={styles.tooltipButtonSkip}>
             <Text style={styles.tooltipButtonTextSkip}>{t('tutorial.buttons.skip')}</Text>
           </Pressable>
-          <Pressable onPress={previous} style={styles.tooltipButton}>
+          <Pressable onPress={() => runTourAction(previous)} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
-          <Pressable onPress={next} style={styles.tooltipButtonPrimary}>
+          <Pressable onPress={() => runTourAction(next)} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.next')}</Text>
             <Ionicons name="arrow-forward" size={18} color="#fff" />
           </Pressable>
@@ -329,10 +334,10 @@ const createTourSteps = (t: TFunction): TourStep[] => [
         <Text style={styles.tooltipTitle}>{t('tutorial.steps.ready.title')}</Text>
         <Text style={styles.tooltipText}>{t('tutorial.steps.ready.description')}</Text>
         <View style={styles.tooltipButtons}>
-          <Pressable onPress={previous} style={styles.tooltipButton}>
+          <Pressable onPress={() => runTourAction(previous)} style={styles.tooltipButton}>
             <Ionicons name="arrow-back" size={18} color="#2d9a6e" />
           </Pressable>
-          <Pressable onPress={stop} style={styles.tooltipButtonPrimary}>
+          <Pressable onPress={() => runTourAction(stop)} style={styles.tooltipButtonPrimary}>
             <Text style={styles.tooltipButtonTextPrimary}>{t('tutorial.buttons.begin')}</Text>
             <Ionicons name="checkmark" size={18} color="#fff" />
           </Pressable>
@@ -345,8 +350,35 @@ const createTourSteps = (t: TFunction): TourStep[] => [
 export default function TabLayout() {
   const { completeTutorial } = useTutorial();
   const { t } = useTranslation();
+  const tourActionLocked = useRef(false);
+  const tourActionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const tourSteps = useMemo(() => createTourSteps(t), [t]);
+  const runTourAction = useCallback((action: TourAction) => {
+    if (tourActionLocked.current) {
+      return;
+    }
+
+    tourActionLocked.current = true;
+    action();
+
+    tourActionTimer.current = setTimeout(() => {
+      tourActionLocked.current = false;
+      tourActionTimer.current = null;
+    }, 700);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (tourActionTimer.current) {
+        clearTimeout(tourActionTimer.current);
+      }
+    };
+  }, []);
+
+  const tourSteps = useMemo(
+    () => createTourSteps(t, runTourAction),
+    [t, runTourAction]
+  );
 
   const handleTourStop = () => {
     completeTutorial();
